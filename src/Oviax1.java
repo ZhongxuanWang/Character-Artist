@@ -13,16 +13,28 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 class Oviax1
 {
-
+    // Initialize some objects.
+    public static BufferedImage img;
     public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
+    public static double cpPercent;
+
     private static Scanner scr = new Scanner(System.in);
     private static String input = "";
+
+    /* This is maximum Resolution in which application can hold. You can adjust but it's hoped not to be 
+    too big otherwise your computer memory might not be able to withstand that. Of course, the bigger the
+    better. But if resolution from picture that later inputted is larger than this, it will be compressed
+    to this.*/
     private static int maxResolution = 10000;
 
     public static void main (String[] args) throws Exception
     {
-        // Create work space
-        new File(oviaxWS).mkdir();
+        // Create work space if needed
+        File oviaxWSObj = new File(oviaxWS);
+        if(!oviaxWSObj.exists()) 
+        {
+            oviaxWSObj.mkdir();
+        }
 
         // Show UI
         O.info("Welcome to Oviax1.0");
@@ -47,16 +59,22 @@ class Oviax1
         scr.close();
 
         // Treat it as image file
-        BufferedImage img = ImageIO.read(new File(input));
+        img = ImageIO.read(new File(input));
 
         // Get the total width and height of the image
         final int width = img.getWidth();
         final int height = img.getHeight();
-        
+        final int imgResolution = width * height;
+
         // Check if resolution oversized. If it's oversized, compress before continue.
-        if(width*height > maxResolution)
+        if(imgResolution > maxResolution)
         {
-            //picProc.imgCompress();
+            // Calculate the percentile in which is hoped to compress before giving it to imgCompress method.
+            double cpPercentBfFormat = 10000 / imgResolution;
+            String cpPercentBfFormatTemp = String.format("%.2f", cpPercentBfFormat); // Format to 2-digit decimal
+            cpPercent = Double.parseDouble(cpPercentBfFormatTemp);
+
+            picProc.imgCompress();
         }
 
         // Read each pixel and get each RGB value, proceed each one seperately.
@@ -90,11 +108,48 @@ stored in main method in nominated main class. */
 class picProc
 {
     String scaleChar="$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
-    // Image compressing
-    public static String imgCompress() 
-    {
 
-        return "a";
+    // Image compressing
+    public static void imgCompress()
+    {
+        File imageFile = new File("YOUR_IMAGE.jpg");
+        File compressedImageFile = new File("YOUR_COMPRESSED_IMAGE.jpg");
+
+        String opFileName2 = "compressedImage_temp_" + (int) (Math.random()*2000000+1000000) + ".jpeg";
+        ImageIO.write(img, "jpeg", new File(oviaxWS + opFileName2));
+
+        InputStream inputStream = new FileInputStream(imageFile);
+        OutputStream outputStream = new FileOutputStream(compressedImageFile);
+
+        float imageQuality = 0.3f;
+
+        //Create the buffered image
+        BufferedImage bufferedImage = ImageIO.read(inputStream);
+
+        //Get image writers
+        Iterator<ImageWriter> imageWriters = ImageIO.getImageWritersByFormatName("jpg");
+
+        if (!imageWriters.hasNext())
+            throw new IllegalStateException("Writers Not Found!!");
+
+        ImageWriter imageWriter = (ImageWriter) imageWriters.next();
+        ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(outputStream);
+        imageWriter.setOutput(imageOutputStream);
+
+        ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
+
+        // Set the compress quality metrics
+        imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        imageWriteParam.setCompressionQuality(imageQuality);
+
+        // Created image
+        imageWriter.write(null, new IIOImage(bufferedImage, null, null), imageWriteParam);
+
+        // close all streams
+        inputStream.close();
+        outputStream.close();
+        imageOutputStream.close();
+        imageWriter.dispose();
     }
 
 
