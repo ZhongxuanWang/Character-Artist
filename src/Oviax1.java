@@ -2,9 +2,15 @@
 import java.io.*;
 import sun.misc.BASE64Decoder;
 import java.util.Scanner;
+import java.util.Iterator;
 
 //for photo process
+import javax.imageio.IIOParam;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.*;
 import java.awt.image.BufferedImage;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
@@ -16,9 +22,10 @@ class Oviax1
     // Initialize some objects.
     public static BufferedImage img;
     public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
+    // scaleChar: 70 characters (except escapes)
+    public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+    public static String input,fileExtension;
     public static double cpPercent;
-    public static String input = "";
-    public static String fileExtension = "";
 
     private static Scanner scr = new Scanner(System.in);
     private static int imgWidth, imgHeight, imgResolution;
@@ -29,7 +36,7 @@ class Oviax1
     to this.*/
     private static int maxResolution = 10000;
 
-    public static void main (String[] args) throws Exception
+    public static void main (String[] args) throws IOException
     {
         // Create work space if needed
         File oviaxWSObj = new File(oviaxWS);
@@ -72,7 +79,7 @@ class Oviax1
         // Get extension for further use
         fileExtension = getExtension(input);
 
-        // Treat it as image file
+        /* Treat it as image file. Please see the detail in getImgBasicInfo method for better description */
         getImgBasicInfo(input);
 
         // Check if resolution oversized. If it's oversized, compress before continue.
@@ -119,7 +126,6 @@ class Oviax1
      * method in java.lang.System.exit()
      * @param num
      */
-    @Override
     public static void exit(int num) 
     {
         O.info("Running finished. Thanks for using. Errorlevel:" + num);
@@ -132,8 +138,8 @@ class Oviax1
         Thus, Oviax1 is expected to only run in macOS and systems that support those variations. 
         Later compatibility in Windows may be resolved.
         */
-        String filename = path.split("/")[path.split("/").length-1]; // Get filename
-        return filename.split(".")[filename.split(".").length-1]; // Return file extension
+        String fileNametp = path.split("/")[path.split("/").length-1]; // Get filename
+        return fileNametp.split("\\.")[1];// Return file extension
     }
 
     /**
@@ -142,10 +148,17 @@ class Oviax1
      */
     private static void getImgBasicInfo(String path) 
     {
-        img = ImageIO.read(new File(path));
+        try 
+        {
+            img = ImageIO.read(new File(path));
+        } catch (IOException e) {
+            O.errinfo("Sorry, read file failed");
+            exit(0);
+        }
+        
         imgWidth = img.getWidth();
         imgHeight = img.getHeight();
-        imgResolution = width * height;
+        imgResolution = imgWidth * imgHeight;
     }
 }
 
@@ -158,10 +171,9 @@ class picProc
 {
     public static Iterator<ImageWriter> imageWriters;
     public static String opFileName1;
-    String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
     // Image compressing
-    public static void imgCompress()
+    public static void imgCompress() throws FileNotFoundException,IOException
     {
         // Set output file stream with specified file name
         opFileName1 = "compressedImage_temp_" + (int) (Math.random()*2000000+1000000) + "." + Oviax1.fileExtension;
@@ -169,7 +181,7 @@ class picProc
         OutputStream opStream = new FileOutputStream(compressedImageFile);
 
         // Set image quality after compressing
-        //float imageQuality = 0.3f;
+        float imageQuality = (float)Oviax1.cpPercent;
 
         // Create output stream
         ImageWriter imageWriter = (ImageWriter) imageWriters.next();
@@ -179,9 +191,9 @@ class picProc
         // Set the compress quality metrics
         ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
         imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-        imageWriteParam.setCompressionQuality(Oviax1.cpPercent);
+        imageWriteParam.setCompressionQuality(imageQuality);
 
-        // Created image
+        // Create image
         imageWriter.write(null, new IIOImage(Oviax1.img, null, null), imageWriteParam);
 
         // Close all streams
