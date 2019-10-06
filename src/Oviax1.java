@@ -17,9 +17,10 @@ class Oviax1
     public static BufferedImage img;
     public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
     public static double cpPercent;
+    public static String input = "";
+    public static String fileExtension = "";
 
     private static Scanner scr = new Scanner(System.in);
-    private static String input = "";
 
     /* This is maximum Resolution in which application can hold. You can adjust but it's hoped not to be 
     too big otherwise your computer memory might not be able to withstand that. Of course, the bigger the
@@ -50,13 +51,25 @@ class Oviax1
 
         // Receive input from console
         do {
+            // Print interface
             O.info("Please input image path below");
             System.out.print(">");
+
             input = scr.nextLine();
-        } while (!(new File(input).exists())); // This expression means if not exist, then redo.
+
+            // Get extension for further use
+            fileExtension = getExtension(input);
+
+        } while (
+            // This expression means if not exist or if image is not in a supported format, redo.
+            !(new File(input).exists() && picProc.checkIfPic(fileExtension))
+            ); 
 
         // Close buffer
         scr.close();
+
+        // Get extension for further use
+        fileExtension = getExtension(input);
 
         // Treat it as image file
         img = ImageIO.read(new File(input));
@@ -69,9 +82,13 @@ class Oviax1
         // Check if resolution oversized. If it's oversized, compress before continue.
         if(imgResolution > maxResolution)
         {
-            // Calculate the percentile in which is hoped to compress before giving it to imgCompress method.
+            /*
+             Calculate the percentile in which is hoped to compress before giving it 
+             to imgCompress method.
+             */
             double cpPercentBfFormat = 10000 / imgResolution;
-            String cpPercentBfFormatTemp = String.format("%.2f", cpPercentBfFormat); // Format to 2-digit decimal
+            // Format to 2-digit decimal
+            String cpPercentBfFormatTemp = String.format("%.2f", cpPercentBfFormat); 
             cpPercent = Double.parseDouble(cpPercentBfFormatTemp);
 
             picProc.imgCompress();
@@ -89,16 +106,34 @@ class Oviax1
         }
 
         // Create random number to output to prevent preoccupied.
-        String opFileName2 = "grayImage_temp_" + (int) (Math.random()*2000000+1000000) + ".jpeg";
-        ImageIO.write(img, "jpeg", new File(oviaxWS + opFileName2));
+        String opFileName2 = "grayImage_temp_" + (int) (Math.random()*2000000+1000000) + fileExtension;
+        ImageIO.write(img, fileExtension, new File(oviaxWS + opFileName2));
         // Check the type of input
         
-        
-        //termination denotation.
-        O.info("Running finished. Thanks for using.");
-        System.exit(9);
+        exit(0);
     }
-    
+
+    /**
+     * It will exit by outputting a message including the exit number. This method will override existing exit
+     * method in java.lang.System.exit()
+     * @param num
+     */
+    @Override
+    public static void exit(int num) 
+    {
+        O.info("Running finished. Thanks for using. Errorlevel:" + num);
+        System.exit(0);
+    }
+
+    public static String getExtension(String path) 
+    {
+        /* In macOS, path contains "/" instead of "\" which is in Windows OS.
+        Thus, Oviax1 is expected to only run in macOS and systems that support those variations. 
+        Later compatibility in Windows may be resolved.
+        */
+        String filename = path.split("/")[path.split("/").length-1]; // Get filename
+        return filename.split(".")[filename.split(".").length-1]; // Return file extension
+    }
 }
 
 
@@ -107,47 +142,35 @@ stored in main method in nominated main class. */
 
 class picProc
 {
-    String scaleChar="$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+    public static Iterator<ImageWriter> imageWriters;
+    String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
     // Image compressing
     public static void imgCompress()
     {
-        File imageFile = new File("YOUR_IMAGE.jpg");
-        File compressedImageFile = new File("YOUR_COMPRESSED_IMAGE.jpg");
+        // Set output file stream with specified file name
+        String opFileName1 = "compressedImage_temp_" + (int) (Math.random()*2000000+1000000) + "." + Oviax1.fileExtension;
+        File compressedImageFile = new File(Oviax1.oviaxWS + opFileName1);
+        OutputStream opStream = new FileOutputStream(compressedImageFile);
 
-        String opFileName2 = "compressedImage_temp_" + (int) (Math.random()*2000000+1000000) + ".jpeg";
-        ImageIO.write(img, "jpeg", new File(oviaxWS + opFileName2));
+        // Set image quality after compressing
+        //float imageQuality = 0.3f;
 
-        InputStream inputStream = new FileInputStream(imageFile);
-        OutputStream outputStream = new FileOutputStream(compressedImageFile);
-
-        float imageQuality = 0.3f;
-
-        //Create the buffered image
-        BufferedImage bufferedImage = ImageIO.read(inputStream);
-
-        //Get image writers
-        Iterator<ImageWriter> imageWriters = ImageIO.getImageWritersByFormatName("jpg");
-
-        if (!imageWriters.hasNext())
-            throw new IllegalStateException("Writers Not Found!!");
-
+        // Create output stream
         ImageWriter imageWriter = (ImageWriter) imageWriters.next();
-        ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(outputStream);
+        ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(opStream);
         imageWriter.setOutput(imageOutputStream);
 
-        ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
-
         // Set the compress quality metrics
+        ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
         imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-        imageWriteParam.setCompressionQuality(imageQuality);
+        imageWriteParam.setCompressionQuality(Oviax1.cpPercent);
 
         // Created image
-        imageWriter.write(null, new IIOImage(bufferedImage, null, null), imageWriteParam);
+        imageWriter.write(null, new IIOImage(Oviax1.img, null, null), imageWriteParam);
 
-        // close all streams
-        inputStream.close();
-        outputStream.close();
+        // Close all streams
+        opStream.close();
         imageOutputStream.close();
         imageWriter.dispose();
     }
@@ -174,7 +197,17 @@ class picProc
         return Integer.parseInt(gdGryScale + gdGryScale + gdGryScale, 16);
     }
 
-
+    public static boolean checkIfPic(String fileExt) {
+        imageWriters = ImageIO.getImageWritersByFormatName(fileExt);
+        // Check if it has a image writer
+        if (!imageWriters.hasNext()) 
+        {
+            O.errinfo("Sorry, the file you inputted is not supported");
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 
 
