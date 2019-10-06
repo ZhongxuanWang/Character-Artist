@@ -17,6 +17,7 @@ class Oviax1
     public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
     private static Scanner scr = new Scanner(System.in);
     private static String input = "";
+    private static int maxResolution = 10000;
 
     public static void main (String[] args) throws Exception
     {
@@ -28,7 +29,7 @@ class Oviax1
         O.info("Input 'Oviax1 ?' on console to get more information");O.newline();
 
         // Reveive input from Arguments. If argument received, give it to argPro method to proceed.
-        if(!(args.length==0)) 
+        if(!(args.length == 0)) 
         {
             O.argPro(args);
         } else {
@@ -37,9 +38,10 @@ class Oviax1
 
         // Receive input from console
         do {
-            O.info("Please input image path below");System.out.print(">");
+            O.info("Please input image path below");
+            System.out.print(">");
             input = scr.nextLine();
-        } while (!(new File(input).exists() ) );
+        } while (!(new File(input).exists())); // This expression means if not exist, then redo.
 
         // Close buffer
         scr.close();
@@ -51,6 +53,12 @@ class Oviax1
         final int width = img.getWidth();
         final int height = img.getHeight();
         
+        // Check if resolution oversized. If it's oversized, compress before continue.
+        if(width*height > maxResolution)
+        {
+            //picProc.imgCompress();
+        }
+
         // Read each pixel and get each RGB value, proceed each one seperately.
         for (int i = 0; i < width; i++) 
         {
@@ -62,33 +70,53 @@ class Oviax1
             }
         }
 
-        // Output image to file.
-        int opfile2=(int)(Math.random()*1000000+1);
-        ImageIO.write(img,"jpeg",new File(oviaxWS+"_greyImage.jpeg"));
+        // Create random number to output to prevent preoccupied.
+        String opFileName2 = "grayImage_temp_" + (int) (Math.random()*2000000+1000000) + ".jpeg";
+        ImageIO.write(img, "jpeg", new File(oviaxWS + opFileName2));
         // Check the type of input
         
         
         //termination denotation.
-        O.info("Oviax1 terminated.");
-        
+        O.info("Running finished. Thanks for using.");
+        System.exit(9);
     }
     
 }
 
 
-// Some of the picture processing methods are listed here. But main procedure was stored in main method in nominated main class.
+/* Some of the picture processing methods are listed here. But main procedure was 
+stored in main method in nominated main class. */
+
 class picProc
 {
-    public static int grayRGB(String argb) {
-        /* Prior two digits of ARGB are transparency, RGB began after then, in 16 hex form. */
+    String scaleChar="$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+    // Image compressing
+    public static String imgCompress() 
+    {
+
+        return "a";
+    }
+
+
+    public static int grayRGB(String argb) 
+    {
+        // Convert from hexadecimal to decimal and get RGB from the String.
         int r = Integer.parseInt(argb.substring(2,4),16);
         int g = Integer.parseInt(argb.substring(4,6),16);
         int b = Integer.parseInt(argb.substring(6,8),16);
-        // EVEN
-        String average = Integer.toHexString((r + g + b) / 3);
-        if (average.length() == 1) average = "0" + average; //format to 2 units.
-        // Calculate average value for ARGB
-        return Integer.parseInt(average + average + average, 16);
+        /* Since red color has more wavelength of all the three colors, and green is the color that has 
+        not only less wavelength then red color but also green is the color that gives more soothing effect 
+        to the eyes. It means that we have to decrease the contribution of red color, and increase the 
+        contribution of the green color, and put blue color contribution in between these two.
+        */
+        String gdGryScale = Long.toHexString(Math.round((r * 0.3 + g * 0.59 + b * 0.11) / 3));
+        // Format to 2 units.
+        if (gdGryScale.length() == 1)
+        {
+            gdGryScale = "0" + gdGryScale;
+        }
+        // Put them back into hexadecimal form.
+        return Integer.parseInt(gdGryScale + gdGryScale + gdGryScale, 16);
     }
 
 
