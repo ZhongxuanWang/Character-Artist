@@ -21,6 +21,7 @@ class Oviax1
     public static String fileExtension = "";
 
     private static Scanner scr = new Scanner(System.in);
+    private static int imgWidth, imgHeight, imgResolution;
 
     /* This is maximum Resolution in which application can hold. You can adjust but it's hoped not to be 
     too big otherwise your computer memory might not be able to withstand that. Of course, the bigger the
@@ -72,32 +73,31 @@ class Oviax1
         fileExtension = getExtension(input);
 
         // Treat it as image file
-        img = ImageIO.read(new File(input));
-
-        // Get the total width and height of the image
-        final int width = img.getWidth();
-        final int height = img.getHeight();
-        final int imgResolution = width * height;
+        getImgBasicInfo(input);
 
         // Check if resolution oversized. If it's oversized, compress before continue.
         if(imgResolution > maxResolution)
         {
             /*
-             Calculate the percentile in which is hoped to compress before giving it 
-             to imgCompress method.
+             Calculate the percentile in which is hoped to compress before letting imgCompress
+             method to do the work
              */
             double cpPercentBfFormat = 10000 / imgResolution;
             // Format to 2-digit decimal
             String cpPercentBfFormatTemp = String.format("%.2f", cpPercentBfFormat); 
             cpPercent = Double.parseDouble(cpPercentBfFormatTemp);
 
+            // Call the method
             picProc.imgCompress();
+
+            // Redo the process by re-read the image file and re-get the width and height of the image.
+            getImgBasicInfo(Oviax1.oviaxWS+picProc.opFileName1);
         }
 
         // Read each pixel and get each RGB value, proceed each one seperately.
-        for (int i = 0; i < width; i++) 
+        for (int i = 0; i < imgWidth; i++)
         {
-            for (int j = 0; j < height; j++) 
+            for (int j = 0; j < imgHeight; j++)
             {
                 int rgb = img.getRGB(i, j);
                 // Convert each pixel into average gray value
@@ -112,6 +112,7 @@ class Oviax1
         
         exit(0);
     }
+
 
     /**
      * It will exit by outputting a message including the exit number. This method will override existing exit
@@ -134,7 +135,20 @@ class Oviax1
         String filename = path.split("/")[path.split("/").length-1]; // Get filename
         return filename.split(".")[filename.split(".").length-1]; // Return file extension
     }
+
+    /**
+     * It will put image data in object img, and get the width, height and resolution of the image file.
+     * @param path
+     */
+    private static void getImgBasicInfo(String path) 
+    {
+        img = ImageIO.read(new File(path));
+        imgWidth = img.getWidth();
+        imgHeight = img.getHeight();
+        imgResolution = width * height;
+    }
 }
+
 
 
 /* Some of the picture processing methods are listed here. But main procedure was 
@@ -143,13 +157,14 @@ stored in main method in nominated main class. */
 class picProc
 {
     public static Iterator<ImageWriter> imageWriters;
+    public static String opFileName1;
     String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
     // Image compressing
     public static void imgCompress()
     {
         // Set output file stream with specified file name
-        String opFileName1 = "compressedImage_temp_" + (int) (Math.random()*2000000+1000000) + "." + Oviax1.fileExtension;
+        opFileName1 = "compressedImage_temp_" + (int) (Math.random()*2000000+1000000) + "." + Oviax1.fileExtension;
         File compressedImageFile = new File(Oviax1.oviaxWS + opFileName1);
         OutputStream opStream = new FileOutputStream(compressedImageFile);
 
@@ -175,7 +190,11 @@ class picProc
         imageWriter.dispose();
     }
 
-
+    /**
+     * Calculate and return the most accurate grayscale (by pixel).
+     * @param argb
+     * @return Integer
+     */
     public static int grayRGB(String argb) 
     {
         // Convert from hexadecimal to decimal and get RGB from the String.
@@ -197,6 +216,11 @@ class picProc
         return Integer.parseInt(gdGryScale + gdGryScale + gdGryScale, 16);
     }
 
+    /**
+     * Check if the type of image (file) is accepted.
+     * @param fileExt
+     * @return
+     */
     public static boolean checkIfPic(String fileExt) {
         imageWriters = ImageIO.getImageWritersByFormatName(fileExt);
         // Check if it has a image writer
@@ -209,6 +233,7 @@ class picProc
         }
     }
 }
+
 
 
 class O implements ConsoleColors
@@ -245,6 +270,9 @@ class O implements ConsoleColors
 }
 
 
+/**
+ * No actual use... Just like a database containing useful information...
+ */
 interface ConsoleColors {
     public static final String RESET = "\033[0m";  // Text Reset
     // Regular Colors
