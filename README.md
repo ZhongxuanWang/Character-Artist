@@ -7,7 +7,9 @@
    Oviax1 is a small-sized, open-sourced software. It uses the simple and easy-to-understand code to help people understand how it works. It supports maximumly 10000-pixel resolution! It also has a wide range of uses.
 
 
-Developer:
+**************
+**Developer:**
+**************
 1.Zhongxuan(Daniel) Wang. (Starter)
 
 
