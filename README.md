@@ -3,7 +3,7 @@
 **********
 
 
-   Oviax1 is a software created by JAVA, in first version. It's dedicated to convert photo to symbols based photos.  It will be useful in some situations like when your want to output a image but your software doesn't support it, you could use Oviax to firstly converted the image to String and output it. When you created a black-and-white work but looks like not advanced enough, you could use Oviax to make it look better!<br><br>
+   Oviax1 is a software created by JAVA, in first version. It's dedicated to convert photo to symbole-based photos.  It will be useful in some situations like when your want to output an image but your software doesn't support it, you could use Oviax to firstly converted the image to String and output it. When you created a black-and-white work but looks like not advanced enough, you could use Oviax to make it look better!<br><br>
    Oviax1 is a small-sized, open-sourced software. It uses the simple and easy-to-understand code to help people understand how it works. It supports maximumly 10000-pixel resolution! It also has a wide range of uses.
 
 
@@ -12,7 +12,7 @@
 **************
 1.Zhongxuan(Daniel) Wang. (Starter)
 
-
+<br><br><br>
 
               ,:
                ,?}'
