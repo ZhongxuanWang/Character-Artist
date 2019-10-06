@@ -14,7 +14,7 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 class Oviax1
 {
 
-    public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace";
+    public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
     private static Scanner scr = new Scanner(System.in);
     private static String input = "";
 
@@ -28,9 +28,9 @@ class Oviax1
         O.info("Input 'Oviax1 ?' on console to get more information");O.newline();
 
         // Reveive input from Arguments. If argument received, give it to argPro method to proceed.
-        if(!args[0].equals("")) 
+        if(!(args.length==0)) 
         {
-            O.argPro(args[0].toLowerCase());
+            O.argPro(args);
         } else {
             O.info("No Argument received so far");
         }
@@ -58,12 +58,13 @@ class Oviax1
             {
                 int rgb = img.getRGB(i, j);
                 // Convert each pixel into average gray value
-                img.setRGB(i, j, grayRGB(Integer.toHexString(rgb))); 
+                img.setRGB(i, j, picProc.grayRGB(Integer.toHexString(rgb))); 
             }
         }
 
         // Output image to file.
-        ImageIO.write(img,"jpeg",new File("test2.jpeg"));
+        int opfile2=(int)(Math.random()*1000000+1);
+        ImageIO.write(img,"jpeg",new File(oviaxWS+"_greyImage.jpeg"));
         // Check the type of input
         
         
@@ -78,7 +79,7 @@ class Oviax1
 // Some of the picture processing methods are listed here. But main procedure was stored in main method in nominated main class.
 class picProc
 {
-    private static int grayRGB(String argb) {
+    public static int grayRGB(String argb) {
         /* Prior two digits of ARGB are transparency, RGB began after then, in 16 hex form. */
         int r = Integer.parseInt(argb.substring(2,4),16);
         int g = Integer.parseInt(argb.substring(4,6),16);
@@ -96,7 +97,7 @@ class picProc
 
 class O implements ConsoleColors
 {
-    public static void argPro(Sting[] args) 
+    public static void argPro(String[] args) 
     {
         switch(args[0])
         {
