@@ -28,13 +28,13 @@ class Oviax1
     public static double cpPercent;
 
     private static Scanner scr = new Scanner(System.in);
-    private static int imgWidth, imgHeight, imgResolution;
+    private static int imgWidth, imgHeight, imgResolution, newH, newW;
 
     /* This is maximum Resolution in which application can hold. You can adjust but it's hoped not to be 
     too big otherwise your computer memory might not be able to withstand that. Of course, the bigger the
     better. But if resolution from picture that later inputted is larger than this, it will be compressed
-    to this.*/
-    private static int maxResolution = 10000;
+    to this.   NOTES : it must be a decimal, which is expected to adhere a .0 at last, but not required.*/
+    private static double maxResolution = 10000.0;
 
     public static void main (String[] args) throws IOException
     {
@@ -89,13 +89,14 @@ class Oviax1
              method to do the work. It's a logarithem.
              */
             {
-                int x = Math.round((float) (10000.0 / imgResolution));
-                
+                double x = maxResolution / imgResolution;
+                x = Math.sqrt(x);
+                imgHeight = (int) (imgHeight * x);
+                imgWidth = (int) (imgWidth * x);
             }
 
-            double hwRatio = (double) imgHeight / imgWidth;
             // Call the method
-            resizedImg = picProc.imgCompress(getImageHeight(imgHeight), getImageWidth(imgWidth));
+            resizedImg = picProc.imgCompress(imgHeight, imgWidth);
             // Re declare object and reget information
             getImgBasicInfo(resizedImg);
         }
