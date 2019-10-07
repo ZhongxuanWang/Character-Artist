@@ -22,7 +22,7 @@ class Oviax1
     public static BufferedImage img, resizedImg, jpgImg;
     public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
     // scaleChar: 70 characters (except escapes)
-    public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+    public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.          ";
     public static String input, fileExtension;
     public static boolean ifJpg = false;
     public static double cpPercent;
@@ -93,7 +93,8 @@ class Oviax1
                 x = Math.sqrt(x);
                 imgHeight = (int) (imgHeight * x);
                 imgWidth = (int) (imgWidth * x);
-                System.out.println(imgHeight+" "+imgWidth);
+                // Debug print.
+                System.out.println(imgHeight + " - " + imgWidth);
             }
 
             // Call the method
@@ -126,10 +127,6 @@ class Oviax1
 
         O.newline();
         // Create random number to output to prevent preoccupied.
-        String opFileName2 = "grayImage_temp_" + 
-            (int) (Math.random()*2000000+1000000) + "." + fileExtension;
-
-        ImageIO.write(jpgImg, fileExtension, new File(oviaxWS + opFileName2));
         exit(0);
     }
 
@@ -152,9 +149,9 @@ class Oviax1
         Thus, Oviax1 is expected to only run in macOS and systems that support those 
         variations. Later compatibility in Windows may be resolved.
         */
-        String fileNametp = path.split("/")[path.split("/").length-1]; // Get filename
+        String fileNametp = path.split("/")[path.split("/").length - 1]; // Get filename
         String fEx=fileNametp.split("\\.")[1];
-        if((fEx.toLowerCase().equals("jpg")&&fEx.toLowerCase().equals("jpeg")))
+        if((fEx.toLowerCase().equals("jpg") && fEx.toLowerCase().equals("jpeg")))
             ifJpg = true;
         return fileNametp.split("\\.")[1];// Return file extension
     }
@@ -218,9 +215,9 @@ class picProc
     public static int getGrayValue(String argb) 
     {
         // Convert from hexadecimal to decimal and get RGB from the String.
-        int r = Integer.parseInt(argb.substring(2,4),16);
-        int g = Integer.parseInt(argb.substring(4,6),16);
-        int b = Integer.parseInt(argb.substring(6,8),16);
+        int r = Integer.parseInt(argb.substring(2,4), 16);
+        int g = Integer.parseInt(argb.substring(4,6), 16);
+        int b = Integer.parseInt(argb.substring(6,8), 16);
         // EVEN
         String average = Integer.toHexString((r + g + b) / 3);
         if (average.length() == 1) average = "0" + average; //format to 2 units.
