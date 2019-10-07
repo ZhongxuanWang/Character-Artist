@@ -87,7 +87,6 @@ class Oviax1
              Calculate the percentile in which is hoped to compress before letting imgCompress
              method to do the work
              */
-            System.out.println(imgResolution);
             double cpPercentBfFormat = 10000 / imgResolution;
             // Format to 2-digit decimal
             String cpPercentBfFormatTemp = String.format("%.2f", cpPercentBfFormat); 
@@ -95,7 +94,7 @@ class Oviax1
 
             // Call the method
             resizedImg = picProc.imgCompress(100, 50);
-            // Redo the process by re-read the image file and re-get the width and height of the image.
+            // Re declare object and reget information
             getImgBasicInfo(resizedImg);
         }
         
@@ -111,16 +110,15 @@ class Oviax1
         {
             for (int j = 0; j < imgHeight; j++)
             {
-                System.out.println(i+" - "+j);
                 int rgb = jpgImg.getRGB(i, j);
                 // Convert each pixel into average gray value
                 jpgImg.setRGB(i, j, picProc.grayRGB(Integer.toHexString(rgb))); 
-                System.out.println(picProc.grayRGB(Integer.toHexString(rgb)));
             }
         }
 
         // Create random number to output to prevent preoccupied.
-        String opFileName2 = "grayImage_temp_" + (int) (Math.random()*2000000+1000000) + "." + fileExtension;
+        String opFileName2 = "grayImage_temp_" + 
+            (int) (Math.random()*2000000+1000000) + "." + fileExtension;
 
         ImageIO.write(jpgImg, fileExtension, new File(oviaxWS + opFileName2));
         
@@ -130,8 +128,8 @@ class Oviax1
 
 
     /**
-     * It will exit by outputting a message including the exit number. This method will override existing exit
-     * method in java.lang.System.exit()
+     * It will exit by outputting a message including the exit number. 
+     * This method will override existing exit method in java.lang.System.exit()
      * @param num
      */
     public static void exit(int num) 
@@ -143,15 +141,16 @@ class Oviax1
     public static String getExtension(String path) 
     {
         /* In macOS, path contains "/" instead of "\" which is in Windows OS.
-        Thus, Oviax1 is expected to only run in macOS and systems that support those variations. 
-        Later compatibility in Windows may be resolved.
+        Thus, Oviax1 is expected to only run in macOS and systems that support those 
+        variations. Later compatibility in Windows may be resolved.
         */
         String fileNametp = path.split("/")[path.split("/").length-1]; // Get filename
         return fileNametp.split("\\.")[1];// Return file extension
     }
 
     /**
-     * It will put image data in object img, and get the width, height and resolution of the image file.
+     * It will put image data in object img, and get the width, height and resolution 
+     * of the image file.
      * @param path
      */
     private static void getImgBasicInfo(String path) 
