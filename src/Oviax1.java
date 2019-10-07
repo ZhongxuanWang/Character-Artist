@@ -28,7 +28,7 @@ class Oviax1
     public static double cpPercent;
 
     private static Scanner scr = new Scanner(System.in);
-    private static int imgWidth, imgHeight, imgResolution, newH, newW;
+    private static int imgWidth, imgHeight, imgResolution;
 
 
     /* This is maximum Resolution in which application can hold. You can adjust but it's hoped not to be 
@@ -94,6 +94,7 @@ class Oviax1
                 x = Math.sqrt(x);
                 imgHeight = (int) (imgHeight * x);
                 imgWidth = (int) (imgWidth * x);
+                System.out.println(imgHeight+" "+imgWidth);
             }
 
             // Call the method
@@ -111,16 +112,20 @@ class Oviax1
         }
         
         // Read each pixel and get each RGB value, proceed each one seperately.
-        for (int i = 0; i < imgWidth; i++)
+        for (int i = 0; i < imgHeight; i++)
         {
-            for (int j = 0; j < imgHeight; j++)
+            O.newline();
+            for (int j = 0; j < imgWidth; j++)
             {
-                int rgb = jpgImg.getRGB(i, j);
+                int rgb = jpgImg.getRGB(j, i);
                 // Convert each pixel into average gray value
-                jpgImg.setRGB(i, j, picProc.grayRGB(Integer.toHexString(rgb))); 
+                //jpgImg.setRGB(i, j, picProc.getGrayValue(Integer.toHexString(rgb))); 
+                int scalePlace = picProc.getScaleChar(picProc.getGrayValue(Integer.toHexString(rgb)));
+                System.out.print(scaleChar.split("")[scalePlace]);
             }
         }
 
+        O.newline();
         // Create random number to output to prevent preoccupied.
         String opFileName2 = "grayImage_temp_" + 
             (int) (Math.random()*2000000+1000000) + "." + fileExtension;
@@ -128,6 +133,7 @@ class Oviax1
         ImageIO.write(jpgImg, fileExtension, new File(oviaxWS + opFileName2));
         exit(0);
     }
+
 
 
     /**
@@ -182,25 +188,6 @@ class Oviax1
         imgResolution = imgWidth * imgHeight;
     }
 
-    /**
-     * Get proper image height
-     * @return Integer
-     */
-    private static int getImageHeight(int height) 
-    {
-
-        return 9;
-    }
-
-    /**
-     * Get proper image Width
-     * @return Integer
-     */
-    private static int getImageWidth(int width) 
-    {
-
-        return 9;
-    }
 }
 
 
@@ -229,7 +216,7 @@ class picProc
      * @param argb
      * @return Integer
      */
-    public static int grayRGB(String argb) 
+    public static int getGrayValue(String argb) 
     {
         // Convert from hexadecimal to decimal and get RGB from the String.
         int r = Integer.parseInt(argb.substring(2,4),16);
@@ -239,7 +226,17 @@ class picProc
         String average = Integer.toHexString((r + g + b) / 3);
         if (average.length() == 1) average = "0" + average; //format to 2 units.
         // Calculate average value for ARGB
-        return Integer.parseInt(average + average + average, 16);
+        return Integer.parseInt(average, 16);
+    }
+
+    /**
+     * Method will return the position+1 of array in integer 
+     */
+    public static int getScaleChar(int grayValue) 
+    {
+        // grayValue will vary from 0 to 255, which is from pure black to pure white.
+        int placement = (int) (grayValue / 3.24686);
+        return placement;
     }
 
     /**
