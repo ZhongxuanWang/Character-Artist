@@ -5,12 +5,11 @@ import java.util.Scanner;
 import java.util.Iterator;
 
 //for photo process
-import javax.imageio.IIOParam;
-import javax.imageio.IIOImage;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
@@ -20,7 +19,7 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 class Oviax1
 {
     // Initialize some objects.
-    public static BufferedImage img;
+    public static BufferedImage img,resizedImg;
     public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
     // scaleChar: 70 characters (except escapes)
     public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
@@ -64,13 +63,9 @@ class Oviax1
             System.out.print(">");
 
             input = scr.nextLine();
-
-            // Get extension for further use
-            fileExtension = getExtension(input);
-
         } while (
-            // This expression means if not exist or if image is not in a supported format, redo.
-            !(new File(input).exists() && picProc.checkIfPic(fileExtension))
+            // This expression means if not exist, redo.
+            !(new File(input).exists())
             ); 
 
         // Close buffer
@@ -79,7 +74,10 @@ class Oviax1
         // Get extension for further use
         fileExtension = getExtension(input);
 
-        /* Treat it as image file. Please see the detail in getImgBasicInfo method for better description */
+        // Check elligibility
+        picProc.checkIfPic(fileExtension);
+
+        /* Treat it as image file and give image data to bufferedimage type img. */
         getImgBasicInfo(input);
 
         // Check if resolution oversized. If it's oversized, compress before continue.
@@ -89,34 +87,44 @@ class Oviax1
              Calculate the percentile in which is hoped to compress before letting imgCompress
              method to do the work
              */
+            System.out.println(imgResolution);
             double cpPercentBfFormat = 10000 / imgResolution;
             // Format to 2-digit decimal
             String cpPercentBfFormatTemp = String.format("%.2f", cpPercentBfFormat); 
             cpPercent = Double.parseDouble(cpPercentBfFormatTemp);
 
             // Call the method
-            picProc.imgCompress();
-
+            resizedImg = picProc.imgCompress(100, 50);
             // Redo the process by re-read the image file and re-get the width and height of the image.
-            getImgBasicInfo(Oviax1.oviaxWS+picProc.opFileName1);
+            getImgBasicInfo(resizedImg);
         }
+        
 
+        // create a blank, RGB, same width and height, and a white background
+        BufferedImage jpgImg = new BufferedImage(img.getWidth(), 
+            img.getHeight(), BufferedImage.TYPE_INT_RGB);
+        jpgImg.createGraphics().drawImage(img, 0, 0, Color.WHITE, null);
+        
+        
         // Read each pixel and get each RGB value, proceed each one seperately.
         for (int i = 0; i < imgWidth; i++)
         {
             for (int j = 0; j < imgHeight; j++)
             {
-                int rgb = img.getRGB(i, j);
+                System.out.println(i+" - "+j);
+                int rgb = jpgImg.getRGB(i, j);
                 // Convert each pixel into average gray value
-                img.setRGB(i, j, picProc.grayRGB(Integer.toHexString(rgb))); 
+                jpgImg.setRGB(i, j, picProc.grayRGB(Integer.toHexString(rgb))); 
+                System.out.println(picProc.grayRGB(Integer.toHexString(rgb)));
             }
         }
 
         // Create random number to output to prevent preoccupied.
-        String opFileName2 = "grayImage_temp_" + (int) (Math.random()*2000000+1000000) + fileExtension;
-        ImageIO.write(img, fileExtension, new File(oviaxWS + opFileName2));
-        // Check the type of input
+        String opFileName2 = "grayImage_temp_" + (int) (Math.random()*2000000+1000000) + "." + fileExtension;
+
+        ImageIO.write(jpgImg, fileExtension, new File(oviaxWS + opFileName2));
         
+        System.out.println(imgResolution);
         exit(0);
     }
 
@@ -128,7 +136,7 @@ class Oviax1
      */
     public static void exit(int num) 
     {
-        O.info("Running finished. Thanks for using. Errorlevel:" + num);
+        O.info("Running finished. Thanks for using. Error:" + num);
         System.exit(0);
     }
 
@@ -160,6 +168,14 @@ class Oviax1
         imgHeight = img.getHeight();
         imgResolution = imgWidth * imgHeight;
     }
+
+    private static void getImgBasicInfo(BufferedImage bufferedImg) 
+    {
+        img = resizedImg;
+        imgWidth = bufferedImg.getWidth();
+        imgHeight = bufferedImg.getHeight();
+        imgResolution = imgWidth * imgHeight;
+    }
 }
 
 
@@ -170,36 +186,15 @@ stored in main method in nominated main class. */
 class picProc
 {
     public static Iterator<ImageWriter> imageWriters;
-    public static String opFileName1;
 
-    // Image compressing
-    public static void imgCompress() throws FileNotFoundException,IOException
-    {
-        // Set output file stream with specified file name
-        opFileName1 = "compressedImage_temp_" + (int) (Math.random()*2000000+1000000) + "." + Oviax1.fileExtension;
-        File compressedImageFile = new File(Oviax1.oviaxWS + opFileName1);
-        OutputStream opStream = new FileOutputStream(compressedImageFile);
-
-        // Set image quality after compressing
-        float imageQuality = (float)Oviax1.cpPercent;
-
-        // Create output stream
-        ImageWriter imageWriter = (ImageWriter) imageWriters.next();
-        ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(opStream);
-        imageWriter.setOutput(imageOutputStream);
-
-        // Set the compress quality metrics
-        ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
-        imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-        imageWriteParam.setCompressionQuality(imageQuality);
-
-        // Create image
-        imageWriter.write(null, new IIOImage(Oviax1.img, null, null), imageWriteParam);
-
-        // Close all streams
-        opStream.close();
-        imageOutputStream.close();
-        imageWriter.dispose();
+    // Image to smaller size
+    public static BufferedImage imgCompress(int height, int width) {
+        Image trimSize = Oviax1.img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(trimSize, 0, 0, null);
+        g2d.dispose();
+        return resized;
     }
 
     /**
@@ -213,19 +208,11 @@ class picProc
         int r = Integer.parseInt(argb.substring(2,4),16);
         int g = Integer.parseInt(argb.substring(4,6),16);
         int b = Integer.parseInt(argb.substring(6,8),16);
-        /* Since red color has more wavelength of all the three colors, and green is the color that has 
-        not only less wavelength then red color but also green is the color that gives more soothing effect 
-        to the eyes. It means that we have to decrease the contribution of red color, and increase the 
-        contribution of the green color, and put blue color contribution in between these two.
-        */
-        String gdGryScale = Long.toHexString(Math.round((r * 0.3 + g * 0.59 + b * 0.11) / 3));
-        // Format to 2 units.
-        if (gdGryScale.length() == 1)
-        {
-            gdGryScale = "0" + gdGryScale;
-        }
-        // Put them back into hexadecimal form.
-        return Integer.parseInt(gdGryScale + gdGryScale + gdGryScale, 16);
+        // EVEN
+        String average = Integer.toHexString((r + g + b) / 3);
+        if (average.length() == 1) average = "0" + average; //format to 2 units.
+        // Calculate average value for ARGB
+        return Integer.parseInt(average + average + average, 16);
     }
 
     /**
@@ -233,15 +220,13 @@ class picProc
      * @param fileExt
      * @return
      */
-    public static boolean checkIfPic(String fileExt) {
+    public static void checkIfPic(String fileExt) {
         imageWriters = ImageIO.getImageWritersByFormatName(fileExt);
         // Check if it has a image writer
         if (!imageWriters.hasNext()) 
         {
             O.errinfo("Sorry, the file you inputted is not supported");
-            return false;
-        } else {
-            return true;
+            Oviax1.exit(1);
         }
     }
 }
