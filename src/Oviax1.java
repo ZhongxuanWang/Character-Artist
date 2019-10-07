@@ -19,15 +19,17 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 class Oviax1
 {
     // Initialize some objects.
-    public static BufferedImage img,resizedImg;
+    public static BufferedImage img, resizedImg, jpgImg;
     public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
     // scaleChar: 70 characters (except escapes)
     public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
-    public static String input,fileExtension;
+    public static String input, fileExtension;
+    public static boolean ifJpg = false;
     public static double cpPercent;
 
     private static Scanner scr = new Scanner(System.in);
     private static int imgWidth, imgHeight, imgResolution;
+
 
     /* This is maximum Resolution in which application can hold. You can adjust but it's hoped not to be 
     too big otherwise your computer memory might not be able to withstand that. Of course, the bigger the
@@ -46,7 +48,8 @@ class Oviax1
 
         // Show UI
         O.info("Welcome to Oviax1.0");
-        O.info("Input 'Oviax1 ?' on console to get more information");O.newline();
+        O.info("Input 'Oviax1 ?' on console to get more information");
+        O.newline();
 
         // Reveive input from Arguments. If argument received, give it to argPro method to proceed.
         if(!(args.length == 0)) 
@@ -61,7 +64,6 @@ class Oviax1
             // Print interface
             O.info("Please input image path below");
             System.out.print(">");
-
             input = scr.nextLine();
         } while (
             // This expression means if not exist, redo.
@@ -98,12 +100,13 @@ class Oviax1
             getImgBasicInfo(resizedImg);
         }
         
-
-        // create a blank, RGB, same width and height, and a white background
-        BufferedImage jpgImg = new BufferedImage(img.getWidth(), 
-            img.getHeight(), BufferedImage.TYPE_INT_RGB);
-        jpgImg.createGraphics().drawImage(img, 0, 0, Color.WHITE, null);
-        
+        // For those who are not jpg or jpeg format.
+        if(!ifJpg)
+        {
+            // Create a blank, RGB, same width and height, and a white background
+            jpgImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
+            jpgImg.createGraphics().drawImage(img, 0, 0, Color.WHITE, null);
+        }
         
         // Read each pixel and get each RGB value, proceed each one seperately.
         for (int i = 0; i < imgWidth; i++)
@@ -145,6 +148,9 @@ class Oviax1
         variations. Later compatibility in Windows may be resolved.
         */
         String fileNametp = path.split("/")[path.split("/").length-1]; // Get filename
+        String fEx=fileNametp.split("\\.")[1];
+        if((fEx.toLowerCase().equals("jpg")&&fEx.toLowerCase().equals("jpeg")))
+            ifJpg = true;
         return fileNametp.split("\\.")[1];// Return file extension
     }
 
@@ -188,6 +194,8 @@ class picProc
 
     // Image to smaller size
     public static BufferedImage imgCompress(int height, int width) {
+        // Put it to origin
+        Oviax1.ifJpg = false;
         Image trimSize = Oviax1.img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = resized.createGraphics();
