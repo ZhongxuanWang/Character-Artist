@@ -87,15 +87,16 @@ class Oviax1
         {
             /*
              Calculate the percentile in which is hoped to compress before letting imgCompress
-             method to do the work
+             method to do the work. It's a logarithem.
              */
-            double cpPercentBfFormat = 10000 / imgResolution;
-            // Format to 2-digit decimal
-            String cpPercentBfFormatTemp = String.format("%.2f", cpPercentBfFormat); 
-            cpPercent = Double.parseDouble(cpPercentBfFormatTemp);
+            {
+                int x = Math.round((float) (10000.0 / imgResolution));
+                
+            }
 
+            double hwRatio = (double) imgHeight / imgWidth;
             // Call the method
-            resizedImg = picProc.imgCompress(100, 50);
+            resizedImg = picProc.imgCompress(getImageHeight(imgHeight), getImageWidth(imgWidth));
             // Re declare object and reget information
             getImgBasicInfo(resizedImg);
         }
@@ -124,8 +125,6 @@ class Oviax1
             (int) (Math.random()*2000000+1000000) + "." + fileExtension;
 
         ImageIO.write(jpgImg, fileExtension, new File(oviaxWS + opFileName2));
-        
-        System.out.println(imgResolution);
         exit(0);
     }
 
@@ -180,6 +179,26 @@ class Oviax1
         imgWidth = bufferedImg.getWidth();
         imgHeight = bufferedImg.getHeight();
         imgResolution = imgWidth * imgHeight;
+    }
+
+    /**
+     * Get proper image height
+     * @return Integer
+     */
+    private static int getImageHeight(int height) 
+    {
+
+        return 9;
+    }
+
+    /**
+     * Get proper image Width
+     * @return Integer
+     */
+    private static int getImageWidth(int width) 
+    {
+
+        return 9;
     }
 }
 
