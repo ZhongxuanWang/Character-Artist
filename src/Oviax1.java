@@ -30,7 +30,6 @@ class Oviax1
     private static Scanner scr = new Scanner(System.in);
     private static int imgWidth, imgHeight, imgResolution;
 
-
     /* This is maximum Resolution in which application can hold. You can adjust but it's hoped not to be 
     too big otherwise your computer memory might not be able to withstand that. Of course, the bigger the
     better. But if resolution from picture that later inputted is larger than this, it will be compressed
