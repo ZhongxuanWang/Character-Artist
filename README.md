@@ -22,43 +22,125 @@ http://paulbourke.net/dataformats/asciiart/<br>
 https://www.mkyong.com/java/convert-png-to-jpeg-image-file-in-java/<br>
 
 <br><br><br>
-                                                                         +.                                                                                                              
-                                                                       "J[                                                                                                               
-                                                                     _Z@| ri                                                                                                             
-                                                                 ,1L8$$v jI                                                                                                              
-                                                               _8$$$$$w [+                                                                                                               
-                                                                q$$$$8`^r                                                                                                                
-                                                                <$$$$\ X                                                                                                                 
-                     ,}rzYv/>           :??????????~             8$$* (~ ??????????I              .??????????                I???????????.     ;?????????'                               
-                   |o$$$$$$$$8u  `       C$$$$$$$$WI             W$${'Y  /$$$$$$$$h l              J$$$$$$$$J f:              Y$$$$$$$$$u ]     k$$$$$$&[                 <##U ^         
-                 lo$$$ox}?(LB$$8}"]       j$$$$$$W: z            B$* X`   [B$$$$$a.j-               C$$$$$$w |)                -&$$$$$@| ([      o$$$$L .vi               k$$Z j         
-                ]%$$%(   ^' "b$$$\ \       )$$$$8I zl           I$$|"c     ?$$$$#`/]                 @$$$$$^_r                  'm$$$$0 )-       "%$W} 1u          i!    U$$$Z j         
-               +@$$%< IYn(tvn"p$$$[`\       h$$$a )?            |$& X'     '$$$$Y`n                 ]$$$$$${|l                    #$$$@!]}       _$W"Icl          ^@M  "O$$$$Z j         
-              .&$$$| ]c      +;B$$8^<?      t$$$$I^x            Z$x'z      '$$$$Y"/                 Z$#$$$$p c                    ?$$$$b Y      "8@<"u             #@Lp@8o$$$Z j         
-              Q$$$# Iz         z$$$Z n      `@$$$u U            B%'x"      '$$$$Y"/                `@@iB$$$$"z                     O$$$$\'z     h$/ Y              lfUc} c$$$Z j         
-             l$$$$j Y          I$$$$<^(      p$$$# ]~          [$J Y       '$$$$Y"/                r$w M$$$$r>1                    ^B$$$8.)+   O$L z.               f-I~xo$$$Z j         
-             Y$$$$: c           *$$$0 X      ($$$$i v          0$i__       '$$$$Y"/                a$}iq$$$$* U                     x$$$$U Y  j$o )<                 ![+ c$$$Z j         
-             &$$$# {<           O$$$B );     .%$$$X c          Bh c        '$$$$Y"/               i$8 z^#$$$$~t"                     o$$$$<,t+@&:lt                      c$$$Z j         
-            !$$$$O X            v$$$$?'j      Q$$$& ~-        |$t`t        '$$$$Y"/            t  X$X J r$$$$Q'j                     <@$$$* j8@+ z                       c$$$Z j         
-            t$$$$v L            |$$$$v U      +$$$$] z        k@.t^        '$$$$Y"/           i"Z>&$I{_ ^@$$$B`Y ,{                   X$$$$Yk$/ Y                        c$$$Z j         
-            L$$$$| C            ]$$$$w Y       W$$$Z u       ;$Z z         '$$$$Y"/          "@/ p$k L   Z$$$$/[x8b r                  M$$$$$L xI                        c$$$Z j         
-            p$$$$- X            ~$$$$* x       z$$$B.i]      u$]~_         '$$$$Y"/          z$$up$(^v   [$$$$oY$$$,v                  1$$$$% -1                         c$$$Z j         
-            a$$$$>.u            i$$$$% \"      i$$$$( z      && v          '$$$$Y"/         "@$$$$% rI    8$$$$$$$$X>-                  q$$$$[:u                         c$$$Z j         
-            o$$$$l"r            !$$$$@ 1;       *$$$d j     [$c f          '$$$$Y"/         <U#$$$* /(    X$$$$$$8od.v                  I$$$$W f>                        c$$$Z j         
-            o$$$$l,r            !$$$$@ 1;       n$$$$^:)    q$;(^          '$$$$Y"/            |$$$p j_   >$$$$$-    +>                 c$$$$$z C                        c$$$Z j         
-            h$$$$!,j            >$$$$B ),       ;$$$$t X   "@k c           '$$$$Y"/            +$$$$0 z^  m$$$$$[]XYYJO                [$W8$$$@l>\                       c$$$Z j         
-            w$$$$~`n            -$$$$W /.        a$$$k /"  j$|:{           '$$$$Y"/            U$UO$$f X O$$$$$$Z"j                   :8@>j$$$$d X                       c$$$Z j         
-            c$$$${ X            ($$$$d n         j$$$$,.f  o% r            '$$$$Y"/            &$i?M$@i!a$$#$$$$@'J                   o$\'Uw$$$$t z                      c$$$Z j         
-            ]$$$$r Q            u$$$$Y z         "$$$$x c >$Y u            '$$$$Y"/           1$# Y.h$#X$$b k$$$$/]_                 q$J U "%$$$%^(<                     c$$$Z j         
-            .@$$$L w            O$$$$} c          d$$$* -iU$l]!            '$$$$Y"/           d$c.r ,%$$$b 1c$$$$h Y                z$b n:  f$$$$O J                     c$$$Z j         
-             q$$$a C.           #$$$$`l{          \$$$$! c8h X             '$$$$Y"/          I$$<{I  \$$#'_+ 8$$$$ln               [$W^-1    *$$$$+it                    c$$$Z j         
-             1$$$@^)-          I$$$$w n.          '%$$$c U$/^/             '$$$$Y"/          J$& c    qBl:)  z$$$$z:|             ,%@>^v     _$$$$o v"                   c$$$Z j         
-              #$$$f Y          c$$$$~ J            O$$$W wB.r              '$$$$Y"/         "@$m z    ,/ r   I$$$$8 U             a$| U       Q$$$$r Y                   c$$$Z j         
-              ~$$$M u`        .%$$$Q fi            -$$$$v$Q v              '$$$$Y"/         Z$$Y x      x     q$$$$})I           m$U X`       '8$$$B:-[                  c$$$Z j         
-               j$$$r n        U$$$W.:U              &$$$$$_?i              '$$$$Y"/        [$$$U r            {$$$$q n          z$b ti         ($$$$q Y                  c$$$Z j         
-                z$$@1:}      /$$$@+ m.              Y$$$$W v               '$$$$Y"/       ;8$$$h z             %$$$@'z         r$$tIj           p$$$$("c                 c$$$Z j         
-                 j@$$J_'   `Y$$$%_ L<               J$$$$b.X               u$$$$b;X      lW$$$$$[X            +%$$$$m-r      Ik$$$B~Y          ;M$$$$@rlc                w$$$a^Y         
-                  lw$$$#pqo$$$$O" Q_              'q$$$$$$pr{             m$$$$$$ort    1%$$$$$$8}f          j@$$$$$$#\c    z@$$$$$M~v        >8$$$$$$$w+Y             "k$$$$$ot/        
-                    !XaB$$$%hcI _wl              .QppppppppCc-           JppppppppZv1  xpppppppppLri        tpppppppppw1z`,0ppppppppc-|      ^mppppppppp0+Y           "ZpppppppZu}       
-                    <!  ^,`   }Zn                            zI                     f]             c.                    c:           t>                  .U                     r_      
-                     .(uYvvJOJ)                   ;YUUUUUUUUUCJ          `YUUUUUUUUUJZ' XUUUUUUUUUULu        +UUUUUUUUUUUCOUUUUUUUUUUUJJ      jUUUUUUUUUUUUQu          XUUUUUUUUUJ0      
+
+               ,:
+               ,?}'
+             =!J |
+           ,*-. ?&
+           WP) Y9P
+          YP   ,W'
+         ,W)  ,WW.'
+         WW) ,WWW)
+         7W),WWWW'
+         `WWWWWW'
+          9---W)
+      ,,--WPL=YXW===
+     (P),CY:,I/X'F9P
+     WUT===---/===9)
+     -HP+----Y(C=9W)
+      '9Y3'-'-OWPT-
+       'WWLUIECW
+        (:7L7C7'
+       ,P--=YWFL
+       Y-=:9)UW:L
+       3-'9=WU/.7
+      ,WP9HTFUW'()
+       9W7W))UF 9)
+       7WYW))PW W
+        7WH)),WC)
+         7L--/XY)
+         9+-,KY7)
+         W9-Y3+7)
+         W'=9WI7)
+        ,W  '-YY)
+         W    ::W                ,
+        ,T     :X)              ()
+        ()     '9W  'L.         ()         ,-
+        (C     =:9   '9L        ()        ,T
+        ()    ,,-7)    7WL      WW      ,F'
+        ()    , T9)     '9WL    --    ,YF
+        ()    '-/(W       -==+PE9P7===O)          -,
+        'W, ,  T+/WX=L-. ,WP+()+3L3,),=WL  --==-T-
+         7)    -,YW '-=9WPL+PT-- ':--L/=9WP=-'
+         'W-,.-,++W.   WWHP    ,,-/  .9CP3)
+          W  --':-9:7=9W-T ,-=FT''=++,(TFYW=====---,
+          W    .-='/.  7W-,WE=--,,=-:9H=9W""~~~~~~'
+          ()   ':'/Y,  (L-9PXWWW,YWWX,(U3C        
+          9' ,,::/Y,/,  7LW+'-'7)()-'(MWW)
+       ,,-/:',T,'-:',) ,3WWW, .Y=W'.(+WPW)
+      ,F=T:9/:':C' /W),WMW9PO),m-+--9+WYW)
+     ,3Y:/--.'-,',F=FHWWE/LMWU.'--X3CWW(WL
+     YP:/:' -/'-Y-,W-T)9X,WCWWWX=WWWW39/OW
+     7WF:=,/:-:P:,P(-'))PWWHYT79WWWHPW0W7W'
+     'WU7C-:=-=-C9'WF,):):H7L   '7CI7WEXP'
+      7L-,Y==3F:::,=,:-/,'P=.,  ':79UWEW)
+      'WEW9P=/,)/ -:,P: / L7:'-=,-+YMWWW)
+       'W)+=T,T()/-,F,,,),)  ',.-+(L=W9WW.
+        '+C/:I'''',P:''/ '  ''9.  == '-'7-
+         (W-+'. ,YF )/:'      ')-. ,-:FX-L
+         'WM/',/CP /,:'    ..:)  ,T','/: 'W,
+          W--,YXT /'')   ,P=-/',P'  '(:'  'W,
+          (WEXWF Y' ,)  ,/'-,,YT    ///  ,,'W.
+         ,WWWWT,,' .Y:/.',,-,=',- ,YY(). +3,W)
+         WFXF:,'P ,,)/  ,',P',,- ,FI,))) I3'W)
+         -HP,X'',/ '  ,/,/' ,/',,P3'I(:) W) W)       /=+=,
+          9WY).,/'  ,/'-'   ,-=9-/'Y'((',W) PW      /'  '-==L,
+          'WY,'    ,/,P   ,YP- C/',',)( (W'(WW.    /'       '7==L.
+           ()'    /:/' ,,WT'  3F',' /)W (W (K()   /'   .        '7X
+           ()   ,P,P',)T=:- ,WP'.' ,P,T (W (-9L ,Y)' ,X//, .    Y:P
+          ,F   ,F,',--,/:' ,+P' '  Y):) (E' YHWLWT)-''-9/',-' ,,,WF
+         ,P.,P,)-3-- ,-,' ,WF.    ,Y (' (L-WCTWEW30V-/',:'=/P+E7WF
+         W- Y,P/C)',Y',' ,WT      Y) :  (P-=Y:UW9CX)3-=- ,W:9/PXXW.
+        /T./:P/)' ,P',' YW-      ,P'',  9M).())WTHW3,C'  9C9='W3WW)
+       ,EPOP/YR. /F ,',/W)       /'  :  (W)'W979WO0=WC:,..9LPXWWP-
+       3H:WL-R' /' /' /WF       ,) ,,   (U'(HW=WWXO:--:,:'(W=WWF'
+      ,WLWWWI:,F' /-'3WF '      Y  ) ,  (),T(0)WO9YPL.' ',WP=='
+        --YWX-F  Y',WWT' :':   (' ()7)  (MT: WP)3C)-''  3C'
+            WF  /' YW--,  ,    Y  W (),YM+C' 9+I3UV:' .YP'
+           (T  3',H3-.. ,..  .,) ,) ()F-=T-. (0,9L,'  /P'
+           ,W Y' 33P  .  /    Y  Y) (Y' R,:  7)Y+-),,=W'
+           /',F.,W)     ,,.' ,) ,W) +)  3),  (WT9XW=3P'
+          /F:T.:WF.  '..:'   :' (W. 7) '=),  'WT7WWP '
+         ,P,F''WF  . , :-': ,)  YC../) 'HY.   WP0WC'
+        ,P:9::YP   '  '('   :   W) .W)  +3)   9TLWC
+        (P/Y(,P' ... '':, .,)  ,W) :3)  X+.   WFUW)
+        'WW),I','  .., =  ':  ,O+' ,W'  )9,   99U()
+         7W,='.,' ' :.'. . '  ,W)  =3   )+.  ,OH:O)
+         'L,F,: '. :C::' '    (W)  9W   7+    'H,:L
+          7W'++: .. ,':' '    YT   Y).  :-.    XU:W
+          (T':,''','','       3'  ,-)   ,-'    77XW
+          (W),J.-:/-:))'      P   )9)   :,Y  .  T,9)
+          (WUI:TY:,,,:,      /' ,- W)   YC:     9/7)
+          (U),-:-''.'=      (:,F' (W)   ,Y.     3=:L
+           (),:::',)/'    ,,F9W'  YW)   /L.    .7=9W,
+           (LUL-L.T-'.' ,WXM(W)   3W)   'U.     ,)-W
+           3X=((:,' ' ,WMWF-(+'   WW'   '=,'    ,ICW
+          ,T)=)K-=':-WPIWP':,:   ,WW    +/, ..' :+,9)
+          Y):LX:.:=EHR,PU:'/''   (WW    I:=, .,-9CO)
+          ()-+,,HPT+C:W9= ,)'    /WT'   T.: --PCXCKF'
+          7LIHTP+OY3LW'3:,L..    WW)    ,,(W('MX'WT'
+           7T,I-:XF:WF(: ,)    ':WWT  ,=PT:T(AY) W
+           (PWW)W3=/P,P  ,     ,'WW),YP,WH,)Y)TWX9)
+           3)OWRE)-YUY'... '  ..(WWXWW)9W+C)WUP9P3'
+          ,WTHEF:LOP:W ' ,.   ,:(WPY(W,(P::)W(P3+)
+          (P3WF/:WM:() :.:      (WHY)39HC'U()(W,W)
+          (LW9/CWY-,E'  ,'     'YPL/T:WP:,(()3Y W)
+          (TLUEEP=7W+.,:)       -P-:,PWT.:Y()() W+
+          (EP/30-OAT .'3  . . . .C,P):WP Y)()3C:PW
+          (PWMH:FXW'',-(, '   ',97WMU(7: )LW W .WW
+          (WOWF-7EP)-X3., , ,,WP+WYY+YW' )WW 3 .W7)
+           9W93UOY):.)/.- :YWCWU-EIMC)E (-WP + ,WW'
+           (XWYUWY.,:'.,,YE3-7WE3WXV(UT,( W),T =P'
+           (PT709),)C:/FY9)T.(W9YHL/Y(C T,W)') W.
+           (+UTYH-:-=C-(P(-).WWF3:))3(U))(W)() P'
+           3P7Y3)/'XP:)WP(J. WXCWKV:)()))(W'U)()
+           7OLY3',H9),YW'F ),W)CT)/Y((-))'W,U)()
+           7F=T-/T(=)A3C,)3)(WA()=)TY(CY'YWY(::)
+           W9C=()L/3,9'/('Y,YWU(XE/))()E.YT)3:)L
+           W=P:F:(,)),,'F'/:WP+3OY':)(R+ /T,T')W
+        -=WRHX9C9-W'=,),)'A,A)XW779EXWK+.()3W),(,
+      ,W=-'L,,XX)/)+'I 3)39I(UHE-+LX39TWH/LUP)(H)
+     ,P:. ,-90/,(F0'/:,W //'(YOC':--YY3/IRW'9LT')
+     3W=:Y:-F.)Y:/''Y /O.=:,WL9) ,. ,.79=9PL'9(-W,
+     WWWWWWWPT:,::/'-WH=9',P=-W3XU3-,W=YL-O3-O)X9WL
+      -7T--''=9W==W=9WWHW====''P======='---=T==F==9)
