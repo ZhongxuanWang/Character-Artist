@@ -14,16 +14,20 @@ import java.awt.image.BufferedImage;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
+import jdk.jfr.events.FileWriteEvent;
+
 
 
 class Oviax1
 {
     // Initialize some objects.
     public static BufferedImage img, resizedImg, jpgImg;
+    public static BufferedWriter bw;
+    public static FileReader fr;
     public static String oviaxWS = System.getProperty("user.dir")+"/Oviax1WorkSpace/";
     // scaleChar: 70 characters (except escapes)
     public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.          ";
-    public static String input, fileExtension;
+    public static String input, fileExtension, fileName;
     public static boolean ifJpg = false;
     public static double cpPercent;
 
@@ -111,9 +115,14 @@ class Oviax1
             jpgImg.createGraphics().drawImage(img, 0, 0, Color.WHITE, null);
         }
         
+        // Set file writer
+        String opFileName1 = fileName + "_PLAIN_STRING_CONTENT" + (int) (Math.random() * 2000000 + 1000000) + ".txt";
+        bw = new BufferedWriter(new FileWriter(opFileName1));
+
         // Read each pixel and get each RGB value, proceed each one seperately.
         for (int i = 0; i < imgHeight; i++)
         {
+            bw.newLine();
             O.newline();
             for (int j = 0; j < imgWidth; j++)
             {
@@ -121,11 +130,19 @@ class Oviax1
                 // Convert each pixel into average gray value
                 //jpgImg.setRGB(i, j, picProc.getGrayValue(Integer.toHexString(rgb))); 
                 int scalePlace = picProc.getScaleChar(picProc.getGrayValue(Integer.toHexString(rgb)));
+                // Output to file and console
+                bw.write(scaleChar.split("")[scalePlace]);
                 System.out.print(scaleChar.split("")[scalePlace]);
             }
         }
 
+        // Close buffer & end
+        bw.close(); // Courier New is the most accurate display font discovered so far.
         O.newline();
+
+        // Lauch File
+        Desktop.getDesktop().open(new File(opFileName1));
+
         // Create random number to output to prevent preoccupied.
         exit(0);
     }
@@ -149,11 +166,11 @@ class Oviax1
         Thus, Oviax1 is expected to only run in macOS and systems that support those 
         variations. Later compatibility in Windows may be resolved.
         */
-        String fileNametp = path.split("/")[path.split("/").length - 1]; // Get filename
-        String fEx=fileNametp.split("\\.")[1];
+        fileName = path.split("/")[path.split("/").length - 1]; // Get filename
+        String fEx=fileName.split("\\.")[1];
         if((fEx.toLowerCase().equals("jpg") && fEx.toLowerCase().equals("jpeg")))
             ifJpg = true;
-        return fileNametp.split("\\.")[1];// Return file extension
+        return fileName.split("\\.")[1];// Return file extension
     }
 
     /**
