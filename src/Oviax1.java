@@ -66,6 +66,7 @@ class Oviax1 extends JFrame implements ActionListener
         // Get listening event of elements
         //startBtn2.addActionListener(this);
         startBtn.addActionListener(this);
+
         
         // HELPs
         startBtn.setToolTipText("Start to convert picture to string");
@@ -86,11 +87,11 @@ class Oviax1 extends JFrame implements ActionListener
         //pnlObj.add(startBtn2);
 
         pack();
-        setSize(700, 700);
+        setSize(800, 800);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         add(pnlObj);
-        setVisible(true);
         setResizable(false);
+        setVisible(true);
     }
     /**
      * Action Performed
@@ -118,7 +119,7 @@ class Oviax1 extends JFrame implements ActionListener
         {
             oviaxWSObj.mkdir();
         }
-        
+
         // Show UI
         O.info("Welcome to Oviax1.0");
         O.info("Input 'Oviax1 ?' on console to get more information");
@@ -137,8 +138,7 @@ class Oviax1 extends JFrame implements ActionListener
             // If no argument reveived, Oviax treats it as directly starting the file. Thus, create window
             Oviax1 gui = new Oviax1();
         }
-        
-        
+
         // Receive input from console
         do {
             // Print interface
@@ -171,7 +171,6 @@ class Oviax1 extends JFrame implements ActionListener
 
         /* Treat it as image file and give image data to bufferedimage type img. */
         getImgBasicInfo(input);
-
         // Check if resolution oversized. If it's oversized, compress before continue.
         if(imgResolution > maxResolution)
         {
@@ -207,7 +206,7 @@ class Oviax1 extends JFrame implements ActionListener
             bw = new BufferedWriter(new FileWriter(opFileName1));
         } catch (IOException e) {
             O.errinfo("Sorry, Oviax1 unables to create a buffer to output file");
-            exit(1);
+            return;
         }
         // Read each pixel and get each RGB value, proceed each one seperately.
         for (int i = 0; i < imgHeight; i++)
@@ -240,7 +239,7 @@ class Oviax1 extends JFrame implements ActionListener
         {
             bw.newLine();
             O.newline();
-
+            txtOutput.append("\n");
             return;
         }
         bw.write(str);
@@ -292,7 +291,7 @@ class Oviax1 extends JFrame implements ActionListener
             img = ImageIO.read(new File(path));
         } catch (IOException e) {
             O.errinfo("Sorry, read file failed");
-            exit(0);
+            return;
         }
         imgWidth = img.getWidth();
         imgHeight = img.getHeight();
