@@ -24,9 +24,6 @@ import java.awt.font.*;
 
 class Oviax1 extends JFrame implements ActionListener
 {
-    /**
-     *
-     */
     private static final long serialVersionUID = 13414319801945L;
     // Initialize some objects.
     public static JPanel pnlObj = new JPanel();
@@ -35,7 +32,12 @@ class Oviax1 extends JFrame implements ActionListener
     public static FileReader fr;
 
     public static String oviaxWS = System.getProperty("user.dir") + "/Oviax1WorkSpace/";
-    public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.          ";//70+
+    public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.                 ";//70+
+    public static String[] helpTips = {
+        "Start to convert picture to string",
+        "It's where the output will be",
+        "Input your file path here",
+    };
     public static String input, fileExtension, fileName;
     public static boolean ifJpg = false;
     public static double cpPercent;
@@ -49,10 +51,12 @@ class Oviax1 extends JFrame implements ActionListener
     better. But if resolution from picture that later inputted is larger than this, it will be compressed
     to this.   NOTES : it must be a decimal, which is expected to adhere a .0 at last, but not required.*/
     private static double maxResolution = 10000.0;
+    public static boolean isOutputToTxt = false;
 
     // Elements in the window
     public static JButton startBtn = new JButton("start");
     public static JButton startBtn2 = new JButton("start2");
+    public static JCheckBox chk1 = new JCheckBox("To TXT File");
     public static JTextField txt1 = new JTextField(38);
     public static JTextArea txtOutput = new JTextArea(100, 200);
     public static JLabel filePathLable = new JLabel("Photo Path");
@@ -65,12 +69,26 @@ class Oviax1 extends JFrame implements ActionListener
 
         // Get listening event of elements
         //startBtn2.addActionListener(this);
-        startBtn.addActionListener(this);
+        startBtn.addActionListener(new ActionListener(){
+            public void actionPerformed (ActionEvent evt) {
+                try{
+                    process(txt1.getText());
+                } catch(IOException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
+        chk1.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent evt) {
+                isOutputToTxt = !isOutputToTxt;
+            }
+        });
         
         // HELPs
-        startBtn.setToolTipText("Start to convert picture to string");
-        txtOutput.setToolTipText("It's where the output will be");
+        startBtn.setToolTipText(helpTips[0]);
+        txtOutput.setToolTipText(helpTips[1]);
         txt1.setToolTipText("Input your file path here");
 
         txtOutput.setEditable(false);
@@ -83,6 +101,7 @@ class Oviax1 extends JFrame implements ActionListener
         pnlObj.add(filePathLable);
         pnlObj.add(txt1);
         pnlObj.add(startBtn);
+        pnlObj.add(chk1);
         pnlObj.add(txtOutput);
         //pnlObj.add(startBtn2);
 
@@ -93,32 +112,13 @@ class Oviax1 extends JFrame implements ActionListener
         setResizable(false);
         setVisible(true);
     }
-    /**
-     * Action Performed
-     * @param ActionEvent event
-     */
-    public void actionPerformed(ActionEvent event)
-    {
-        if(event.getSource() == startBtn)
-        {
-            try{
-                process(txt1.getText());
-            } catch(IOException e)
-            {
-                throw new RuntimeException(e);
-            }
-
-        }
-    }
 
     public static void main (String[] args) throws IOException,Exception
     {
         // Create work space if needed
         File oviaxWSObj = new File(oviaxWS);
         if(!oviaxWSObj.exists())
-        {
             oviaxWSObj.mkdir();
-        }
 
         // Show UI
         O.info("Welcome to Oviax1.0");
@@ -201,12 +201,16 @@ class Oviax1 extends JFrame implements ActionListener
         }
         
         // Set file writer
-        String opFileName1 = fileName + "_PLAIN_STRING_CONTENT" + (int) (Math.random() * 2000000 + 1000000) + ".txt";
-        try {
-            bw = new BufferedWriter(new FileWriter(opFileName1));
-        } catch (IOException e) {
-            O.errinfo("Sorry, Oviax1 unables to create a buffer to output file");
-            return;
+        String opFileName1 = "";
+        if(isOutputToTxt)
+        {
+            opFileName1 = fileName + "_PLAIN_STRING_CONTENT" + (int) (Math.random() * 2000000 + 1000000) + ".txt";
+            try {
+                bw = new BufferedWriter(new FileWriter(opFileName1));
+            } catch (IOException e) {
+                O.errinfo("Sorry, Oviax1 unables to create a buffer to output file");
+                return;
+            }
         }
         // Read each pixel and get each RGB value, proceed each one seperately.
         for (int i = 0; i < imgHeight; i++)
@@ -223,11 +227,13 @@ class Oviax1 extends JFrame implements ActionListener
         }
 
         // Close buffer & end
-        bw.close(); // Courier New is the most accurate display font discovered so far.
+        if(isOutputToTxt)
+            bw.close(); // Courier New is the most accurate display font discovered so far.
         O.newline();
 
         // Lauch File
-        Desktop.getDesktop().open(new File(opFileName1));
+        if(isOutputToTxt)
+            Desktop.getDesktop().open(new File(opFileName1));
     }
 
     /**
@@ -237,12 +243,17 @@ class Oviax1 extends JFrame implements ActionListener
     {
         if(str.length() == 0)
         {
-            bw.newLine();
+            if(isOutputToTxt)
+                // File Output - Controllable
+                bw.newLine();
+            // Console Output - Uncontrollable
             O.newline();
+            // GUI output - Uncontrollable
             txtOutput.append("\n");
             return;
         }
-        bw.write(str);
+        if(isOutputToTxt)
+            bw.write(str);
         System.out.print(str);
         txtOutput.append(str);
         return;
@@ -356,7 +367,7 @@ class picProc
     public static int getScaleChar(int grayValue) 
     {
         // grayValue will vary from 0 to 255, which is from pure black to pure white.
-        int placement = (int) (grayValue / 3.24686);
+        int placement = Math.round((float) (grayValue / 3.24686));
         return placement;
     }
 
@@ -406,6 +417,7 @@ class O implements ConsoleColors
     public static void errinfo(String info)
     {
         System.out.println(RED + "+ERROR+ - " + info + "." + RESET);
+        JOptionPane.showMessageDialog(null, info, "An Error Occurs", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
