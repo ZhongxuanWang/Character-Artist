@@ -55,7 +55,7 @@ class Oviax1 extends JFrame implements ActionListener
 
     // Elements in the window
     public static JButton startBtn = new JButton("start");
-    public static JButton startBtn2 = new JButton("start2");
+    public static JButton resetBtn = new JButton("Reset");
     public static JCheckBox chk1 = new JCheckBox("To TXT File");
     public static JTextField txt1 = new JTextField(38);
     public static JTextArea txtOutput = new JTextArea(100, 200);
@@ -70,22 +70,47 @@ class Oviax1 extends JFrame implements ActionListener
         // Get listening event of elements
         //startBtn2.addActionListener(this);
         startBtn.addActionListener(new ActionListener(){
-            public void actionPerformed (ActionEvent evt) {
+            public void actionPerformed (ActionEvent evt) 
+            {
                 try{
                     process(txt1.getText());
-                } catch(IOException e)
-                {
-                    throw new RuntimeException(e);
-                }
+                } catch(IOException e){}
+                return;
+            }
+        });
+
+        resetBtn.addActionListener(new ActionListener(){
+            public void actionPerformed (ActionEvent evt)
+            {
+                txt1.setText("");
+                txtOutput.setText("");
+                return;
             }
         });
 
         chk1.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent evt) {
                 isOutputToTxt = !isOutputToTxt;
+                return;
             }
         });
         
+        // Hit Enter to process
+        txt1.addKeyListener(new KeyListener(){
+            public void keyPressed (KeyEvent evt) {}
+            public void keyTyped (KeyEvent evt) {}
+            public void keyReleased (KeyEvent evt)
+            {
+                if(evt.getKeyCode() == 10)
+                {
+                    try {
+                        process(txt1.getText());
+                    } catch (IOException e) {}
+                }
+                return;
+            }
+        });
+
         // HELPs
         startBtn.setToolTipText(helpTips[0]);
         txtOutput.setToolTipText(helpTips[1]);
@@ -97,13 +122,13 @@ class Oviax1 extends JFrame implements ActionListener
         txtOutput.setWrapStyleWord(true);
         txt1.setDragEnabled(true);
         
-        // Put those parts in the Window
+        // Put those parts in the Window / Must be sequence!
         pnlObj.add(filePathLable);
         pnlObj.add(txt1);
         pnlObj.add(startBtn);
+        pnlObj.add(resetBtn);
         pnlObj.add(chk1);
         pnlObj.add(txtOutput);
-        //pnlObj.add(startBtn2);
 
         pack();
         setSize(800, 800);
@@ -113,7 +138,7 @@ class Oviax1 extends JFrame implements ActionListener
         setVisible(true);
     }
 
-    public static void main (String[] args) throws IOException,Exception
+    public static void main (String[] args) throws IOException
     {
         // Create work space if needed
         File oviaxWSObj = new File(oviaxWS);
@@ -167,7 +192,7 @@ class Oviax1 extends JFrame implements ActionListener
     public static void process(String input) throws IOException
     {
         // Check elligibility and get filename
-        picProc.checkIfPic(getExtension(input));
+        if(picProc.checkIfPic(getExtension(input)) == false) return;
 
         /* Treat it as image file and give image data to bufferedimage type img. */
         getImgBasicInfo(input);
@@ -376,16 +401,16 @@ class picProc
      * @param fileExt
      * @return
      */
-    public static void checkIfPic(String fileExt) throws IOException
+    public static boolean checkIfPic(String fileExt) throws IOException
     {
         imageWriters = ImageIO.getImageWritersByFormatName(fileExt);
         // Check if it has a image writer
         if (!imageWriters.hasNext()) 
         {
             O.errinfo("Sorry, the file you inputted is not supported");
-            Oviax1.exit(1);
+            return false;
         }
-        return;
+        return true;
     }
 }
 
