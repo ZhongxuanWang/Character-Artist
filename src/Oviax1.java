@@ -25,6 +25,7 @@ import java.awt.font.*;
 class Oviax1 extends JFrame implements ActionListener
 {
     private static final long serialVersionUID = 13414319801945L;
+    //private static final String Version = "0.1.1.1"; // Inner Version   Major.Minor.[Maintanence.[Build]]
     // Initialize some objects.
     public static JPanel pnlObj = new JPanel();
     public static BufferedImage img, resizedImg, jpgImg;
@@ -36,8 +37,15 @@ class Oviax1 extends JFrame implements ActionListener
     public static String[] helpTips = {
         "Start to convert picture to string",
         "It's where the output will be",
-        "Input your file path here",
+        "Input your file path here <required>",
+        "Output to a txt file also. You don't need to specify the txt name <optional>",
+        "Select a converting mode to continue. <required>"
     };
+    public static String[] modes = {
+        "Photo --> StrGraph",
+        "Characters --> StrGraph"
+    };
+
     public static String input, fileExtension, fileName;
     public static boolean ifJpg = false;
     public static double cpPercent;
@@ -53,13 +61,14 @@ class Oviax1 extends JFrame implements ActionListener
     public static boolean isOutputToTxt = false;
 
     // Elements in the window
-    public static JButton startBtn = new JButton("start");
-    public static JButton resetBtn = new JButton("Reset");
+    public static JButton startBtn = new JButton("Start");
+    public static JButton resetBtn = new JButton("Reset All");
     public static JCheckBox chk1 = new JCheckBox("To TXT File");
     public static JTextField txt1 = new JTextField(38);
     public static JTextArea txtOutput = new JTextArea(100, 200);
-    public static JLabel filePathLable = new JLabel("Photo Path");
+    public static JLabel inputLable = new JLabel("Photo Path");
     public static Font txtOutputFont = new Font("Courier New", Font.PLAIN, 6);
+    public static JComboBox<String> modeBox = new JComboBox<String>(modes);
 
     // Constructor for the Window
     public Oviax1()
@@ -71,6 +80,11 @@ class Oviax1 extends JFrame implements ActionListener
         startBtn.addActionListener(new ActionListener(){
             public void actionPerformed (ActionEvent evt) 
             {
+                if(modeBox.getSelectedItem().toString().equals(modes[0]))
+                {
+                    //O.errinfo("It is expected to select a mode. Thanks!");
+                    //return;
+                }
                 try{
                     process(txt1.getText());
                 } catch(IOException e){}
@@ -83,6 +97,8 @@ class Oviax1 extends JFrame implements ActionListener
             {
                 txt1.setText("");
                 txtOutput.setText("");
+                chk1.setSelected(false);
+                modeBox.setSelectedItem(modes[0]);
                 return;
             }
         });
@@ -110,10 +126,28 @@ class Oviax1 extends JFrame implements ActionListener
             }
         });
 
+        // Select Mode
+        modeBox.addItemListener(new ItemListener(){
+            public void itemStateChanged(ItemEvent e)
+            {
+                if(e.getStateChange() == ItemEvent.SELECTED)
+                {
+                    if(modeBox.getSelectedItem().toString().equals(modes[0]))
+                        inputLable.setText("Photo Path");
+                        
+                    if(modeBox.getSelectedItem().toString().equals(modes[1]))
+                        inputLable.setText("Characters");
+                }
+                return;
+            }
+        });
+
         // HELPs
         startBtn.setToolTipText(helpTips[0]);
         txtOutput.setToolTipText(helpTips[1]);
-        txt1.setToolTipText("Input your file path here");
+        txt1.setToolTipText(helpTips[2]);
+        chk1.setToolTipText(helpTips[3]);
+        modeBox.setToolTipText(helpTips[4]);
 
         txtOutput.setEditable(false);
         txtOutput.setFont(txtOutputFont);
@@ -122,11 +156,12 @@ class Oviax1 extends JFrame implements ActionListener
         txt1.setDragEnabled(true);
         
         // Put those parts in the Window / Must be sequence!
-        pnlObj.add(filePathLable);
+        pnlObj.add(inputLable);
         pnlObj.add(txt1);
         pnlObj.add(startBtn);
         pnlObj.add(resetBtn);
         pnlObj.add(chk1);
+        pnlObj.add(modeBox);
         pnlObj.add(txtOutput);
 
         pack();
@@ -190,6 +225,11 @@ class Oviax1 extends JFrame implements ActionListener
 
     public static void process(String input) throws IOException
     {
+        if(!new File(input).exists()) 
+        {
+            O.errinfo("Sorry, file you inputted is not exist");
+            return;
+        }
         // Check elligibility and get filename
         if(picProc.checkIfPic(getExtension(input)) == false) return;
 
@@ -230,7 +270,7 @@ class Oviax1 extends JFrame implements ActionListener
         {
             opFileName1 = fileName + "_PLAIN_STRING_CONTENT" + (int) (Math.random() * 2000000 + 1000000) + ".txt";
             try {
-                bw = new BufferedWriter(new FileWriter(opFileName1));
+                bw = new BufferedWriter(new FileWriter(oviaxWS + opFileName1));
             } catch (IOException e) {
                 O.errinfo("Sorry, Oviax1 unables to create a buffer to output file");
                 return;
@@ -425,7 +465,7 @@ class O implements ConsoleColors
             case "?":
                 System.out.println("Oviax - Photo to String. Internal version (0.0.0.1)");
             default:
-                errinfo("Unlisted Arguments. Not proceeded");
+                warninfo("Unlisted Arguments. Not proceeded. Input '?' after filename to get help");
                 break;
         }
         return;
@@ -441,7 +481,7 @@ class O implements ConsoleColors
     public static void errinfo(String info)
     {
         System.out.println(RED + "+ERROR+ - " + info + "." + RESET);
-        JOptionPane.showMessageDialog(null, info, "An Error Occurs", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, info + ".", "An Error Occurs", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
@@ -462,9 +502,9 @@ class O implements ConsoleColors
 
 
 /**
- * No actual use... Just like a database containing useful information...
+ * Some colors for displaying in console
  */
-interface ConsoleColors 
+interface ConsoleColors
 {
     public static final String RESET = "\033[0m";  // Text Reset
     public static final String RED = "\033[0;31m";     // RED
