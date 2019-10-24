@@ -100,7 +100,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
     // Constructor for the Window
     public SharpStrGrapher()
     {
-        super("AccurateStrGrapher 1.0");
+        super("Sharp String Grapher 1.0");
 
         // Get listening event of elements
         //startBtn2.addActionListener(this);
