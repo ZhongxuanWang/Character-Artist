@@ -4,8 +4,7 @@
 **********
 
 
-   Oviax1 is a software created by JAVA, in first version. It's dedicated to convert photo to symbole-based photos and also could convert characters into string-represented image. It will be useful in some situations like when your want to output an image but your software doesn't support it, you could use Oviax to firstly converted the image to String and output it. When you created a black-and-white work but looks like not advanced enough, you could use Oviax to make it look better!
-Oviax1 is a small-sized, open-sourced software. It uses the simple and easy-to-understand code to help people understand how it works. It supports maximumly 20000-pixel resolution by default and could be changed! It also has a wide range of uses.<br>
+   SharpStrGrapher1 is a software created by JAVA, in first version. It could convert photo to string or character to string or camera captured content to string. It has advanced settings in fancy GUI.
 
 
 **************
@@ -16,7 +15,7 @@ Oviax1 is a small-sized, open-sourced software. It uses the simple and easy-to-u
 *************
 **Materials**
 *************
-Oviax is mostly an independent project. However, it's inevitable that certain difficulties may be encountered. Thus, I used some materials online and codes to feed myself. Also, it's a good thing to share what I learnt to you and you will get a chance to learn them as well. Those are some materials that I used in order to finish the project. I made some relatively big modifications in order to fit the need. Some links will not be explained since their path is clear already.<br>
+SharpStrGrapher is mostly an independent project. However, it's inevitable that certain difficulties may be encountered. Thus, I used some materials online and codes to feed myself. Also, it's a good thing to share what I learnt to you and you will get a chance to learn them as well. Those are some materials that I used in order to finish the project. I made some relatively big modifications in order to fit the need. Some links will not be explained since their path is clear already.<br>
 http://paulbourke.net/dataformats/asciiart/<br>
 https://www.mkyong.com/java/convert-png-to-jpeg-image-file-in-java/<br>
 
