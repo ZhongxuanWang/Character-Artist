@@ -21,31 +21,6 @@ import java.awt.event.*;
 import java.awt.font.*;
 
 
-
-
- /*
-
- Problem of the code:
-    3> Add a slider of max resolution
-    4> Add another function.
-    */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- // scaleChar.substring(a - 10, a - 9) + scaleChar.substring(a - scaleDre - 1, a - 1) + scaleChar.substring(a-1, a)
-
 class SharpStrGrapher extends JFrame implements ActionListener
 {
     private static final long serialVersionUID = 13414319801945L;
