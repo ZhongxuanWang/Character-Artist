@@ -22,32 +22,66 @@ import java.awt.font.*;
 
 
 
-class Oviax1 extends JFrame implements ActionListener
+
+ /*
+
+ Problem of the code:
+    3> Add a slider of max resolution
+    4> Add another function.
+    */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // scaleChar.substring(a - 10, a - 9) + scaleChar.substring(a - scaleDre - 1, a - 1) + scaleChar.substring(a-1, a)
+
+class SharpStrGrapher extends JFrame implements ActionListener
 {
     private static final long serialVersionUID = 13414319801945L;
-    //private static final String Version = "0.1.1.1"; // Inner Version   Major.Minor.[Maintanence.[Build]]
+    private static final String Version = "0.1.2.1"; // Inner Version   Major.Minor.[Maintanence.[Build]]
     // Initialize some objects.
     public static JPanel pnlObj = new JPanel();
     public static BufferedImage img, resizedImg, jpgImg;
     public static BufferedWriter bw;
     public static FileReader fr;
 
-    public static String oviaxWS = System.getProperty("user.dir") + "/Oviax1WorkSpace/";
-    public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.                 ";//70+
+    public static String oviaxWS = new File("").getAbsoluteFile().toString() + "/SharpStrGrapherWorkSpace/";
+    public static String cuScaleChar,opFileName1 = "";
     public static String[] helpTips = {
-        "Start to convert picture to string",
-        "It's where the output will be",
-        "Input your file path here <required>",
-        "Output to a txt file also. You don't need to specify the txt name <optional>",
-        "Select a converting mode to continue. <required>"
+        "Start to convert picture to string.",
+        "It's where the output will be.",
+        "Input your file path here. <required>",
+        "Output to a txt file also. You don't need to specify the txt name. <optional>",
+        "Select a converting mode to continue. <required>",
+        "Reset all the field in this window to their default.",
+        "The variaties of characters included in the output text. '5' means keep origin. '0' means only output two variaties. (color and no color) <optional>"
     };
     public static String[] modes = {
         "Photo --> StrGraph",
-        "Characters --> StrGraph"
+        "Characters --> StrGraph",
+        "Camera --> StrGraph"
     };
-
+    public static String[] labels = {
+        "Photo Path:",
+        "Complexity:",
+        "Characters:",
+        "Resolution:"
+    };
+    public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.           ";
     public static String input, fileExtension, fileName;
     public static boolean ifJpg = false;
+    public static boolean spaceTest = true;
     public static double cpPercent;
 
     private static Scanner scr = new Scanner(System.in);
@@ -57,35 +91,48 @@ class Oviax1 extends JFrame implements ActionListener
     /* This is maximum Resolution in which application can hold. You can adjust but it's hoped not to be 
     too big otherwise your computer memory might not be able to withstand that. Of course, the bigger the
     better. But if resolution from picture that later inputted is larger than this, it will be compressed
-    to this.   NOTES : it must be a decimal, which is expected to adhere a .0 at last, but not required.*/
-    private static double maxResolution = 10000.0;
+    to this.   NOTES : it must be a decimal, which is expected to adhere a .0 at last, but not required.
+    <IDE_SET_Support>
+    */
+    public static double maxResolution = 20000.0;
+
+    /* Even though this is recommended to trun on every time and very useful, for some very very special 
+    circumstances, the improvement doesn't work and would probably distort the original photo, or, user 
+    doesn't want to use this function. You can change it to false if you want. <IDE_SET_Support>     */
+    private static boolean isCutUpSpacePart = true;
+
+    /* This could be adjusted in GUI. The default action is false. <IDE_AND_GUI_SET_Support> */
     public static boolean isOutputToTxt = false;
+
 
     // Elements in the window
     public static JButton startBtn = new JButton("Start");
     public static JButton resetBtn = new JButton("Reset All");
     public static JCheckBox chk1 = new JCheckBox("To TXT File");
     public static JTextField txt1 = new JTextField(38);
-    public static JTextArea txtOutput = new JTextArea(100, 200);
-    public static JLabel inputLable = new JLabel("Photo Path");
-    public static Font txtOutputFont = new Font("Courier New", Font.PLAIN, 6);
+    public static JTextArea txtOutput = new JTextArea(120, 265);
+    public static JLabel inputLable = new JLabel(labels[0]);
+    public static JLabel sliderLable = new JLabel(labels[1]);
+    public static JLabel sliderLable2 = new JLabel(labels[3]);
+    public static Font txtOutputFont = new Font("Courier New", Font.PLAIN, 5);
     public static JComboBox<String> modeBox = new JComboBox<String>(modes);
+    public static JSlider wordComplexitySlider = new JSlider(JSlider.HORIZONTAL,0,5,5);
+    public static JSlider resolutionSlider = new JSlider(JSlider.HORIZONTAL,2,(int)maxResolution,(int)maxResolution);
+    public static JScrollPane areaScrollPane = new JScrollPane(txtOutput);
+
+
 
     // Constructor for the Window
-    public Oviax1()
+    public SharpStrGrapher()
     {
-        super("Oviax1");
+        super("AccurateStrGrapher 1.0");
 
         // Get listening event of elements
         //startBtn2.addActionListener(this);
         startBtn.addActionListener(new ActionListener(){
-            public void actionPerformed (ActionEvent evt) 
+            public void actionPerformed (ActionEvent ev) 
             {
-                if(modeBox.getSelectedItem().toString().equals(modes[0]))
-                {
-                    //O.errinfo("It is expected to select a mode. Thanks!");
-                    //return;
-                }
+                txtOutput.setText("");
                 try{
                     process(txt1.getText());
                 } catch(IOException e){}
@@ -94,18 +141,19 @@ class Oviax1 extends JFrame implements ActionListener
         });
 
         resetBtn.addActionListener(new ActionListener(){
-            public void actionPerformed (ActionEvent evt)
+            public void actionPerformed (ActionEvent e)
             {
                 txt1.setText("");
                 txtOutput.setText("");
-                chk1.setSelected(false);
+                chk1.setSelected(isOutputToTxt);
                 modeBox.setSelectedItem(modes[0]);
+                wordComplexitySlider.setValue(10);
                 return;
             }
         });
 
         chk1.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(ActionEvent e) {
                 isOutputToTxt = !isOutputToTxt;
                 return;
             }
@@ -113,11 +161,11 @@ class Oviax1 extends JFrame implements ActionListener
         
         // Hit Enter to process
         txt1.addKeyListener(new KeyListener(){
-            public void keyPressed (KeyEvent evt) {}
-            public void keyTyped (KeyEvent evt) {}
-            public void keyReleased (KeyEvent evt)
+            public void keyPressed (KeyEvent e) {}
+            public void keyTyped (KeyEvent e) {}
+            public void keyReleased (KeyEvent ev)
             {
-                if(evt.getKeyCode() == 10)
+                if(ev.getKeyCode() == 10)
                 {
                     try {
                         process(txt1.getText());
@@ -134,10 +182,10 @@ class Oviax1 extends JFrame implements ActionListener
                 if(e.getStateChange() == ItemEvent.SELECTED)
                 {
                     if(modeBox.getSelectedItem().toString().equals(modes[0]))
-                        inputLable.setText("Photo Path");
-                        
+                        inputLable.setText(labels[0]);
+
                     if(modeBox.getSelectedItem().toString().equals(modes[1]))
-                        inputLable.setText("Characters");
+                        inputLable.setText(labels[2]);
                 }
                 return;
             }
@@ -149,27 +197,48 @@ class Oviax1 extends JFrame implements ActionListener
         txt1.setToolTipText(helpTips[2]);
         chk1.setToolTipText(helpTips[3]);
         modeBox.setToolTipText(helpTips[4]);
+        resetBtn.setToolTipText(helpTips[5]);
+        wordComplexitySlider.setToolTipText(helpTips[6]);
+        sliderLable.setToolTipText(helpTips[6]);
 
-        txtOutput.setEditable(false);
+        txtOutput.setEditable(true);
         txtOutput.setFont(txtOutputFont);
         txtOutput.setLineWrap(true);
         txtOutput.setWrapStyleWord(true);
         txt1.setDragEnabled(true);
-        
+        wordComplexitySlider.setMajorTickSpacing(1);
+        wordComplexitySlider.setSnapToTicks(true);;
+        wordComplexitySlider.setPaintTicks(true);
+        wordComplexitySlider.setPreferredSize(new Dimension(130,30));
+        resolutionSlider.setPreferredSize(new Dimension(130,30));
+        chk1.setSelected(isOutputToTxt);
+        areaScrollPane.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        areaScrollPane.setPreferredSize(new Dimension(800, 800));
+        areaScrollPane.setAutoscrolls(true);
+
         // Put those parts in the Window / Must be sequence!
+
         pnlObj.add(inputLable);
         pnlObj.add(txt1);
         pnlObj.add(startBtn);
         pnlObj.add(resetBtn);
+
+        pnlObj.add(sliderLable2);
+        pnlObj.add(resolutionSlider);
+        pnlObj.add(sliderLable);
+        pnlObj.add(wordComplexitySlider);
         pnlObj.add(chk1);
         pnlObj.add(modeBox);
-        pnlObj.add(txtOutput);
+        pnlObj.add(areaScrollPane);
+        //pnlObj.add(txtOutput);
 
         pack();
-        setSize(800, 800);
+        setSize(800, 830); // Size of Window. Adjustable
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         add(pnlObj);
         setResizable(false);
+        //setAlwaysOnTop(true);
         setVisible(true);
     }
 
@@ -181,22 +250,22 @@ class Oviax1 extends JFrame implements ActionListener
             oviaxWSObj.mkdir();
 
         // Show UI
-        O.info("Welcome to Oviax1.0");
-        O.info("Input 'Oviax1 ?' on console to get more information");
+        O.info("Welcome to SharpStrGrapher.0");
+        O.info("Input 'SharpStrGrapher ?' on console to get more information");
         O.newline();
 
         // Reveive input from Arguments. If argument received, give it to argPro method to proceed.
         if(!(args.length == 0))
         {
             O.info("Argument Received. Console buffer would initiate");
-            /* Since the main theme of Oviax1 is GUI based now, argument processes are 
+            /* Since the main theme of SharpStrGrapher is GUI based now, argument processes are 
                expected to proceed in a differerent space 
              */
             O.argPro(args);
         } else {
             O.warninfo("No Argument received so far. Window would initiate");
             // If no argument reveived, Oviax treats it as directly starting the file. Thus, create window
-            Oviax1 gui = new Oviax1();
+            SharpStrGrapher gui = new SharpStrGrapher();
         }
 
         // Receive input from console
@@ -209,18 +278,10 @@ class Oviax1 extends JFrame implements ActionListener
             // This expression means if not exist, redo.
             !(new File(input).exists())
             ); 
-        
-        
-        // Create elements in the window
-        //buildEleOfWindow();
-        // Create 
-
-
         // Close buffer
         scr.close();
         
         process(input);
-        //exit(0);
     }
 
 
@@ -232,11 +293,12 @@ class Oviax1 extends JFrame implements ActionListener
             return;
         }
         // Check elligibility and get filename
-        if(picProc.checkIfPic(getExtension(input)) == false) return;
+        if(!picProc.checkIfPic(getExtension(input))) return;
 
         /* Treat it as image file and give image data to bufferedimage type img. */
         getImgBasicInfo(input);
         // Check if resolution oversized. If it's oversized, compress before continue.
+        maxResolution = resolutionSlider.getValue();
         if(imgResolution > maxResolution)
         {
             /*
@@ -266,28 +328,40 @@ class Oviax1 extends JFrame implements ActionListener
         }
         
         // Set file writer
-        String opFileName1 = "";
+        
         if(isOutputToTxt)
         {
             opFileName1 = fileName + "_PLAIN_STRING_CONTENT" + (int) (Math.random() * 2000000 + 1000000) + ".txt";
             try {
                 bw = new BufferedWriter(new FileWriter(oviaxWS + opFileName1));
             } catch (IOException e) {
-                O.errinfo("Sorry, Oviax1 unables to create a buffer to output file");
+                O.errinfo("Sorry, SharpStrGrapher unables to create a buffer to output file");
                 return;
             }
         }
+
+        cuScaleChar = getCusScale();
+
+        String speChar = "";
+
         // Read each pixel and get each RGB value, proceed each one seperately.
         for (int i = 0; i < imgHeight; i++)
         {
-            output("");
+            // Ignore the rule if cutup is turned down
+            if(!isCutUpSpacePart) output("");
+            if(!spaceTest) output("");
             for (int j = 0; j < imgWidth; j++)
             {
                 int rgb = jpgImg.getRGB(j, i);
                 // Convert each pixel into average gray value
-                //jpgImg.setRGB(i, j, picProc.getGrayValue(Integer.toHexString(rgb))); 
                 int scalePlace = picProc.getScaleChar(picProc.getGrayValue(Integer.toHexString(rgb)));
-                output(scaleChar.split("")[scalePlace]);
+                speChar = cuScaleChar.split("")[scalePlace];
+                // If it's not a space, then stop not inputting
+                if(isCutUpSpacePart && spaceTest && !(speChar.equals(" "))) {
+                    spaceTest = false;
+                    output("");
+                }
+                output(speChar);
             }
         }
 
@@ -298,7 +372,7 @@ class Oviax1 extends JFrame implements ActionListener
 
         // Lauch File
         if(isOutputToTxt)
-            Desktop.getDesktop().open(new File(opFileName1));
+            Desktop.getDesktop().open(new File(oviaxWS+opFileName1));
     }
 
     /**
@@ -308,12 +382,14 @@ class Oviax1 extends JFrame implements ActionListener
     {
         if(str.length() == 0)
         {
+            // Console Output - Uncontrollable
+            O.newline();
+
             if(isOutputToTxt)
                 // File Output - Controllable
                 bw.newLine();
-            // Console Output - Uncontrollable
-            O.newline();
-            // GUI output - Uncontrollable
+
+            // GUI output - Controllable (set it in the field part)
             txtOutput.append("\n");
             return;
         }
@@ -339,7 +415,7 @@ class Oviax1 extends JFrame implements ActionListener
     public static String getExtension(String path) 
     {
         /* In macOS, path contains "/" instead of "\" which is in Windows OS.
-        Thus, Oviax1 is expected to only run in macOS and systems that support those 
+        Thus, SharpStrGrapher is expected to only run in macOS and systems that support those 
         variations. Later compatibility in Windows may be resolved.
         */
         fileName = path.split("/")[path.split("/").length - 1]; // Get filename
@@ -353,6 +429,26 @@ class Oviax1 extends JFrame implements ActionListener
         if((fEx.toLowerCase().equals("jpg") && fEx.toLowerCase().equals("jpeg")))
             ifJpg = true;
         return fileName.split("\\.")[1];// Return file extension
+    }
+
+    public static String getCusScale()
+    {
+        switch(wordComplexitySlider.getValue())
+        {
+            case 0:
+                return "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$                                         ";
+            case 1:
+                return "&&&&&WWWWWdddddpppppCCCCCJJJJJxxxxxrrrrr11111{{{{{<<<<<>>>>>^^^^^`````            ";
+            case 2:
+                return "%%%%8&WWWWkkkkbdppppQQQQLCJJJJuuuunxrrrr(((()1{{{{++++~<>>>>,,,,\"^````           ";
+            case 3:
+                return "BBB%8&WMMMhhhkbdpqqq000QLCJUUUvvvunxrjjj|||()1{}}}___+~<>iii:::,\"^`'''           ";
+            case 4:
+                return "@@B%8&WM##aahkbdpqwwOO0QLCJUYYccvunxrjff\\\\|()1{}[[--_+~<>i!!;;:,\"^`'..          ";
+            case 5:
+                return scaleChar;
+        }
+        return "ERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERROR";
     }
 
     /**
@@ -399,8 +495,8 @@ class picProc
     public static BufferedImage imgCompress(int height, int width) throws IOException
     {
         // Put it to origin
-        Oviax1.ifJpg = false;
-        Image trimSize = Oviax1.img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        SharpStrGrapher.ifJpg = false;
+        Image trimSize = SharpStrGrapher.img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = resized.createGraphics();
         g2d.drawImage(trimSize, 0, 0, null);

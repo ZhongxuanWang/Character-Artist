@@ -1,0 +1,54 @@
+public static String getCusScale()
+    {
+        strTemp = "";
+        // If keep original, return original.
+        if(wordComplexitySlider.getValue()==5) return scaleChar;
+        // Value 0 means 
+        if(wordComplexitySlider.getValue()==0)
+        {
+            // The reason for introducing this log is to increase transplantations and usability.
+            for(int i = 1; i <=scaleChar.length()/2 ; i++)
+            {
+                // in the first half, use the first char in the scale.
+                strTemp += scaleChar.substring(0,1);
+            }
+            for(int i = 1; i <= scaleChar.length()/2; i++)
+            {
+                // In the second half, use the last char in the scale.
+                strTemp += scaleChar.substring(scaleChar.length()-1,scaleChar.length());
+            }
+            return strTemp;
+        }
+
+        /**
+         * This is a log. The main mechanism is: divide the scale into several parts which have 10
+         * characters. Then, compress the String by treating it to a mirror. (In here, the term
+         * compress means reduce the variaty of String instead of its lenth) We treat each part
+         * seperately and combine later. We first get the position of the target character which
+         * is viewed a margin of compressing. (the character in which will be repeated to reduce
+         * variaty.) The log may be easier to understand with an animation.
+         */
+        
+        int scaleDre = wordComplexitySlider.getValue() * 2;
+        
+        for(int a = 10; a < scaleChar.length(); a += 10)
+        {
+            System.out.println("-----");
+            System.out.println(scaleChar.substring(a - 10, a - 9) +"-"+ scaleChar.substring(a - scaleDre - 1, a - 1) +"-"+ scaleChar.substring(a-1, a));
+            System.out.println("=====");
+            for(int b = 0; b < 5-scaleDre/2; b++)
+            {
+                strTemp += scaleChar.substring(a - 5 - scaleDre/2 , a - 4 - scaleDre/2);
+            }
+            for(int b = 0; b < 5-scaleDre/2; b++)
+            {
+                strTemp += scaleChar.substring(a - 5 , a - 4 - scaleDre/2);
+            }
+
+            strTemp += (scaleChar.substring(a - 10, a - 9) + 
+            scaleChar.substring(a - 10 , a - 5 - scaleDre / 2) + 
+            scaleChar.substring(a - 5 , a - 5 - scaleDre / 2) + 
+            scaleChar.substring(a-1, a));
+        }
+        return strTemp;
+    }
