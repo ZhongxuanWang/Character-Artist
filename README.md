@@ -1,9 +1,9 @@
 **********************
 **Environment Build:**
 **********************
-*In oder to use all the functions in SharpStrGrapher, it is expected to:
-1> Install the latest Python runtime. (download)
-2> After doing so, install 'opencv-python' by inputting 'pip3 install opencv-python' in Terminal and hitting Enter.
+*In oder to use all the functions in SharpStrGrapher, it is expected to:<br>
+1> Install the latest Python runtime. (download)<br>
+2> After doing so, install 'opencv-python' by inputting 'pip3 install opencv-python' in Terminal and hitting Enter.<br>
 
 
 **********
