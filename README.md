@@ -4,8 +4,9 @@
 *In oder to use all the functions in SharpStrGrapher, it is expected to:<br>
 1> Install the latest Python runtime. (download)<br>
 2> After doing so, install 'opencv-python' by inputting 'pip3 install opencv-python' in Terminal and hitting Enter.<br>
+3> Have the latest JDK and JVM (important!).<br>
 
-
+<br>
 **********
 **About:**
 **********
@@ -13,11 +14,12 @@
 
    SharpStrGrapher1 is a software created by JAVA, in first version. It could convert photo to string or character to string or camera captured content to string. It has advanced settings in fancy GUI.
 
-
+<br>
 **************
 **Developer:**
 **************
 1.Zhongxuan(Daniel) Wang. (Starter)
+<br>
 <br>
 *************
 **Materials**
