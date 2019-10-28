@@ -7,6 +7,7 @@
 3> Have the latest JDK and JVM (<a href="https://www.java.com/en/download/mac_download.jsp">download latest Java for MacOS</a>).<br>
 
 <br>
+
 **********
 **About:**
 **********
@@ -15,12 +16,14 @@
    SharpStrGrapher1 is a software created by JAVA, in first version. It could convert photo to string or character to string or camera captured content to string. It has advanced settings in fancy GUI.
 
 <br>
+
 **************
 **Developer:**
 **************
 1.Zhongxuan(Daniel) Wang. (Starter)
 <br>
 <br>
+
 *************
 **Materials**
 *************
