@@ -1,4 +1,6 @@
 **********************
+**<a href="https://github.com/ZhongxuanWang/SharpStrGrapher/archive/master.zip">CLICK TO DOWNLOAD</a>**
+**********************
 **Environment Build:**
 **********************
 *In oder to use all the functions in SharpStrGrapher, it is expected to:<br>
