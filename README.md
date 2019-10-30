@@ -1,7 +1,7 @@
 **********************
 **<a href="https://github.com/ZhongxuanWang/SharpStrGrapher/archive/master.zip">CLICK TO DOWNLOAD</a>**
 **********************
-**Environment Build:**
+**Environment Build & Something to notice**
 **********************
 *In oder to use all the functions in SharpStrGrapher, it is expected to:<br>
 1> Install the latest Python runtime. (<a href="https://www.python.org/ftp/python/3.8.0/python-3.8.0-macosx10.9.pkg">download Python3.8 for MacOS</a>)<br>
