@@ -17,8 +17,9 @@ import sun.misc.BASE64Decoder;
 
 // For the Window and the elements
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
-
 import java.awt.event.*;
 import java.awt.font.*;
 
@@ -26,7 +27,7 @@ import java.awt.font.*;
 class SharpStrGrapher extends JFrame implements ActionListener
 {
     private static final long serialVersionUID = 1L;
-    private static final String Version = "0.2"; // Inner Version
+    private static final String Version = "0.2.1"; // Inner Version
     // Initialize some objects.
     public static JPanel pnlObj = new JPanel();
     public static Iterator<ImageWriter> imageWriters;
@@ -47,7 +48,8 @@ class SharpStrGrapher extends JFrame implements ActionListener
         "Output to a txt file als You don't need to specify the txt name. <optional>",
         "Select a converting mode to continue. <required>",
         "Reset all the field in this window to their default.",
-        "The variaties of characters included in the output text. '5' means keep origin. '0' means only output two variaties. (color and no color) <optional>"
+        "The variaties of characters included in the output text. '5' means keep origin. '0' means only output two variaties. (color and no color) <optional>",
+        "Capture this moment and output the text into txt file."
     };
     public static String[] modes = {
         "Photo --> StrGraph",
@@ -90,7 +92,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
     // Elements in the window
     public static JButton startBtn = new JButton("Start");
     public static JButton resetBtn = new JButton("Reset All");
-    public static JButton optxtBtn = new JButton("Output to TXT");
+    public static JButton optxtBtn = new JButton("Capture");
     public static JCheckBox chk1 = new JCheckBox("To TXT File");
     public static JTextField txt1 = new JTextField(38);
     public static JTextArea txtOutput = new JTextArea(120, 265);
@@ -99,7 +101,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
     public static JLabel sliderLable2 = new JLabel(labels[3]);
     public static Font txtOutputFont = new Font("Courier New", Font.PLAIN, 5);
     public static JComboBox<String> modeBox = new JComboBox<String>(modes);
-    public static JSlider wordComplexitySlider = new JSlider(JSlider.HORIZONTAL, 0, 5, 5);
+    public static JSlider wordComplexitySlider = new JSlider(JSlider.HORIZONTAL, 0, 6, 6);
     public static JSlider resolutionSlider = new JSlider(JSlider.HORIZONTAL, 2, (int) maxResolution, (int) maxResolution);
     public static JScrollPane areaScrollPane = new JScrollPane(txtOutput);
 
@@ -118,6 +120,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
             public void keyTyped (KeyEvent e) {}
             public void keyReleased (KeyEvent ev)
             {
+                // 10 represents Enter. Thus, if user hits enter, then process began
                 if(ev.getKeyCode() == 10)
                 {
                     try {
@@ -135,17 +138,15 @@ class SharpStrGrapher extends JFrame implements ActionListener
                 if(modeBox.getSelectedItem().toString().equals(modes[2]))
                 {
                     // Capture and Continue process
-                    if(startBtn.getText().equals("Capture"))
+                    if(startBtn.getText().equals("Pause"))
                     {
                         pydestroy();
                         startBtn.setText("Continue");
+                        return;
                     } else {
                         // If the button printed "continue"
-                        try{
-                            Runtime.getRuntime().exec("python3 "+pyfilename);
-                        } catch(IOException er){}
-                        
-                        startBtn.setText("Capture");
+                        if(!pyLaunch()) return;
+                        startBtn.setText("Pause");
                     }
                     camModeProcess();
                     return;
@@ -164,17 +165,43 @@ class SharpStrGrapher extends JFrame implements ActionListener
                 txt1.setText("");
                 txtOutput.setText("");
                 chk1.setSelected(isOutputToTxt);
-                wordComplexitySlider.setValue(5);
+                wordComplexitySlider.setValue(6);
                 resolutionSlider.setValue((int)maxResolution); 
                 return;
+            }
+        });
+
+        resolutionSlider.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                // Set max resolution
+                maxResolution = (double) wordComplexitySlider.getValue();
+            }
+        });
+
+        wordComplexitySlider.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                // Inform the method to change the value
+                cuScaleChar =  SharpStrGrapher.getCusScale();
             }
         });
 
         optxtBtn.addActionListener(new ActionListener(){
             public void actionPerformed (ActionEvent e)
             {
+                String opFileName = fileName + "_PLAIN_STRING_CONTENT_FROM_CAM"
+                 + (int) (Math.random() * 2000000 + 1000000) + ".txt";
                 // Directly call the method to output.
-
+                try {
+                    bw = new BufferedWriter(new FileWriter(ssgWS + opFileName));
+                    /* Avoid when user pressed the "capture", the software was 
+                       refreshing its field  */
+                    String str = txtOutput.getText();
+                    while(str.length()==0)
+                        str = txtOutput.getText();
+                    bw.write(str);
+                    bw.close();
+                    Desktop.getDesktop().open(new File(ssgWS+opFileName));
+                } catch (IOException er) {}
             }
         });
 
@@ -198,6 +225,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
                         // Destroy previous launched python script.
                         pydestroy();
 
+                        resolutionSlider.setVisible(true);
                         inputLable.setVisible(true);
                         txt1.setVisible(true);
                         chk1.setVisible(true);
@@ -212,6 +240,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
                         // Destroy previous launched python script.
                         pydestroy();
 
+                        resolutionSlider.setVisible(true);
                         inputLable.setVisible(true);
                         txt1.setVisible(true);
                         chk1.setVisible(true);
@@ -226,23 +255,28 @@ class SharpStrGrapher extends JFrame implements ActionListener
                         // Destroy previous launched python script.
                         pydestroy();
 
+                        resolutionSlider.setVisible(true);
                         inputLable.setVisible(false);
                         txt1.setVisible(false);
                         chk1.setVisible(false);
                         optxtBtn.setVisible(true);
-                        startBtn.setText("Capture");
+                        startBtn.setText("Pause");
 
-                        if(!buildPy())
-                            return; // If building failed, stop building.
                         // Lauch the multithread.
-                        Thread snapshotpy = new Thread(new Snapshotpy());
-                        try{
-                            Snapshotpy.ini();
-                        } catch (IOException er){}
-                        snapshotpy.start();
+                        camModeProcess();
                     }
                 }
                 return;
+            }
+        });
+
+        addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                // Destroy the py thread before closing the window
+                pydestroy();
+                System.exit(0);
             }
         });
 
@@ -255,13 +289,16 @@ class SharpStrGrapher extends JFrame implements ActionListener
         resetBtn.setToolTipText(helpTips[5]);
         wordComplexitySlider.setToolTipText(helpTips[6]);
         sliderLable.setToolTipText(helpTips[6]);
+        optxtBtn.setToolTipText(helpTips[7]);
 
         txtOutput.setEditable(true);
         txtOutput.setFont(txtOutputFont);
+        // Set auto wrap
         txtOutput.setLineWrap(true);
         txtOutput.setWrapStyleWord(true);
-        txt1.setDragEnabled(true);
+        // Set btn not visible but in the content.
         optxtBtn.setVisible(false);
+        // Set effect of sliders: having tick and space & size
         wordComplexitySlider.setMajorTickSpacing(1);
         wordComplexitySlider.setSnapToTicks(true);;
         wordComplexitySlider.setPaintTicks(true);
@@ -272,6 +309,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         areaScrollPane.setPreferredSize(new Dimension(800, 800));
         areaScrollPane.setAutoscrolls(true);
+        cuScaleChar = getCusScale();
 
         // Put those parts in the Window / Must be sequence!
 
@@ -292,7 +330,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
 
         pack();
         setSize(800, 830); // Size of Window. Adjustable
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         add(pnlObj);
         setResizable(false);
         //setAlwaysOnTop(true);
@@ -355,7 +393,6 @@ class SharpStrGrapher extends JFrame implements ActionListener
         /* Treat it as image file and give image data to bufferedimage type img. */
         getImgBasicInfo(input);
         // Check if resolution oversized. If it's oversized, compress before continue.
-        maxResolution = resolutionSlider.getValue();
         if(imgResolution > maxResolution)
         {
             /*
@@ -365,8 +402,8 @@ class SharpStrGrapher extends JFrame implements ActionListener
             {
                 double x = maxResolution / imgResolution;
                 x = Math.sqrt(x);
-                imgHeight = (int) (imgHeight * x);
-                imgWidth = (int) (imgWidth * x);
+                imgHeight = (int) (imgHeight * x * 0.8);
+                imgWidth = (int) (imgWidth * x) ;
                 // Debug print.
                 System.out.println(imgHeight + " - " + imgWidth);
             }
@@ -500,8 +537,11 @@ class SharpStrGrapher extends JFrame implements ActionListener
 
 
     public static void camModeProcess()
-    {
-
+    {                        
+        if(!buildPy())
+            return; // If building failed, stop building.
+        Thread snapshotpy = new Thread(new Snapshotpy());
+        snapshotpy.start();
     }
 
     public static void pydestroy()
@@ -576,14 +616,16 @@ class SharpStrGrapher extends JFrame implements ActionListener
             case 0:
                 return "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$                                         ";
             case 1:
-                return "&&&&&WWWWWdddddpppppCCCCCJJJJJxxxxxrrrrr11111{{{{{<<<<<>>>>>^^^^^`````            ";
+                return "WWWWWWWWWWWWWWWCCCCCCCCCCCCCCCrrrrrrrrrr{{{{{{{{{{>>>>>>>>>>``````````            ";
             case 2:
-                return "%%%%8&WWWWkkkkbdppppQQQQLCJJJJuuuunxrrrr(((()1{{{{++++~<>>>>,,,,\"^````           ";
+                return "&&&&&WWWWWdddddpppppCCCCCJJJJJxxxxxrrrrr11111{{{{{<<<<<>>>>>^^^^^`````            ";
             case 3:
-                return "BBB%8&WMMMhhhkbdpqqq000QLCJUUUvvvunxrjjj|||()1{}}}___+~<>iii:::,\"^`'''           ";
+                return "%%%%8&WWWWkkkkbdppppQQQQLCJJJJuuuunxrrrr(((()1{{{{++++~<>>>>,,,,\"^`````          ";
             case 4:
-                return "@@B%8&WM##aahkbdpqwwOO0QLCJUYYccvunxrjff\\\\|()1{}[[--_+~<>i!!;;:,\"^`'..          ";
+                return "BBB%8&WMMMhhhkbdpqqq000QLCJUUUvvvunxrjjj|||()1{}}}___+~<>iii:::,\"^''''`          ";
             case 5:
+                return "@@B%8&WM##aahkbdpqwwOO0QLCJUYYccvunxrjff\\\\|()1{}[[--_+~<>i!!;;:,\"^`'..          ";
+            case 6:
                 return scaleChar;
         }
         return "ERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERRORERROR";
@@ -628,7 +670,11 @@ class SharpStrGrapher extends JFrame implements ActionListener
             "import time\n"+
             "os.chdir(\""+ssgWS+"\")\n"+
             "while(True):\n"+
-            "    time.sleep(0.1)\n"+
+            /* Sleep(seconds) 0.1 is recommended. If the speed of read and write of your disk
+               is obnormally low, you could adjust this value higher but you will experience 
+               long delays.
+               It means the delay in which python takes photo. */
+            "    time.sleep("+ 0.1 +")\n"+ 
             "    cam = VideoCapture(0)\n"+
             "    rep, img = cam.read()\n"+
             "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
@@ -639,6 +685,12 @@ class SharpStrGrapher extends JFrame implements ActionListener
             return false;
         }
 
+        pyhasdestroid = false;
+        return pyLaunch();
+    }
+
+    public static boolean pyLaunch()
+    {
         try
         {
             pylaunch = Runtime.getRuntime().exec("python3 " + pyfilename);
@@ -648,7 +700,6 @@ class SharpStrGrapher extends JFrame implements ActionListener
             errinfo("Sorry, unable to Launch python3. Please install the environment first." + e.toString());
             return false;
         }
-        pyhasdestroid = false;
         return true;
     }
 
@@ -706,24 +757,21 @@ class Snapshotpy implements Runnable
     // YOU WILL FIND EXACTLY THE SAME CODE THEIR.
     public static BufferedImage bufferedImg;
 
-    public static String cuScaleChar;
+    public static String str = ""; // The string of graph
     public static int imgWidth, imgHeight, imgResolution;
     public static double x = 0;
     public static String imgPath = SharpStrGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
     public static File imgfile = new File(imgPath);
     
-    public static void ini() throws IOException
-    {
-        cuScaleChar =  SharpStrGrapher.getCusScale();
-        SharpStrGrapher.maxResolution = SharpStrGrapher.resolutionSlider.getValue();
-    }
-
     public void run()
     {
         // If python script task is alive, then continue to output. 
         while(!SharpStrGrapher.pyhasdestroid)
         {
             try{
+               /* Thread.leep(MS) 100ms = 0. This means the delay in which the
+                software read image from the disk. If the value is lower, it may
+                result in exceeding disk consumption. Vice versa. */
                 Thread.sleep(100);
                 SharpStrGrapher.txtOutput.setText("");
                 picproc();
@@ -746,20 +794,21 @@ class Snapshotpy implements Runnable
                 x = SharpStrGrapher.maxResolution / imgResolution;
                 x = Math.sqrt(x);
             }
-            // The 0.8 is the ratio 
+            // The 0.8 and 1.1 is ratio that adjust the output to suit the font.
             imgHeight = (int) (imgHeight * x * 0.8);
-            imgWidth = (int) (imgWidth * x);
+            imgWidth = (int) (imgWidth * x * 1.1);
             bufferedImg = imgCompress(imgHeight, imgWidth);
             imgResolution = imgWidth * imgHeight;
         }
-        String str="";
+        // Clear memory of str to avoid repeatation.
+        str = "";
         for (int i = 0; i < imgHeight; i++)
         {
             str += "\n";
             for (int j = 0; j < imgWidth; j++)
             {
                 int scalePlace = SharpStrGrapher.getScaleChar(SharpStrGrapher.getGrayValue(Integer.toHexString(bufferedImg.getRGB(j, i))));
-                str += (cuScaleChar.substring(scalePlace,scalePlace+1));
+                str += (SharpStrGrapher.cuScaleChar.substring(scalePlace,scalePlace+1));
             }
         }
         // Do this is to avoid distortation of image.
@@ -768,17 +817,15 @@ class Snapshotpy implements Runnable
 
     public static BufferedImage imgCompress(int height, int width) throws IOException
     {
-        // Put it to origin
+        // Get the trimmed image
         Image trimSize = bufferedImg.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        // Create a blank board
         BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        // Create g2d object using the blank board
         Graphics2D g2d = resized.createGraphics();
+        // Put trimmed image in the board
         g2d.drawImage(trimSize, 0, 0, null);
         g2d.dispose();
         return resized;
     }
 }
-/*
-// Lauch File
-if(isOutputToTxt)
-Desktop.getDesktop().open(new File(ssgWS+opFileName1));
-*/
