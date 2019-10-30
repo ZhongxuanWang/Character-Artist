@@ -145,22 +145,3 @@ https://www.mkyong.com/java/convert-png-to-jpeg-image-file-in-java/<br>
      fOQCC00YccXCQUujxvZpwz1+!,. '>-;',zOYzO< "!ro];I'~tUQZZmmmmZOLzf[I.    .!|Up*##&88%8&WWMWW%8Mhwnl",,^.               
     IJQCJ0mLzczzYQUnrrnzZpQr]!^       _LJuvL( `IvW-     \J0ZmmwwwZOLc|<`    '<fOh**#W*a**dXcoW&%%&WokpqwwmmZOQXf/1!'      
     [YUL0Z0UcvzXXCJuxjt|YZmY(!.       /zuxxXJ  I)Wj      tQ0ZmwwwmZQUj-,    "?xrZakhhbbw0(]|qM8B%8&WM*oo*ooob0CXUwwQu}"   
-   `[trUOZCzuncXzYYnrx]]cQZCtl       'tjrjjnZ] I+qb:     `t00OZwqwmOJn[I    ljuUOJp*M*#oO??xwWBBBWW&&MohhoMWowXuUpobpmLr!'
-   ,+[(cL0UcnnvzcXzvxfl]uL0Cj!       l/ffjfnZv  .r#f      ^}jUQZwwmOCv)!'  `{vYqZxv0d*&Wa)(vd8BB%Wo*#kw0Q0mbapUzJwMahkdw0J
-   :?)jUXx\/\/xvcccur{^_uC0Ct>'      <\fjxff0U.  iqY.      `~1|CmwmOLX\>^  ltu0bn\\/rQahkjfJb%%%%&*aod0LCJJQZ0Q0CZ#*hhhkbp
-   {JLCOz1<ill_}|rrxfi ^\JQCti^'     -(|)[>!xJ.  ^uf,          vZmmOQXt+:'^}jz0pwJurf}cCwYjmo%%888Waob0UJJJCLLOq00a#hkkaah
-   Xb**du]>lIl>>>_+_<' ']cLJ\!^'     I:;,"^;\z,   (+l        '>YZwwZ0Yf?I^;tvCZdZOq00nzLkvnbW%%88&&aahmXYJCJJCmpOLq*ahha*o
-  I0aM&Wmt_<<~>~<<!!;  ;}rJJ|!^`     ..^'';[vY_ ''r]<    ':>+})CmwmZ0Ur[i:^(z0wbLOmOqQQbarYa&B%8&&&#hhqJXUJJJ0wpmCLoakka**
-  1qoW&8MawOQUv/[_<ll!{vnxcc)l'      ',!]/Jdaq(^^;mwc\!:;>+_?}1Cwwwm0Jx1~]}i{vOwYq0ZQCb#wrCM8%%8&&&WabqLYUJUJOpbqJYbhbhho*
- ^ud*&8&M#oaha*aqLXf|-t0mYx\!       ^)Xmbhhh*#j ^fhprJc+Il<+?]{JwwwmOJu(_|dv;!rtU0QwCmo*JtOW%B8WW&&&obm0JUUUCOqkdJu0kkhho*
- !ChM&&&#*ooaao**aaaC?fLwwz|:       )dbkhhaa*Mt`nbhd/cC[li<<-?}zwqqwOCu(?nboU?<ivnJOLbMaxfaW%%WMW&W&odOJUYYUJOqkdJxckkkkho
-']woW&8&Moaoaao#*oaaX-tJmdwc_,`:lI  rbkkhhao*MOcohhkffOt+-]-_?}jwpqwZLc\(zOphdx_1v\fcUrX|cd&%8##&WWWodOCYYu\tYOddJxfmhbqwd
-ird#&88&*oaaoao*#oaau-/XZdkb0cxrr-  vkhhhhao*MW&Moaax{UJ/|1[--{\OpqwZLXfvCcJ0podCOJX1;I()Up&88**8WM&aq0CYu|(rU0wmJf)nw0LOw
-{LhM&88W*aaaaoa***ahf_\XmdbbmJvxn_  Ykhhhhao*M&&&#ooQ1fXj/r\}?})UqqwZ0UxJwUXzUwkoawQj!-ufmpW%&**%&#8amLUzjjUZmmm0v[IizL0md
-nq*W&8&W*oahaoo***ob(?\XZdkkwJcxr! 'Lhhhaaao*#WW&W#*kf(rn(/t)][1cqpqm0UzJQ0mJcJOdo#k0fUkzQJkW*oM%&MWaOCYuQh###odOn<":rpoW8
-Jk#W&%8W*ohhaaoo*ooq[}tXZdbhqQXuj: ^0khaoaaoo*WW&WMMMU\/f()\\1[1jZqpwZCZwJLZ0zXXY0akJ0&%quxmhdbM8&WMo0JzZo**#MW#dU~;-UW8%%
-waM&&8&M*oahaooooooZ-[fXZdbhdQXc\^ :Zhhhaaoooo#WWWWMMdruxf/|||}1\JqpqmLwapO0QJUXnYpwC*%%&j(mddoWWho*hCXw#*###W&&MaCcYCo%%%
-doW&8&&#ooahaaoooooJ_]fYOdkhd0Yz{` >phhaaaoooo#MWWWMMWJuXur/\t|{(vwpqZ0pwb*abwZJCOdk#&88%dcaaoW&#pqmOXO*#**#MMWWWMamQQq8%%
-b*&&88W*oooaaaooaaan<?tXOqbhbOJz?^'}haoaaaaoao**#WWWWWhnzUJzrf/((jOpq0LdZqh*#bmwpbb&88&8%%8%%%8#hwZ0Qqo#***#MWWWW#oqO0Z&%%
-hM&88&W*ooaaaooooab\>]\c0wbhkOJz~``fhaoaaaahaoo*#WWW&WWLrzJwLcf/\fCdpQJ0Omwb**OQb#W8888%%8%BBB%WbpZqhW##***#MW&WWMobOQQo8%
-oM&&W&M*oaaahoaooaq}>]tzQmdkhwCjI`:zhaaaooahaooo*#MW&&&kxxjQd0uf/fcbwmOJL0OwaMpQbW%888888%%BBBBB%8&%%8##***#WW&&WM*hOQQp88
