@@ -2,6 +2,7 @@
 import java.io.*;
 import java.awt.*;
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 // For photo process
@@ -37,10 +38,9 @@ class SharpStrGrapher extends JFrame implements ActionListener
     public static Process pylaunch;
 
     public static String scaleChar = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.           ";
-    public static String input, fileExtension, fileName;
+    public static String input, fileExtension, fileName, cuScaleChar, opFileName1 = "";
     public static String ssgWS = new File("").getAbsoluteFile().toString() + "/SharpStrGrapherWorkSpace/";
     public static String pyfilename = ssgWS + "SSshoter.py";
-    public static String cuScaleChar,opFileName1 = "";
     public static String[] helpTips = {
         "Start to convert picture to string.",
         "It's where the output will be.",
@@ -64,10 +64,9 @@ class SharpStrGrapher extends JFrame implements ActionListener
     };
 
     public static int imgWidth, imgHeight, imgResolution;
+    public static boolean pyhasdestroid = false;
 
     private static boolean ifJpg = false;
-    private static boolean spaceTest = true;
-    public static boolean pyhasdestroid = false;
     private static Scanner scr = new Scanner(System.in);
 
 
@@ -75,14 +74,13 @@ class SharpStrGrapher extends JFrame implements ActionListener
     too big otherwise your computer memory might not be able to withstand that. Of course, the bigger the
     better. But if resolution from picture that later inputted is larger than this, it will be compressed
     to this.   NOTES : it must be a decimal, which is expected to adhere a .0 at last, but not required.
-    <IDE_SET_Support>
-    */
+    <IDE_SET_Support>*/
     public static double maxResolution = 20000.0;
 
     /* Even though this is recommended to trun on every time and very useful, for some very very special 
     circumstances, the improvement doesn't work and would probably distort the original photo, or, user 
     doesn't want to use this function. You can change it to false if you want. <IDE_SET_Support>     
-     NOTICE : This function is not applicable in Cam2Str mode in order to improve speed                */
+    NOTICE : This function is not applicable in Cam2Str mode in order to improve speed */
     private static boolean isCutUpSpacePart = true;
 
     /* This could be adjusted in GUI. The default action is false. <IDE_AND_GUI_SET_Support> */
@@ -111,10 +109,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
     {
         super("Sharp String Grapher 1.0");
 
-        // Get listening event of elements
-        //startBtn2.addActionListener(this);
-
-                // Hit Enter to process
+        // Hit Enter to process
         txt1.addKeyListener(new KeyListener(){
             public void keyPressed (KeyEvent e) {}
             public void keyTyped (KeyEvent e) {}
@@ -194,7 +189,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
                 try {
                     bw = new BufferedWriter(new FileWriter(ssgWS + opFileName));
                     /* Avoid when user pressed the "capture", the software was 
-                       refreshing its field  */
+                    refreshing its field */
                     String str = txtOutput.getText();
                     while(str.length()==0)
                         str = txtOutput.getText();
@@ -221,10 +216,10 @@ class SharpStrGrapher extends JFrame implements ActionListener
                 if(e.getStateChange() == ItemEvent.SELECTED)
                 {
                     if(modeBox.getSelectedItem().toString().equals(modes[0]))
-                    {   
+                    {
                         // Destroy previous launched python script.
                         pydestroy();
-
+                        // Reconstructing GUI
                         resolutionSlider.setVisible(true);
                         inputLable.setVisible(true);
                         txt1.setVisible(true);
@@ -239,7 +234,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
                     {
                         // Destroy previous launched python script.
                         pydestroy();
-
+                        // Reconstructing GUI
                         resolutionSlider.setVisible(true);
                         inputLable.setVisible(true);
                         txt1.setVisible(true);
@@ -254,7 +249,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
                     {
                         // Destroy previous launched python script.
                         pydestroy();
-
+                        // Reconstructing GUI
                         resolutionSlider.setVisible(true);
                         inputLable.setVisible(false);
                         txt1.setVisible(false);
@@ -272,15 +267,21 @@ class SharpStrGrapher extends JFrame implements ActionListener
 
         addWindowListener(new WindowAdapter()
         {
+            /* The manipulations after user hitting 'close' and before 
+            closing process starts.*/
             public void windowClosing(WindowEvent e)
             {
                 // Destroy the py thread before closing the window
                 pydestroy();
+                // Delete the photo created from camera
+                try{
+                    new File(ssgWS + "SSGSHOTS_IMG.jpg").delete();
+                }catch(Exception er){}
                 System.exit(0);
             }
         });
 
-        // HELPs
+        // HELP information
         startBtn.setToolTipText(helpTips[0]);
         txtOutput.setToolTipText(helpTips[1]);
         txt1.setToolTipText(helpTips[2]);
@@ -311,8 +312,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
         areaScrollPane.setAutoscrolls(true);
         cuScaleChar = getCusScale();
 
-        // Put those parts in the Window / Must be sequence!
-
+        // Put components in the Window / Must be in sequence!
         pnlObj.add(inputLable);
         pnlObj.add(txt1);
         pnlObj.add(startBtn);
@@ -326,10 +326,10 @@ class SharpStrGrapher extends JFrame implements ActionListener
         pnlObj.add(chk1);
         pnlObj.add(modeBox);
         pnlObj.add(areaScrollPane);
-        //pnlObj.add(txtOutput);
 
+        // Set properties of Window
         pack();
-        setSize(800, 830); // Size of Window. Adjustable
+        setSize(800, 830);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         add(pnlObj);
         setResizable(false);
@@ -354,8 +354,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
         {
             info("Argument Received. Console buffer would initiate");
             /* Since the main theme of SharpStrGrapher is GUI based now, argument processes are 
-               expected to proceed in a differerent space 
-             */
+            expected to proceed in a differerent space */
             argPro(args);
         } else {
             warninfo("No Argument received so far. Window would initiate");
@@ -390,22 +389,18 @@ class SharpStrGrapher extends JFrame implements ActionListener
         // Check elligibility and get filename
         if(!checkIfPic(getExtension(input))) return;
 
-        /* Treat it as image file and give image data to bufferedimage type img. */
+        // Treat it as image file and give image data to bufferedimage type img.
         getImgBasicInfo(input);
         // Check if resolution oversized. If it's oversized, compress before continue.
         if(imgResolution > maxResolution)
         {
-            /*
-             Calculate the percentile in which is hoped to compress before letting imgCompress
-             method to do the work. It's a logarithem.
-             */
+            /* Calculate the percentile in which is hoped to compress before letting imgCompress
+            method to do the work. It's a logarithem. */
             {
                 double x = maxResolution / imgResolution;
                 x = Math.sqrt(x);
                 imgHeight = (int) (imgHeight * x * 0.8);
                 imgWidth = (int) (imgWidth * x) ;
-                // Debug print.
-                System.out.println(imgHeight + " - " + imgWidth);
             }
 
             // Call the method
@@ -436,6 +431,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
 
         cuScaleChar = getCusScale();
 
+        boolean spaceTest = true;
         String speChar = "";
 
         // Read each pixel and get each RGB value, proceed each one seperately.
@@ -454,14 +450,17 @@ class SharpStrGrapher extends JFrame implements ActionListener
                 if(isCutUpSpacePart && spaceTest && !(speChar.equals(" "))) {
                     spaceTest = false;
                     output("");
+                    // Align the text
+                    output(" ".repeat(j+1));
                 }
                 output(speChar);
             }
         }
+        spaceTest = true;
 
         // Close buffer & end
         if(isOutputToTxt)
-            bw.close(); // Courier New is the most accurate display font discovered so far.
+            bw.close();
         newline();
 
         // Lauch File
@@ -593,8 +592,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
     {
         /* In macOS, path contains "/" instead of "\" which is in Windows OS.
         Thus, SharpStrGrapher is expected to only run in macOS and systems that support those 
-        variations. Later compatibility in Windows may be resolved.
-        */
+        variations. Later compatibility in Windows may be resolved. */
         fileName = path.split("/")[path.split("/").length - 1]; // Get filename
         String fEx;
         try {
@@ -674,7 +672,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
                is obnormally low, you could adjust this value higher but you will experience 
                long delays.
                It means the delay in which python takes photo. */
-            "    time.sleep("+ 0.1 +")\n"+ 
+            "    time.sleep("+ 0.18 +")\n"+ 
             "    cam = VideoCapture(0)\n"+
             "    rep, img = cam.read()\n"+
             "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
@@ -753,11 +751,10 @@ stored in main method in nominated main class. */
 
 class Snapshotpy implements Runnable 
 {
-    // TO FIND REFERENCES THAT HELP YOU TO READ THE CODE, GO TO PROCESS METHOD IN MAIN(SIGNIFICANT) CLASS.
-    // YOU WILL FIND EXACTLY THE SAME CODE THEIR.
     public static BufferedImage bufferedImg;
 
-    public static String str = ""; // The string of graph
+    // To receive content that will be outputted
+    public static String str = "";
     public static int imgWidth, imgHeight, imgResolution;
     public static double x = 0;
     public static String imgPath = SharpStrGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
@@ -769,7 +766,7 @@ class Snapshotpy implements Runnable
         while(!SharpStrGrapher.pyhasdestroid)
         {
             try{
-               /* Thread.leep(MS) 100ms = 0. This means the delay in which the
+                /* Thread.leep(MS) 100ms = 0. This means the delay in which the
                 software read image from the disk. If the value is lower, it may
                 result in exceeding disk consumption. Vice versa. */
                 Thread.sleep(100);
@@ -788,12 +785,9 @@ class Snapshotpy implements Runnable
         imgResolution = bufferedImg.getWidth() * bufferedImg.getHeight();
         if(imgResolution > SharpStrGrapher.maxResolution)
         {
-            if(x==0)
-            {
-                // Get the ratio to compress
-                x = SharpStrGrapher.maxResolution / imgResolution;
-                x = Math.sqrt(x);
-            }
+            // Get the ratio to compress
+            x = SharpStrGrapher.maxResolution / imgResolution;
+            x = Math.sqrt(x);
             // The 0.8 and 1.1 is ratio that adjust the output to suit the font.
             imgHeight = (int) (imgHeight * x * 0.8);
             imgWidth = (int) (imgWidth * x * 1.1);
@@ -811,7 +805,7 @@ class Snapshotpy implements Runnable
                 str += (SharpStrGrapher.cuScaleChar.substring(scalePlace,scalePlace+1));
             }
         }
-        // Do this is to avoid distortation of image.
+        // Do this is to avoid bad effect of image.
         SharpStrGrapher.txtOutput.append(str);
     }
 
