@@ -11,6 +11,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.*;
 import java.awt.image.BufferedImage;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import jdk.jfr.events.FileWriteEvent;
@@ -24,11 +26,10 @@ import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 import java.awt.event.*;
 import java.awt.font.*;
 
-
 class SharpStrGrapher extends JFrame implements ActionListener
 {
     private static final long serialVersionUID = 1L;
-    private static final String Version = "0.2.1"; // Inner Version
+    private static final String Version = "0.2.2"; // Inner Version
     // Initialize some objects.
     public static JPanel pnlObj = new JPanel();
     public static Iterator<ImageWriter> imageWriters;
@@ -60,7 +61,8 @@ class SharpStrGrapher extends JFrame implements ActionListener
         "Photo Path:",
         "Complexity:",
         "Characters:",
-        "Resolution:"
+        "Resolution:",
+        "Font Size:"
     };
 
     public static int imgWidth, imgHeight, imgResolution;
@@ -92,7 +94,8 @@ class SharpStrGrapher extends JFrame implements ActionListener
     public static JButton resetBtn = new JButton("Reset All");
     public static JButton optxtBtn = new JButton("Capture");
     public static JCheckBox chk1 = new JCheckBox("To TXT File");
-    public static JTextField txt1 = new JTextField(38);
+    public static JTextField txt1 = new JTextField(38); // For file path
+    public static JTextField txt2 = new JTextField(10); // For charactors
     public static JTextArea txtOutput = new JTextArea(120, 265);
     public static JLabel inputLable = new JLabel(labels[0]);
     public static JLabel sliderLable = new JLabel(labels[1]);
@@ -132,18 +135,18 @@ class SharpStrGrapher extends JFrame implements ActionListener
                 txtOutput.setText("");
                 if(modeBox.getSelectedItem().toString().equals(modes[2]))
                 {
-                    // Capture and Continue process
+                    // If the status is 'paused'
                     if(startBtn.getText().equals("Pause"))
                     {
                         pydestroy();
                         startBtn.setText("Continue");
-                        return;
-                    } else {
+                    } else { // If the status is 'running'
+                        // Kill the previous-launcged Thread
+                        pydestroy();
                         // If the button printed "continue"
-                        if(!pyLaunch()) return;
                         startBtn.setText("Pause");
+                        camModeProcess();
                     }
-                    camModeProcess();
                     return;
                 }
                 try{
@@ -169,7 +172,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
         resolutionSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 // Set max resolution
-                maxResolution = (double) wordComplexitySlider.getValue();
+                maxResolution = (double) resolutionSlider.getValue();
             }
         });
 
@@ -213,51 +216,65 @@ class SharpStrGrapher extends JFrame implements ActionListener
         modeBox.addItemListener(new ItemListener(){
             public void itemStateChanged(ItemEvent e)
             {
+                // If change is detected
                 if(e.getStateChange() == ItemEvent.SELECTED)
                 {
+                    // Photo --> StrGraph mode
                     if(modeBox.getSelectedItem().toString().equals(modes[0]))
                     {
                         // Destroy previous launched python script.
                         pydestroy();
                         // Reconstructing GUI
-                        resolutionSlider.setVisible(true);
                         inputLable.setVisible(true);
                         txt1.setVisible(true);
+                        txt2.setVisible(false);
                         chk1.setVisible(true);
                         optxtBtn.setVisible(false);
+                        sliderLable.setText(labels[1]);
                         startBtn.setText("Start");
 
                         inputLable.setText(labels[0]);
                     }
                     
+                    // Char --> StrGraph mode
                     if(modeBox.getSelectedItem().toString().equals(modes[1]))
                     {
                         // Destroy previous launched python script.
                         pydestroy();
                         // Reconstructing GUI
-                        resolutionSlider.setVisible(true);
                         inputLable.setVisible(true);
                         txt1.setVisible(true);
                         chk1.setVisible(true);
                         optxtBtn.setVisible(false);
+                        sliderLable.setText(labels[4]);
+                        txt1.setVisible(false);
+                        txt2.setVisible(true);
                         startBtn.setText("Start");
 
                         inputLable.setText(labels[2]);
+                        charToGraph();
                     }
                     
+                    // Cam --> StrGraph mode
                     if(modeBox.getSelectedItem().toString().equals(modes[2]))
                     {
                         // Destroy previous launched python script.
                         pydestroy();
                         // Reconstructing GUI
-                        resolutionSlider.setVisible(true);
                         inputLable.setVisible(false);
                         txt1.setVisible(false);
+                        txt2.setVisible(false);
                         chk1.setVisible(false);
                         optxtBtn.setVisible(true);
+                        sliderLable.setText(labels[1]);
                         startBtn.setText("Pause");
 
                         // Lauch the multithread.
+                        if(!buildPy())
+                        {
+                            errinfo("Sorry, python script building failed. Please see 'readme.md' for further instruction");
+                            return; // If building failed, stop building.
+                        }
                         camModeProcess();
                     }
                 }
@@ -297,7 +314,9 @@ class SharpStrGrapher extends JFrame implements ActionListener
         // Set auto wrap
         txtOutput.setLineWrap(true);
         txtOutput.setWrapStyleWord(true);
-        // Set btn not visible but in the content.
+        // Set btn and char input not visible but in the content.
+        txt2.setVisible(false);
+        
         optxtBtn.setVisible(false);
         // Set effect of sliders: having tick and space & size
         wordComplexitySlider.setMajorTickSpacing(1);
@@ -315,6 +334,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
         // Put components in the Window / Must be in sequence!
         pnlObj.add(inputLable);
         pnlObj.add(txt1);
+        pnlObj.add(txt2);
         pnlObj.add(startBtn);
         pnlObj.add(resetBtn);
 
@@ -337,6 +357,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
         setVisible(true);
     }
 
+    public void actionPerformed(ActionEvent e){}
     public static void main (String[] args) throws IOException
     {
         // Create work space if needed
@@ -420,7 +441,8 @@ class SharpStrGrapher extends JFrame implements ActionListener
         
         if(isOutputToTxt)
         {
-            opFileName1 = fileName + "_PLAIN_STRING_CONTENT" + (int) (Math.random() * 2000000 + 1000000) + ".txt";
+            opFileName1 = fileName + "_PLAIN_STRING_CONTENT" + 
+                (int)(Math.random() * 2000000 + 1000000) + ".txt";
             try {
                 bw = new BufferedWriter(new FileWriter(ssgWS + opFileName1));
             } catch (IOException e) {
@@ -429,11 +451,16 @@ class SharpStrGrapher extends JFrame implements ActionListener
             }
         }
 
+        // Get customized scale (from slider)
         cuScaleChar = getCusScale();
 
+        /* This is a logarithm that output the specific charactor(char) from the scale. The position of char is
+        determined from the complexity slider or internally built variable. Meanwhile, here implements a log 
+        that remove extra whitespace from the output.   */
+
+        // Initialize some variables will be used in later
         boolean spaceTest = true;
         String speChar = "";
-
         // Read each pixel and get each RGB value, proceed each one seperately.
         for (int i = 0; i < imgHeight; i++)
         {
@@ -467,6 +494,13 @@ class SharpStrGrapher extends JFrame implements ActionListener
         if(isOutputToTxt)
             Desktop.getDesktop().open(new File(ssgWS + opFileName1));
     }
+
+
+    public static void charToGraph() 
+    {
+        
+    }
+
 
 // - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - - -
@@ -537,8 +571,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
 
     public static void camModeProcess()
     {                        
-        if(!buildPy())
-            return; // If building failed, stop building.
+        if(!pyLaunch()) return;
         Thread snapshotpy = new Thread(new Snapshotpy());
         snapshotpy.start();
     }
@@ -660,14 +693,13 @@ class SharpStrGrapher extends JFrame implements ActionListener
 
     public static boolean buildPy()
     {
-        //"        imwrite(\"SSGSHOTS_\" + \"" + "" + "\" + \".jpg\",img)\n"
         try
         {
             BufferedWriter out = new BufferedWriter(new FileWriter(new File(pyfilename)));
             String prg = "from cv2 import *\n" +
             "import time\n"+
             "os.chdir(\""+ssgWS+"\")\n"+
-            "while(True):\n"+
+            "while True:\n"+
             /* Sleep(seconds) 0.1 is recommended. If the speed of read and write of your disk
                is obnormally low, you could adjust this value higher but you will experience 
                long delays.
@@ -682,9 +714,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
             errinfo("Sorry, unable to output file. " + e.toString());
             return false;
         }
-
-        pyhasdestroid = false;
-        return pyLaunch();
+        return true;
     }
 
     public static boolean pyLaunch()
@@ -695,9 +725,11 @@ class SharpStrGrapher extends JFrame implements ActionListener
         }
         catch (Exception e) 
         {
-            errinfo("Sorry, unable to Launch python3. Please install the environment first." + e.toString());
+            errinfo("Sorry, unable to Launch python3. Please install the environment or check" +
+            "if the python script is exist." + e.toString());
             return false;
         }
+        pyhasdestroid = false;
         return true;
     }
 
