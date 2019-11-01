@@ -44,17 +44,17 @@ class CharGrapher extends JFrame implements ActionListener
         "Reset all the field in this window to their default.",                                         // 5
         "The variaties of characters included in the output text."+                                     
         "'5' means keep origin. '0' means output only contains two characters."+
-        " ($ and <space>). It's interactive in Camera --> StrGraph mode. <optional>",                   // 6
+        " ($ and <space>). It's interactive in Camera --> CharGraph mode. <optional>",                   // 6
         "Select a font for the words that will be displayed. <required>",                               // 7
         "The resolution(dimension) of the outputted graph. By default,"+ 
-        "it's 20000 pixels, which is also the maximum degree. It's interactive in Cam-->StrGraph mode.",// 8
+        "it's 20000 pixels, which is also the maximum degree. It's interactive in Cam-->CharGraph mode.",// 8
         "Input your characters here. NOTE:']' represents output in a seperate line. "+
         "Maximum is 10 characters at once. The exceeding parts will be ignored. <required>"             // 9
     };
     public static String[] modes = {
-        "Photo --> StrGraph",       // 0
-        "Characters --> StrGraph",  // 1
-        "Camera --> StrGraph"       // 2
+        "Photo --> CharGraph",       // 0
+        "Characters --> CharGraph",  // 1
+        "Camera --> CharGraph"       // 2
     };
     public static String[] labels = {
         "Photo Path:",      // 0
@@ -101,7 +101,7 @@ class CharGrapher extends JFrame implements ActionListener
     Even though this is recommended to trun on every time and very useful, for some very very special 
     circumstances, the improvement doesn't work and would probably distort the original photo, or, user 
     doesn't want to use this function. You can change it to false if you want.    
-    NOTICE : This function is only applicable in Photo --> StrGraph mode.                               */
+    NOTICE : This function is only applicable in Photo --> CharGraph mode.                               */
     private static boolean isCutUpSpacePart = true;
 
     // Elements in the window
@@ -131,7 +131,7 @@ class CharGrapher extends JFrame implements ActionListener
     {
         super("Sharp String Grapher 1.0");
 
-        // Hit Enter to process. This area is only for Photo --> StrGraph mode
+        // Hit Enter to process. This area is only for Photo --> CharGraph mode
         stringInputField.addKeyListener(new KeyListener(){
             public void keyPressed (KeyEvent e) {}
             public void keyTyped (KeyEvent e) {}
@@ -152,15 +152,15 @@ class CharGrapher extends JFrame implements ActionListener
             public void actionPerformed (ActionEvent ev) 
             {
                 txtOutput.setText("");
-                // If it's Characters --> StrGraph mode
+                // If it's Characters --> CharGraph mode
                 if(modeBox.getSelectedItem().toString().equals(modes[1]))
                 {
-                    // Direct to Character --> StrGraph method.
+                    // Direct to Character --> CharGraph method.
                     charToGraph();
                     return;
                 }
 
-                // If it's Camera --> StrGraph mode
+                // If it's Camera --> CharGraph mode
                 if(modeBox.getSelectedItem().toString().equals(modes[2]))
                 {
                     // If the status is 'paused'
@@ -177,7 +177,7 @@ class CharGrapher extends JFrame implements ActionListener
                     }
                     return;
                 }
-                // If it's Photo --> StrGraph mode
+                // If it's Photo --> CharGraph mode
                 try{
                     photoToGraph(stringInputField.getText());
                 } catch(IOException e){}
@@ -200,7 +200,7 @@ class CharGrapher extends JFrame implements ActionListener
 
         resolutionSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                // If it's Characters --> StrGraph mode, exit the method
+                // If it's Characters --> CharGraph mode, exit the method
                 if(modeBox.getSelectedItem().toString().equals(modes[1])) return;
                 // Set max resolution
                 maxResolution = (double) resolutionSlider.getValue();
@@ -259,7 +259,7 @@ class CharGrapher extends JFrame implements ActionListener
                 // If change is detected
                 if(e.getStateChange() == ItemEvent.SELECTED)
                 {
-                    // Photo --> StrGraph mode
+                    // Photo --> CharGraph mode
                     if(modeBox.getSelectedItem().toString().equals(modes[0]))
                     {
                         // Remove previously written data
@@ -285,7 +285,7 @@ class CharGrapher extends JFrame implements ActionListener
                         inputLable.setText(labels[0]);
                     }
                     
-                    // Char --> StrGraph mode
+                    // Char --> CharGraph mode
                     if(modeBox.getSelectedItem().toString().equals(modes[1]))
                     {
                         // Remove previously written data
@@ -312,7 +312,7 @@ class CharGrapher extends JFrame implements ActionListener
                         inputLable.setText(labels[2]);
                     }
                     
-                    // Cam --> StrGraph mode
+                    // Cam --> CharGraph mode
                     if(modeBox.getSelectedItem().toString().equals(modes[2]))
                     {   
                         // Remove previously written data
