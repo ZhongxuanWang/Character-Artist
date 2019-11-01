@@ -3,7 +3,7 @@
 **********************
 **Environment Build  -  Something to notice**
 **********************
-*In oder to use all the functions in SharpStrGrapher, it is expected to:<br>
+*In oder to use all the functions in, it is expected to:<br>
 1> Install the latest Python runtime. (<a href="https://www.python.org/ftp/python/3.8.0/python-3.8.0-macosx10.9.pkg">download Python3.8 for MacOS</a>)<br>
 2> After doing so, install 'opencv-python' by inputting '<code>pip3 install opencv-python</code>' in Terminal and hitting Enter.<br>
 3> Have the latest JDK and JVM (<a href="https://www.java.com/en/download/mac_download.jsp">download latest Java for MacOS</a>).<br>
@@ -16,21 +16,21 @@
 **********
 
 
-   SharpStrGrapher1 is a software created by JAVA, in first version. It could convert photo to string or character to string or camera captured content to string. It has advanced settings in fancy GUI.
+   CharGrapher is a software created by JAVA, in first version. It could convert photo to string or character to string or camera captured content to string. It has advanced settings in fancy GUI.
 
 <br>
 
 **************
 **Developer:**
 **************
-1.Zhongxuan(Daniel) Wang. (Starter)
+Zhongxuan(Daniel) Wang (cndanielwang@gmail.com)
 <br>
 <br>
 
 *************
 **Materials**
 *************
-SharpStrGrapher is mostly an independent project. However, it's inevitable that certain difficulties may be encountered. Thus, I used some materials online and codes to feed myself. Also, it's a good thing to share what I learnt to you and you will get a chance to learn them as well. Those are some materials that I used in order to finish the project. I made some relatively big modifications in order to fit the need. Some links will not be explained since their path is clear already.<br>
+CharGrapher is mostly an independent project. However, it's inevitable that certain difficulties may be encountered. Thus, I used some materials online and codes to feed myself. Also, it's a good thing to share what I learnt to you and you will get a chance to learn them as well. Those are some materials that I used in order to finish the project. I made some relatively big modifications in order to fit the need. Some links will not be explained since their path is clear already.<br>
 http://paulbourke.net/dataformats/asciiart/<br>
 https://www.mkyong.com/java/convert-png-to-jpeg-image-file-in-java/<br>
 
