@@ -21,7 +21,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.event.*;
 import java.awt.font.*;
 
-class SharpStrGrapher extends JFrame implements ActionListener
+class CharGrapher extends JFrame implements ActionListener
 {
     private static final long serialVersionUID = 001L;
     // Initialize some objects that are related to the functions.
@@ -33,7 +33,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
     public static Process pylaunch;
 
     public static String input, fileExtension, fileName, cuScaleChar, str, opFileName1 = "";
-    public static String ssgWS = new File("").getAbsoluteFile().toString() + "/SharpStrGrapherWorkSpace/";
+    public static String ssgWS = new File("").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
     public static String pyfilename = ssgWS + "SSshoter.py";
     public static String[] helpTips = {
         "Start the process by clicking here.",                                                          // 0
@@ -127,7 +127,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
 
 
     // Constructor for the Window
-    public SharpStrGrapher()
+    public CharGrapher()
     {
         super("Sharp String Grapher 1.0");
 
@@ -210,7 +210,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
         wordComplexitySlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 // Inform the method to change the value
-                cuScaleChar =  SharpStrGrapher.getCusScale();
+                cuScaleChar =  CharGrapher.getCusScale();
             }
         });
 
@@ -441,11 +441,11 @@ class SharpStrGrapher extends JFrame implements ActionListener
             ssgWSObj.mkdir();
 
         // Show UI
-        info("Welcome to SharpStrGrapher 1.0");
+        info("Welcome to CharGrapher 1.0");
         info("Console will also get output. Warnings and Infos will be displayed in this area.");
         newline();
 
-        SharpStrGrapher gui = new SharpStrGrapher();
+        CharGrapher gui = new CharGrapher();
         // Receive input from console
         do {
             // Print interface
@@ -582,7 +582,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
     public static BufferedImage imgCompress(BufferedImage img, int height, int width)
     {
         // Put it to origin
-        SharpStrGrapher.ifJpg = false;
+        CharGrapher.ifJpg = false;
         try{
             Image trimSize = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -668,12 +668,12 @@ class SharpStrGrapher extends JFrame implements ActionListener
             str += "\n";
             for (int j = 0; j < imgWidth; j++)
             {
-                int scalePlace = SharpStrGrapher.getScaleChar(SharpStrGrapher.getGrayValue(Integer.toHexString(bufferedImg.getRGB(j, i))));
-                str += (SharpStrGrapher.cuScaleChar.substring(scalePlace,scalePlace+1));                    
+                int scalePlace = CharGrapher.getScaleChar(CharGrapher.getGrayValue(Integer.toHexString(bufferedImg.getRGB(j, i))));
+                str += (CharGrapher.cuScaleChar.substring(scalePlace,scalePlace+1));                    
             }
         }
         // Do this is to avoid bad effect of image.
-        SharpStrGrapher.txtOutput.append(str);
+        CharGrapher.txtOutput.append(str);
         if(isOutputToConsole) System.out.print(str);
     }
 
@@ -695,7 +695,7 @@ class SharpStrGrapher extends JFrame implements ActionListener
     public static String getExtension(String path) 
     {
         /* In macOS, path contains "/" instead of "\" which is in Windows OS.
-        Thus, SharpStrGrapher is expected to only run in macOS and systems that support those 
+        Thus, CharGrapher is expected to only run in macOS and systems that support those 
         variations. Later compatibility in Windows may be resolved. */
         fileName = path.split("/")[path.split("/").length - 1]; // Get filename
         String fEx;
@@ -887,20 +887,20 @@ class Snapshotpy implements Runnable
     public static String str = "";
     public static int imgWidth, imgHeight, imgResolution;
     public static double x = 0;
-    public static String imgPath = SharpStrGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
+    public static String imgPath = CharGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
     public static File imgfile = new File(imgPath);
     
     public void run()
     {
         // If python script task is alive, then continue to output. 
-        while(!SharpStrGrapher.pyhasdestroid)
+        while(!CharGrapher.pyhasdestroid)
         {
             try{
                 /* Thread.leep(MS) 100ms = .1s This means the delay in which the
                 software read image from the disk. If the value is lower, it may
                 result in exceeding disk consumption. Vice versa. */
                 Thread.sleep(100);
-                SharpStrGrapher.txtOutput.setText("");
+                CharGrapher.txtOutput.setText("");
                 picproc();
             }catch(Exception e){}
         }
@@ -913,10 +913,10 @@ class Snapshotpy implements Runnable
         imgHeight = bufferedImg.getHeight();
         imgWidth = bufferedImg.getWidth();
         imgResolution = bufferedImg.getWidth() * bufferedImg.getHeight();
-        if(imgResolution > SharpStrGrapher.maxResolution)
+        if(imgResolution > CharGrapher.maxResolution)
         {
             // Get the ratio to compress
-            x = SharpStrGrapher.maxResolution / imgResolution;
+            x = CharGrapher.maxResolution / imgResolution;
             x = Math.sqrt(x);
             // The 0.8 and 1.1 is ratio that adjust the output to suit the font.
             imgHeight = (int) (imgHeight * x * 0.8);
@@ -925,7 +925,7 @@ class Snapshotpy implements Runnable
             imgResolution = imgWidth * imgHeight;
         }
         // Output the image. 
-        SharpStrGrapher.output(bufferedImg, imgHeight, imgWidth, false);
+        CharGrapher.output(bufferedImg, imgHeight, imgWidth, false);
     }
 
     public static BufferedImage imgCompress(int height, int width) throws IOException
