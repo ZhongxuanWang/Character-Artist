@@ -673,7 +673,7 @@ class CharGrapher extends JFrame implements ActionListener
             }
         }
         // Do this is to avoid bad effect of image.
-        CharGrapher.txtOutput.append(str);
+        CharGrapher.txtOutput.setText(str);
         if(isOutputToConsole) System.out.print(str);
     }
 
@@ -815,7 +815,7 @@ class CharGrapher extends JFrame implements ActionListener
                is obnormally low, you could adjust this value higher but you will experience 
                long delays.
                It means the delay in which python takes photo. */
-            "    time.sleep("+ 0.18 +")\n"+ 
+            "    time.sleep("+ 0.2 +")\n"+ 
             "    cam = VideoCapture(0)\n"+
             "    rep, img = cam.read()\n"+
             "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
@@ -899,8 +899,7 @@ class Snapshotpy implements Runnable
                 /* Thread.leep(MS) 100ms = .1s This means the delay in which the
                 software read image from the disk. If the value is lower, it may
                 result in exceeding disk consumption. Vice versa. */
-                Thread.sleep(100);
-                CharGrapher.txtOutput.setText("");
+                Thread.sleep(5);
                 picproc();
             }catch(Exception e){}
         }
