@@ -28,7 +28,7 @@ Zhongxuan(Daniel) Wang (cndanielwang@gmail.com)
 **Update:**
 ***********
 - 1.2.0 
-- - Create Photo --> Hexadecimal mode. 
+- - *NEW*: Photo --> Hexadecimal mode! Convert photo into Hexadecimal matrics. It's useful in debuging using Neural Network that uses those image data.
 - - Fix Bug: Resolution Bug, on Camera Mode that would result in a much smaller image.
 - - Fix Bug: ResetBtn Bug, that doesn't clear all the fields.
 - - Imporve: Accessibility and compile with only one file needed.
