@@ -27,9 +27,4 @@ Zhongxuan(Daniel) Wang (cndanielwang@gmail.com)
 <br>
 <br>
 
-*************
-**Materials**
-*************
-CharGrapher is mostly an independent project. However, it's inevitable that certain difficulties may be encountered. Thus, I used some materials online and codes to feed myself. Also, it's a good thing to share what I learnt to you and you will get a chance to learn them as well. Those are some materials that I used in order to finish the project. I made some relatively big modifications in order to fit the need. Some links will not be explained since their path is clear already.<br>
-http://paulbourke.net/dataformats/asciiart/<br>
-https://www.mkyong.com/java/convert-png-to-jpeg-image-file-in-java/<br>
+*Update*
