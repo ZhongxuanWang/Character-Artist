@@ -29,5 +29,7 @@ Zhongxuan(Daniel) Wang (cndanielwang@gmail.com)
 ***********
 - 1.2.0 
 - - Create Photo --> Hexadecimal mode. 
-- - Fix Bug: Resolution
+- - Fix Bug: Resolution Bug, on Camera Mode that would result in a much smaller image.
+- - Fix Bug: ResetBtn Bug, that doesn't clear all the fields.
 - - Imporve: Accessibility and compile with only one file needed.
+- - Imporve: Some Btns and JText Fields. Less verbose and more clear.
