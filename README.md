@@ -1,5 +1,3 @@
-
-*<a href="https://github.com/ZhongxuanWang/CharGrapher-java/Archive/src/CharGrapher.java">CLICK TO DOWNLOAD</a>*
 **********************
 **Environment Build  -  Something to notice**
 **********************
