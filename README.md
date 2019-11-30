@@ -1,5 +1,5 @@
-**********************
-**<a href="https://github.com/ZhongxuanWang/CharGrapher-java/archive/master.zip">CLICK TO DOWNLOAD</a>**
+
+* <a href="https://github.com/ZhongxuanWang/CharGrapher-java/archive/master.zip">CLICK TO DOWNLOAD</a> *
 **********************
 **Environment Build  -  Something to notice**
 **********************
@@ -15,8 +15,7 @@
 **About:**
 **********
 
-
-   CharGrapher is a software created by JAVA, in first version. It could convert photo to string or character to string or camera captured content to string. It has advanced settings in fancy GUI.
+   CharGrapher is a software created by JAVA, in its first version. It could convert photo to string or character to string or camera captured content to string. It has advanced settings in fancy GUI.
 
 <br>
 
