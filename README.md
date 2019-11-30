@@ -27,3 +27,7 @@ Zhongxuan(Daniel) Wang (cndanielwang@gmail.com)
 ***********
 **Update:**
 ***********
+- 1.2.0 
+- - Create Photo --> Hexadecimal mode. 
+- - Fix Bug: Resolution
+- - Imporve: Accessibility and compile with only one file needed.
