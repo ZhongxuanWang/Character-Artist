@@ -31,5 +31,6 @@ Zhongxuan(Daniel) Wang (cndanielwang@gmail.com)
 - - *NEW*: Photo --> Hexadecimal mode! Convert photo into Hexadecimal matrics. It's useful in debuging using Neural Network that uses those image data.
 - - Fix Bug: Resolution Bug, on Camera Mode that would result in a much smaller image.
 - - Fix Bug: ResetBtn Bug, that doesn't clear all the fields.
-- - Imporve: Accessibility and compile with only one file needed.
-- - Imporve: Some Btns and JText Fields. Less verbose and more clear.
+- - Improve: Accessibility and compile with only one file needed.
+- - Improve: Some Btns and JText Fields. Less verbose and more clear.
+- - Improve: Overall codes and program performance.
