@@ -23,7 +23,7 @@ import java.awt.font.*;
 class CharGrapher extends JFrame implements ActionListener
 {
     static final long serialVersionUID = 0021L;
-    static final String ver = "1.2.0 Preview";
+    static final String ver = "1.2.0 Formal";
     // Initialize some objects that are related to the functions.
     static JPanel pnlObj = new JPanel();
     static BufferedWriter bw;
@@ -111,7 +111,7 @@ class CharGrapher extends JFrame implements ActionListener
 
     static JTextField stringInputField = new JTextField(20); // For file path
     static JTextField charInputField = new JTextField(10); // For characters
-    static JTextArea txtOutput = new JTextArea(120, 270);
+    static JTextArea txtOutput = new JTextArea(120, 100);
 
     static JLabel inputLable = new JLabel(labels[0]);
     static JLabel sliderLable = new JLabel(labels[1]);
@@ -161,7 +161,7 @@ class CharGrapher extends JFrame implements ActionListener
                 // If it's Photo --> CharGraph mode
                 if (modeBox.getSelectedItem().toString().equals(modes[0])) {
                     try{
-                        photoToGraph(stringInputField.getText());
+                        photoToGraph(stringInputField.getText().trim());
                     } catch(IOException e){}
                     return;
                 }
@@ -195,7 +195,7 @@ class CharGrapher extends JFrame implements ActionListener
                 // If it's Photo --> CharGraph mode
                 if(modeBox.getSelectedItem().toString().equals(modes[3]))
                 {
-                    photoToHex(stringInputField.getText());
+                    photoToHex(stringInputField.getText().trim());
                     return;
                 }
             }
@@ -287,6 +287,7 @@ class CharGrapher extends JFrame implements ActionListener
                         charInputField.setVisible(false);
                         sliderLable.setVisible(true);
                         wordComplexitySlider.setVisible(true);
+                        reverseBtn.setVisible(true);
                         fontLable.setVisible(false);
                         fontBox.setVisible(false);
                         startBtn.setText(btns[0]);
@@ -299,6 +300,7 @@ class CharGrapher extends JFrame implements ActionListener
                         resolutionSlider.setPaintTicks(false);
 
                         inputLable.setText(labels[0]);
+                        txtOutput.setFont(txtOutputFont);
                     }
                     
                     // Char --> CharGraph mode
@@ -315,6 +317,7 @@ class CharGrapher extends JFrame implements ActionListener
                         charInputField.setVisible(true);
                         sliderLable.setVisible(false);
                         wordComplexitySlider.setVisible(false);
+                        reverseBtn.setVisible(true);
                         fontLable.setVisible(true);
                         fontBox.setVisible(true);
                         startBtn.setText(btns[0]);
@@ -327,6 +330,7 @@ class CharGrapher extends JFrame implements ActionListener
                         resolutionSlider.setPaintTicks(true);
 
                         inputLable.setText(labels[2]);
+                        txtOutput.setFont(txtOutputFont);
                     }
                     
                     // Cam --> CharGraph mode
@@ -342,6 +346,7 @@ class CharGrapher extends JFrame implements ActionListener
                         charInputField.setVisible(false);
                         sliderLable.setVisible(true);
                         wordComplexitySlider.setVisible(true);
+                        reverseBtn.setVisible(true);
                         fontLable.setVisible(false);
                         fontBox.setVisible(false);
                         sliderLable2.setText(labels[3]);
@@ -353,6 +358,8 @@ class CharGrapher extends JFrame implements ActionListener
                         resolutionSlider.setPaintTicks(false);
 
                         startBtn.setText(btns[3]);
+
+                        txtOutput.setFont(txtOutputFont);
                         // Lauch the multithread.
                         if(!buildPy())
                         {
@@ -365,32 +372,31 @@ class CharGrapher extends JFrame implements ActionListener
 
                     if(modeBox.getSelectedItem().toString().equals(modes[3]))
                     {
-                        errinfo("Sorry, this function is still in developing");
-                        modeBox.setSelectedIndex(0);
-                        return;
-                        // // Remove previously written data
-                        // txtOutput.setText("");
-                        // // Destroy previous launched python script.
-                        // pydestroy();
-                        // // Reconstructing GUI
-                        // inputLable.setVisible(true);
-                        // stringInputField.setVisible(true);
-                        // charInputField.setVisible(false);
-                        // sliderLable.setVisible(false);
-                        // wordComplexitySlider.setVisible(false);
-                        // fontLable.setVisible(false);
-                        // fontBox.setVisible(false);
-                        // sliderLable2.setText(labels[3]);
+                        // Remove previously written data
+                        txtOutput.setText("");
+                        // Destroy previous launched python script.
+                        pydestroy();
+                        // Reconstructing GUI
+                        inputLable.setVisible(true);
+                        stringInputField.setVisible(true);
+                        charInputField.setVisible(false);
+                        sliderLable.setVisible(false);
+                        wordComplexitySlider.setVisible(false);
+                        reverseBtn.setVisible(false);
+                        fontLable.setVisible(false);
+                        fontBox.setVisible(false);
+                        sliderLable2.setText(labels[3]);
 
-                        // resolutionSlider.setMinimum(0);
-                        // resolutionSlider.setMaximum((int)sliderRes);
-                        // resolutionSlider.setValue(resolutionSlider.getMaximum());
-                        // resolutionSlider.setMajorTickSpacing(1);
-                        // resolutionSlider.setSnapToTicks(false);
-                        // resolutionSlider.setPaintTicks(false);
+                        resolutionSlider.setMinimum(0);
+                        resolutionSlider.setMaximum((int)sliderRes);
+                        resolutionSlider.setValue(resolutionSlider.getMaximum());
+                        resolutionSlider.setMajorTickSpacing(1);
+                        resolutionSlider.setSnapToTicks(false);
+                        resolutionSlider.setPaintTicks(false);
 
-                        // startBtn.setText(btns[0]);
+                        startBtn.setText(btns[0]);
 
+                        txtOutput.setFont(new Font("Courier New",Font.BOLD,12));
                     }
                 }
                 return;
@@ -448,7 +454,7 @@ class CharGrapher extends JFrame implements ActionListener
         resolutionSlider.setPreferredSize(new Dimension(130,30));
         areaScrollPane.setVerticalScrollBarPolicy(
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        areaScrollPane.setPreferredSize(new Dimension(800, 800));
+        areaScrollPane.setPreferredSize(new Dimension(800, 739));
         areaScrollPane.setAutoscrolls(true);
         cuScaleChar = getCusScale();
 
@@ -501,7 +507,6 @@ class CharGrapher extends JFrame implements ActionListener
         do {
             // Print interface
             info("Please input image path below");
-            System.out.print(">");
             input = scr.nextLine();
         } while (
             // This expression means if not exist, redo.
@@ -510,7 +515,7 @@ class CharGrapher extends JFrame implements ActionListener
         // Close buffer
         scr.close();
 
-        photoToGraph(input);
+        photoToGraph(input.trim());
     }
 
 
@@ -552,6 +557,7 @@ class CharGrapher extends JFrame implements ActionListener
 
             for (int j = 0; j < cgimage.width; j++) {
                 int rgb = cgimage.img.getRGB(j, i);
+                System.out.println(rgb);
                 // Convert each pixel into average gray value
                 int scalePlace = getScaleChar(getGrayValue(Integer.toHexString(rgb)));
                 speChar = cuScaleChar.split("")[scalePlace];
@@ -606,7 +612,28 @@ class CharGrapher extends JFrame implements ActionListener
     }
 
     static void photoToHex(String path) {
-        ;
+        File file = new File(path);
+        if(!file.exists()) {
+            errinfo("Sorry, file you inputted does not exist");
+            return;
+        }
+        if (!checkIfPic(file)) return;
+        CGImage cgimage = new CGImage(file);
+        if (cgimage.resolution > resolutionSlider.getValue())
+        {
+            double x = (double) resolutionSlider.getValue() / cgimage.resolution;
+            x = Math.sqrt(x);
+            cgimage.compress( (int)(cgimage.height * x * 0.8), (int)(cgimage.width * x) );
+        }
+        
+        for (int i = 0; i < cgimage.width; i++) {
+            for (int j = 0; j < cgimage.height; j++) {
+                String grid = Integer.toHexString(getGrayValue(Integer.toHexString(cgimage.img.getRGB(i, j))));
+                if (grid.length() == 1) grid = "0" + grid;
+                txtOutput.append(grid + " ");
+            }
+        }
+        
     }
 
 // - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
