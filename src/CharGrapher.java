@@ -12,7 +12,6 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.*;
 import java.awt.image.BufferedImage;
 import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
 
 // For the Window and the elements
 import javax.swing.*;
@@ -23,19 +22,18 @@ import java.awt.font.*;
 
 class CharGrapher extends JFrame implements ActionListener
 {
-    private static final long serialVersionUID = 001L;
+    static final long serialVersionUID = 0021L;
+    static final String ver = "1.2.0 Preview";
     // Initialize some objects that are related to the functions.
-    public static JPanel pnlObj = new JPanel();
-    public static Iterator<ImageWriter> imageWriters;
-    public static BufferedImage img, resizedImg, jpgImg;
-    public static BufferedWriter bw;
-    public static FileReader fr;
-    public static Process pylaunch;
+    static JPanel pnlObj = new JPanel();
+    static BufferedWriter bw;
+    static FileReader fr;
+    static Process pylaunch;
 
-    public static String input, fileExtension, fileName, cuScaleChar, str, opFileName1 = "";
-    public static String ssgWS = new File("").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
-    public static String pyfilename = ssgWS + "SSshoter.py";
-    public static String[] helpTips = {
+    public static BufferedImage img, resizedImg, jpgImg;
+    static String input, fileExtension, fileName, cuScaleChar, str, opFileName1 = "";
+    static String ssgWS = new File("").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
+    static String[] helpTips = {
         "Start the process by clicking here.",                                                          // 0
         "It's where the output will be. It's editable",                                                 // 1
         "Input your file path here. <required>",                                                        // 2
@@ -51,12 +49,13 @@ class CharGrapher extends JFrame implements ActionListener
         "Input your characters here. NOTE:']' represents output in a seperate line. "+
         "Maximum is 10 characters at once. The exceeding parts will be ignored. <required>"             // 9
     };
-    public static String[] modes = {
+    static String[] modes = {
         "Photo --> CharGraph",       // 0
-        "Characters --> CharGraph",  // 1
-        "Camera --> CharGraph"       // 2
+        "Words --> CharGraph",       // 1
+        "Camera --> CharGraph",      // 2
+        "Photo --> Hexadecimal"      // 3 *NEW*
     };
-    public static String[] labels = {
+    static String[] labels = {
         "Photo Path:",      // 0
         "Complexity:",      // 1
         "Characters:",      // 2
@@ -64,16 +63,16 @@ class CharGrapher extends JFrame implements ActionListener
         "Font Size:",       // 4
         "Characters Font:"  // 5
     };
-    public static String[] btns = {
+    static String[] btns = {
         "Start",              // 0
         "Reset Field",        // 1
         "Output To Txt",      // 2
         "Pause",              // 3
         "Continue",           // 4
-        "Characters Reverse", // 5
+        "Color Reverse",      // 5
         "Reverse Back"        // 6
     };
-    public static String[] scales = {
+    static String[] scales = {
         "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$                                         ",     // 0
         "WWWWWWWWWWWWWWWCCCCCCCCCCCCCCCrrrrrrrrrr{{{{{{{{{{>>>>>>>>>>``````````            ",     // 1
         "&&&&&WWWWWdddddpppppCCCCCJJJJJxxxxxrrrrr11111{{{{{<<<<<>>>>>^^^^^`````            ",     // 2  
@@ -83,11 +82,11 @@ class CharGrapher extends JFrame implements ActionListener
         "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'..            ",   // 6
     };
 
-    public static int imgWidth, imgHeight, imgResolution;
-    public static boolean pyhasdestroid = false;
+    static int imgWidth, imgHeight, imgResolution;
+    static boolean pyhasdestroid = false;
 
-    private static boolean ifJpg = false;
-    private static Scanner scr = new Scanner(System.in);
+    static boolean ifJpg = false;
+    static Scanner scr = new Scanner(System.in);
 
 
     /* This is maximum Resolution in which you want the output to hold. You can adjust but it's hoped not 
@@ -95,41 +94,47 @@ class CharGrapher extends JFrame implements ActionListener
     better. But if resolution from photos that later inputted is larger than this, it will be compressed
     to this. 
     NOTICE : This must set to be a decimal, which is expected to adhere a .0 at last, but not required.*/
-    public static double maxResolution = 20000.0;
+    static double maxResolution, sliderRes = 20000.0;
 
     /* This is the switch to open the function that cut up the space parts in the front part of the output.
     Even though this is recommended to trun on every time and very useful, for some very very special 
     circumstances, the improvement doesn't work and would probably distort the original photo, or, user 
     doesn't want to use this function. You can change it to false if you want.    
     NOTICE : This function is only applicable in Photo --> CharGraph mode.                               */
-    private static boolean isCutUpSpacePart = true;
+    static boolean isCutUpSpacePart = true;
 
     // Elements in the window
-    public static JButton startBtn = new JButton(btns[0]);
-    public static JButton resetBtn = new JButton(btns[1]);
-    public static JButton optxtBtn = new JButton(btns[2]);
-    public static JButton reverseBtn = new JButton(btns[5]);
-    public static JTextField stringInputField = new JTextField(20); // For file path
-    public static JTextField charInputField = new JTextField(10); // For characters
-    public static JTextArea txtOutput = new JTextArea(120, 270);
-    public static JLabel inputLable = new JLabel(labels[0]);
-    public static JLabel sliderLable = new JLabel(labels[1]);
-    public static JLabel sliderLable2 = new JLabel(labels[3]);
-    public static JLabel fontLable = new JLabel(labels[5]);
-    public static Font txtOutputFont = new Font("Courier New", Font.PLAIN, 5), charFont;
-    public static JComboBox<String> modeBox = new JComboBox<String>(modes);
-    public static JComboBox<String> fontBox = new JComboBox<String>
+    static JButton startBtn = new JButton(btns[0]);
+    static JButton resetBtn = new JButton(btns[1]);
+    static JButton optxtBtn = new JButton(btns[2]);
+    static JButton reverseBtn = new JButton(btns[5]);
+
+    static JTextField stringInputField = new JTextField(20); // For file path
+    static JTextField charInputField = new JTextField(10); // For characters
+    static JTextArea txtOutput = new JTextArea(120, 270);
+
+    static JLabel inputLable = new JLabel(labels[0]);
+    static JLabel sliderLable = new JLabel(labels[1]);
+    static JLabel sliderLable2 = new JLabel(labels[3]);
+    static JLabel fontLable = new JLabel(labels[5]);
+
+    static Font txtOutputFont = new Font("Courier New", Font.PLAIN, 5), charFont;
+
+    static JComboBox<String> modeBox = new JComboBox<String>(modes);
+    static JComboBox<String> fontBox = new JComboBox<String>
     (GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
-    public static JSlider wordComplexitySlider = new JSlider(JSlider.HORIZONTAL, 0, 6, 6);
-    public static JSlider resolutionSlider = new JSlider(JSlider.HORIZONTAL, 2,
-     (int) maxResolution, (int) maxResolution);
-    public static JScrollPane areaScrollPane = new JScrollPane(txtOutput);
+
+    static JSlider wordComplexitySlider = new JSlider(JSlider.HORIZONTAL, 0, 6, 6);
+    static JSlider resolutionSlider = new JSlider(JSlider.HORIZONTAL, 2,
+     (int) sliderRes, (int) sliderRes);
+
+    static JScrollPane areaScrollPane = new JScrollPane(txtOutput);
 
 
     // Constructor for the Window
     public CharGrapher()
     {
-        super("Sharp String Grapher 1.0");
+        super("Sharp String Grapher "+ver);
 
         // Hit Enter to process. This area is only for Photo --> CharGraph mode
         stringInputField.addKeyListener(new KeyListener(){
@@ -141,6 +146,7 @@ class CharGrapher extends JFrame implements ActionListener
                 if(ev.getKeyCode() == 10)
                 {
                     try {
+                        warninfo(stringInputField.getText());
                         photoToGraph(stringInputField.getText());
                     } catch (IOException e) {}
                 }
@@ -148,10 +154,18 @@ class CharGrapher extends JFrame implements ActionListener
             }
         });
 
-        startBtn.addActionListener(new ActionListener(){
+        startBtn.addActionListener(new ActionListener() {
             public void actionPerformed (ActionEvent ev) 
             {
                 txtOutput.setText("");
+                // If it's Photo --> CharGraph mode
+                if (modeBox.getSelectedItem().toString().equals(modes[0])) {
+                    try{
+                        photoToGraph(stringInputField.getText());
+                    } catch(IOException e){}
+                    return;
+                }
+
                 // If it's Characters --> CharGraph mode
                 if(modeBox.getSelectedItem().toString().equals(modes[1]))
                 {
@@ -177,23 +191,29 @@ class CharGrapher extends JFrame implements ActionListener
                     }
                     return;
                 }
+                
                 // If it's Photo --> CharGraph mode
-                try{
-                    photoToGraph(stringInputField.getText());
-                } catch(IOException e){}
-                return;
+                if(modeBox.getSelectedItem().toString().equals(modes[3]))
+                {
+                    photoToHex(stringInputField.getText());
+                    return;
+                }
             }
         });
 
-        resetBtn.addActionListener(new ActionListener(){
-            public void actionPerformed (ActionEvent e)
-            {
+        resetBtn.addActionListener(new ActionListener() {
+            public void actionPerformed (ActionEvent e) {
                 // Reset all the fields to their default status
                 charInputField.setText("");
                 stringInputField.setText("");
                 txtOutput.setText("");
                 wordComplexitySlider.setValue(6);
-                resolutionSlider.setValue((int)maxResolution); 
+                resolutionSlider.setValue((int)maxResolution);
+                if (reverseBtn.getText().equals(btns[6])) {
+                    // Simulate a clicking.
+                    reverseBtn.doClick();
+                }
+                resolutionSlider.setValue(resolutionSlider.getMaximum());
                 return;
             }
         });
@@ -214,29 +234,24 @@ class CharGrapher extends JFrame implements ActionListener
             }
         });
 
-        reverseBtn.addActionListener(new ActionListener(){
-            public void actionPerformed (ActionEvent e)
-            {
+        reverseBtn.addActionListener(new ActionListener() {
+            public void actionPerformed (ActionEvent e) {
                 // Set the text of Button and change
-                if(reverseBtn.getText() == btns[5])
-                {
+                if(reverseBtn.getText() == btns[5]) {
                     reverseBtn.setText(btns[6]);
                 } else {
                     reverseBtn.setText(btns[5]);
                 }
                 // Read each characters from back and put on the top front.
-                for(int i = 0; i < scales.length; i++)
-                {
+                for(int i = 0; i < scales.length; i++) {
                     String scales_temp = "";
-                    for(int j=1; j <= scales[i].length(); j++)
-                    {
+                    for(int j=1; j <= scales[i].length(); j++) {
                         scales_temp += scales[i].substring(scales[i].length()-j,scales[i].length()-j+1);
                     }
                     scales[i] = scales_temp;
                 }
                 String scales_temp = "";
-                for(int i=1; i <= cuScaleChar.length(); i++)
-                {
+                for(int i=1; i <= cuScaleChar.length(); i++) {
                     scales_temp += cuScaleChar.substring(cuScaleChar.length()-i, cuScaleChar.length()-i+1);
                 }
                 cuScaleChar = scales_temp;
@@ -277,7 +292,8 @@ class CharGrapher extends JFrame implements ActionListener
                         startBtn.setText(btns[0]);
                         sliderLable2.setText(labels[3]);
                         resolutionSlider.setMinimum(0);
-                        resolutionSlider.setMaximum((int) maxResolution);
+                        resolutionSlider.setMaximum((int) sliderRes);
+                        resolutionSlider.setValue(resolutionSlider.getMaximum());
                         resolutionSlider.setMajorTickSpacing(1);
                         resolutionSlider.setSnapToTicks(false);
                         resolutionSlider.setPaintTicks(false);
@@ -305,6 +321,7 @@ class CharGrapher extends JFrame implements ActionListener
                         sliderLable2.setText(labels[4]);
                         resolutionSlider.setMinimum(5);
                         resolutionSlider.setMaximum(70);
+                        resolutionSlider.setValue(resolutionSlider.getMaximum());
                         resolutionSlider.setMajorTickSpacing(4);
                         resolutionSlider.setSnapToTicks(true);
                         resolutionSlider.setPaintTicks(true);
@@ -328,8 +345,9 @@ class CharGrapher extends JFrame implements ActionListener
                         fontLable.setVisible(false);
                         fontBox.setVisible(false);
                         sliderLable2.setText(labels[3]);
-                        resolutionSlider.setMinimum(0);
-                        resolutionSlider.setMaximum((int)maxResolution);
+                        resolutionSlider.setMinimum(20);
+                        resolutionSlider.setMaximum((int)sliderRes);
+                        resolutionSlider.setValue(resolutionSlider.getMaximum());
                         resolutionSlider.setMajorTickSpacing(1);
                         resolutionSlider.setSnapToTicks(false);
                         resolutionSlider.setPaintTicks(false);
@@ -343,6 +361,36 @@ class CharGrapher extends JFrame implements ActionListener
                             return; // If building failed, stop building.
                         }
                         camModeProcess();
+                    }
+
+                    if(modeBox.getSelectedItem().toString().equals(modes[3]))
+                    {
+                        errinfo("Sorry, this function is still in developing");
+                        modeBox.setSelectedIndex(0);
+                        return;
+                        // // Remove previously written data
+                        // txtOutput.setText("");
+                        // // Destroy previous launched python script.
+                        // pydestroy();
+                        // // Reconstructing GUI
+                        // inputLable.setVisible(true);
+                        // stringInputField.setVisible(true);
+                        // charInputField.setVisible(false);
+                        // sliderLable.setVisible(false);
+                        // wordComplexitySlider.setVisible(false);
+                        // fontLable.setVisible(false);
+                        // fontBox.setVisible(false);
+                        // sliderLable2.setText(labels[3]);
+
+                        // resolutionSlider.setMinimum(0);
+                        // resolutionSlider.setMaximum((int)sliderRes);
+                        // resolutionSlider.setValue(resolutionSlider.getMaximum());
+                        // resolutionSlider.setMajorTickSpacing(1);
+                        // resolutionSlider.setSnapToTicks(false);
+                        // resolutionSlider.setPaintTicks(false);
+
+                        // startBtn.setText(btns[0]);
+
                     }
                 }
                 return;
@@ -380,6 +428,7 @@ class CharGrapher extends JFrame implements ActionListener
         fontBox.setToolTipText(helpTips[7]);
         charInputField.setToolTipText(helpTips[9]);
 
+        stringInputField.setDragEnabled(true);
         // OTHER SETTINGS - - - - - - - - - - - - - - - - - - - -
         txtOutput.setEditable(true);
         txtOutput.setFont(txtOutputFont);
@@ -421,31 +470,33 @@ class CharGrapher extends JFrame implements ActionListener
         pnlObj.add(modeBox);
         pnlObj.add(areaScrollPane);
 
-        // SET WINDOW PROPERTY - - - - - - - - - - - - - - - - - - 
         pack();
         setSize(800, 835);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // Since we have already set it up
         add(pnlObj);
         setResizable(false);
         //setAlwaysOnTop(true);
         setVisible(true);
     }
 
-    // To override the abstract method in ActionEvent
     public void actionPerformed(ActionEvent e){}
     public static void main (String[] args) throws IOException
     {
+        if (args.length != 0) {
+            ;
+        }
+
         // Create work space if needed
         File ssgWSObj = new File(ssgWS);
         if(!ssgWSObj.exists())
             ssgWSObj.mkdir();
 
         // Show UI
-        info("Welcome to CharGrapher 1.0");
-        info("Console will also get output. Warnings and Infos will be displayed in this area.");
-        newline();
+        info("Welcome to CharGrapher "+ ver);
+        info("Console will also get updates and warnings");
+        System.out.println();
 
-        CharGrapher gui = new CharGrapher();
+        new CharGrapher();
         // Receive input from console
         do {
             // Print interface
@@ -458,46 +509,32 @@ class CharGrapher extends JFrame implements ActionListener
             );
         // Close buffer
         scr.close();
-        
+
         photoToGraph(input);
     }
 
 
-    public static void photoToGraph(String input) throws IOException
+    static void photoToGraph(String input) throws IOException
     {
-        if(!new File(input).exists()) 
-        {
+        File file = new File(input);
+        if(!file.exists()) {
             errinfo("Sorry, file you inputted does not exist");
             return;
         }
-        // Check elligibility and get filename
-        if(!checkIfPic(getExtension(input))) return;
+        // Check elligibility
+        if (!checkIfPic(file)) return;
 
         // Treat it as image file and give image data to bufferedimage type img.
-        getImgBasicInfo(input);
+        CGImage cgimage = new CGImage(file);
+
         // Check if resolution oversized. If it's oversized, compress before continue.
-        if(imgResolution > maxResolution)
+        if (cgimage.resolution > resolutionSlider.getValue())
         {
             /* Calculate the percentile in which is hoped to compress before letting imgCompress
-            method to do the work. It's a logarithem. */
-            {
-                double x = maxResolution / imgResolution;
-                x = Math.sqrt(x);
-                imgHeight = (int) (imgHeight * x * 0.8);
-                imgWidth = (int) (imgWidth * x);
-            }
-
-            // Call the method
-            resizedImg = imgCompress(img, imgHeight, imgWidth);
-            // Re declare object and reget information
-            getImgBasicInfo(resizedImg);
-        }
-        // For those who are not jpg or jpeg format.
-        if(!ifJpg)
-        {
-            // Create a blank, RGB, same width and height, and a white background
-            jpgImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
-            jpgImg.createGraphics().drawImage(img, 0, 0, Color.WHITE, null);
+            method to do the work. It's a algorithm. */
+            double x = (double) resolutionSlider.getValue() / cgimage.resolution;
+            x = Math.sqrt(x);
+            cgimage.compress( (int)(cgimage.height * x * 0.8), (int)(cgimage.width * x) );
         }
 
         /* This is a logarithm that output the specific charactor(char) from the scale. The 
@@ -508,46 +545,42 @@ class CharGrapher extends JFrame implements ActionListener
         boolean spaceTest = true;
         String speChar = "";
         // Read each pixel and get each RGB value, proceed each one seperately.
-        for (int i = 0; i < imgHeight; i++)
-        {
+        for (int i = 0; i < cgimage.height; i++) {
             // Ignore the rule if cutup is turned down
             if(!isCutUpSpacePart) output("");
             if(!spaceTest) output("");
-            for (int j = 0; j < imgWidth; j++)
-            {
-                int rgb = jpgImg.getRGB(j, i);
+
+            for (int j = 0; j < cgimage.width; j++) {
+                int rgb = cgimage.img.getRGB(j, i);
                 // Convert each pixel into average gray value
                 int scalePlace = getScaleChar(getGrayValue(Integer.toHexString(rgb)));
                 speChar = cuScaleChar.split("")[scalePlace];
                 // If it's not a space, then stop not inputting
-                if(isCutUpSpacePart && spaceTest && !(speChar.equals(" "))) {
+                if (isCutUpSpacePart && spaceTest && !(speChar.equals(" "))) {
                     spaceTest = false;
-                    output("");
+                    txtOutput.setText("");
                     // Align the text
                     output(" ".repeat(j+1));
                 }
                 output(speChar);
             }
         }
+        // Resume for the next time
         spaceTest = true;
 
-        newline();
+        System.out.println();
     }
 
-
-    public static void charToGraph() 
+    static void charToGraph() 
     {
         // Seperate each line by \n and proceed them individually.
-        if(charInputField.getText().length() == 0) 
-        {
-            errinfo("It is expected to input some characters in the input field");
+        if (charInputField.getText().length() == 0) {
+            errinfo("The Word Field cound't be empty");
             return;
         }
-        for(int i = 0; i < charInputField.getText().split("]").length; i++)
-        {
+        for (int i = 0; i < charInputField.getText().split("]").length; i++) {
             // Create a blank canvas
             Graphics2D graphics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).createGraphics();
-
 
             // Get the size of the font, help to create a new String
             charFont = new Font(fontBox.getSelectedItem().toString(), Font.PLAIN, resolutionSlider.getValue());
@@ -556,8 +589,8 @@ class CharGrapher extends JFrame implements ActionListener
             int adv = metrics.stringWidth(charInputField.getText().split("]")[i]);
 
             // Create the canves with expected dimension
-            BufferedImage canvas = new BufferedImage(adv+4, hgt, BufferedImage.TYPE_INT_RGB);
-            graphics = canvas.createGraphics();
+            CGImage canvas = new CGImage(new BufferedImage(adv+4, hgt, BufferedImage.TYPE_INT_RGB)); 
+            graphics = canvas.img.createGraphics();
 
             // Fill with all white
             graphics.fillRect(0, 0, adv+4, hgt);
@@ -568,42 +601,24 @@ class CharGrapher extends JFrame implements ActionListener
             graphics.drawString(charInputField.getText().split("]")[i], 0, hgt-5); // Draw String on canvas
 
             // Get basic information of the BufferedImage
-            getImgBasicInfo(canvas);
-            output(canvas, imgHeight, imgWidth, true);
+            output(canvas.img, canvas.height, canvas.width, true);
         }
     }
 
-
-// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
-
-    // Image to smaller size
-    public static BufferedImage imgCompress(BufferedImage img, int height, int width)
-    {
-        // Put it to origin
-        CharGrapher.ifJpg = false;
-        try{
-            Image trimSize = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = resized.createGraphics();
-            g2d.drawImage(trimSize, 0, 0, null);
-            g2d.dispose();
-            return resized;
-        } catch(Exception e){
-            errinfo("Error met while processing image. Image was unable to be proceeded. Sorry");
-            // Return a 10x10 sized blank image if errors were caught
-            return new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
-        }
+    static void photoToHex(String path) {
+        ;
     }
+
+// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
 
     /**
      * Calculate and return the most accurate grayscale (by pixel).
      * @param argb
      * @return Integer
      */
-    public static int getGrayValue(String argb) 
-    {
+    static int getGrayValue(String argb) {
         // Convert from hexadecimal to decimal and get RGB from the String.
         int r = Integer.parseInt(argb.substring(2,4), 16);
         int g = Integer.parseInt(argb.substring(4,6), 16);
@@ -618,27 +633,25 @@ class CharGrapher extends JFrame implements ActionListener
     /**
      * Method will return the position+1 of array in integer 
      */
-    public static int getScaleChar(int grayValue) 
-    {
+    static int getScaleChar(int grayValue) {
         // grayValue will vary from 0 to 255, which is from pure black to pure white.
-        return Math.round((float) (grayValue / 3.24686));
+        return Math.round((float)(grayValue / 3.24686));
     }
 
     /**
      * Check if the type of image (file) is accepted.
-     * @param fileExt
-     * @return
+     * @param File
+     * @return boolean
      */
-    public static boolean checkIfPic(String fileExt) throws IOException
-    {
-        imageWriters = ImageIO.getImageWritersByFormatName(fileExt);
-        // Check if it has a image writer
-        if (!imageWriters.hasNext()) 
-        {
+    static boolean checkIfPic(File file) {
+        try {
+            if (ImageIO.read(file) == null)
+                throw new Exception("No data!");
+            return true;
+        } catch(Exception e) {
             errinfo("Sorry, the file you inputted is not supported");
             return false;
         }
-        return true;
     }
 
 
@@ -653,7 +666,7 @@ class CharGrapher extends JFrame implements ActionListener
      * @param imgWidth
      * @param isOutputToConsole
      */
-    public static void output(
+    static void output (
         BufferedImage bufferedImg, 
         int imgHeight, 
         int imgWidth, 
@@ -661,28 +674,29 @@ class CharGrapher extends JFrame implements ActionListener
         )
     {
         // Get customized scale (from slider)
-
         String str = "";
-        for (int i = 0; i < imgHeight; i++)
-        {
+        for (int i = 0; i < imgHeight; i++) {
             str += "\n";
-            for (int j = 0; j < imgWidth; j++)
-            {
+            for (int j = 0; j < imgWidth; j++) {
                 int scalePlace = CharGrapher.getScaleChar(CharGrapher.getGrayValue(Integer.toHexString(bufferedImg.getRGB(j, i))));
                 str += (CharGrapher.cuScaleChar.substring(scalePlace,scalePlace+1));                    
             }
         }
-        // Do this is to avoid bad effect of image.
-        CharGrapher.txtOutput.setText(str);
-        if(isOutputToConsole) System.out.print(str);
+        // If its words -> chargraph mode
+        if (modeBox.getSelectedIndex() == 1) {
+            txtOutput.append(str);
+        } else {
+            txtOutput.setText(str);
+        }
+        if (isOutputToConsole) System.out.print(str);
     }
 
-    public static void output(String str)
+    static void output(String str)
     {
         if(str.length() == 0)
         {
             // Console Output - Uncontrollable
-            newline();
+            System.out.println();
             // GUI output - Controllable (set it in the field part)
             txtOutput.append("\n");
             return;
@@ -692,26 +706,7 @@ class CharGrapher extends JFrame implements ActionListener
         return;
     }
 
-    public static String getExtension(String path) 
-    {
-        /* In macOS, path contains "/" instead of "\" which is in Windows OS.
-        Thus, CharGrapher is expected to only run in macOS and systems that support those 
-        variations. Later compatibility in Windows may be resolved. */
-        fileName = path.split("/")[path.split("/").length - 1]; // Get filename
-        String fEx;
-        try {
-            fEx=fileName.split("\\.")[1];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            warninfo("It is expected to input a path containing a file extension."+
-            "'png' is selected by default");
-            return "png";
-        }
-        if((fEx.toLowerCase().equals("jpg") && fEx.toLowerCase().equals("jpeg")))
-            ifJpg = true;
-        return fileName.split("\\.")[1];// Return file extension
-    }
-
-    public static String getCusScale()
+    static String getCusScale()
     {
         try{
             return scales[wordComplexitySlider.getValue()-1];
@@ -722,41 +717,7 @@ class CharGrapher extends JFrame implements ActionListener
         }
     }
 
-    /**
-     * It will put image data in object img, and get the width, height and resolution 
-     * of the image file.
-     * @param path
-     */
-    private static void getImgBasicInfo(String path) throws IOException
-    {
-        try 
-        {
-            img = ImageIO.read(new File(path));
-        } catch (IOException e) {
-            errinfo("Sorry, read file failed");
-            return;
-        }
-        imgWidth = img.getWidth();
-        imgHeight = img.getHeight();
-        imgResolution = imgWidth * imgHeight;
-        return;
-    }
-
-    private static void getImgBasicInfo(BufferedImage bufferedImg)
-    {
-        img = resizedImg;
-        try{
-            imgWidth = bufferedImg.getWidth();
-            imgHeight = bufferedImg.getHeight();
-        } catch(Exception e){
-            errinfo("Software is unable to get the image info by width or height");
-            return;
-        }
-        imgResolution = imgWidth * imgHeight;
-        return;
-    }
-
-    public static boolean outputToTxt()
+    static boolean outputToTxt()
     {
         String str = txtOutput.getText();
         // If it's camera mode and if it's not pausing
@@ -776,46 +737,49 @@ class CharGrapher extends JFrame implements ActionListener
         + (int) (Math.random() * 2000000 + 1000000) + ".txt";
         // Directly call the method to output.
         try {
+            var file = new File(ssgWS + opFileName);
             bw = new BufferedWriter(new FileWriter(ssgWS + opFileName));
             /* Avoid when user pressed the "capture", the software was 
             refreshing its field */
             bw.write(str);
             bw.close();
-            Desktop.getDesktop().open(new File(ssgWS + opFileName));
-
+            Desktop.getDesktop().open(file);
+            if (!file.exists()) return false;
             return true;
         } catch (IOException er) {return false;}
     }
 
-    public static void camModeProcess()
+    static void camModeProcess()
     {                        
         if(!pyLaunch()) return;
         Thread snapshotpy = new Thread(new Snapshotpy());
         snapshotpy.start();
     }
 
-    public static void pydestroy()
+    static void pydestroy()
     {
         pyhasdestroid = true;
         try{
             pylaunch.destroyForcibly();
-        }catch(Exception e){}
+        }catch(Exception e){
+            pyhasdestroid = false;
+        }
     }
 
-    public static boolean buildPy()
+    static boolean buildPy()
     {
         try
         {
-            BufferedWriter out = new BufferedWriter(new FileWriter(new File(pyfilename)));
+            var out = new BufferedWriter(new FileWriter(new File(ssgWS + "SSshoter.py")));
             String prg = "from cv2 import *\n" +
             "import time\n"+
-            "os.chdir(\""+ssgWS+"\")\n"+
+            "os.chdir(\"" + ssgWS + "\")\n"+
             "while True:\n"+
             /* Sleep(seconds) 0.1 is recommended. If the speed of read and write of your disk
                is obnormally low, you could adjust this value higher but you will experience 
                long delays.
                It means the delay in which python takes photo. */
-            "    time.sleep("+ 0.2 +")\n"+ 
+            "    time.sleep("+ 0.3 +")\n"+ 
             "    cam = VideoCapture(0)\n"+
             "    rep, img = cam.read()\n"+
             "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
@@ -828,14 +792,12 @@ class CharGrapher extends JFrame implements ActionListener
         return true;
     }
 
-    public static boolean pyLaunch()
+    static boolean pyLaunch()
     {
-        try
-        {
-            pylaunch = Runtime.getRuntime().exec("python3 " + pyfilename);
+        try {
+            pylaunch = Runtime.getRuntime().exec("python3 " + ssgWS + "SSshoter.py");
         }
-        catch (Exception e) 
-        {
+        catch (Exception e) {
             errinfo("Sorry, unable to Launch python3. Please install the environment or check" +
             "if the python script is exist." + e.toString());
             return false;
@@ -849,95 +811,110 @@ class CharGrapher extends JFrame implements ActionListener
 // - - - - - - - - - - - - - - - - - - - - F O R   D I S P L A Y - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - F O R   D I S P L A Y - - - - - - - - - - - - - - - - - -
 
-    public static void info(String info)
-    {
+    static void info(String info) {
         System.out.println("\033[0;32m" + "+INFO+ - " + info + "." + "\033[0m");
         return;
     }
 
-    public static void errinfo(String info)
-    {
+    static void errinfo(String info) {
         System.out.println("\033[0;31m" + "+ERROR+ - " + info + "." + "\033[0m");
         JOptionPane.showMessageDialog(null, info + ".", "An Error Occurs", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    public static void warninfo(String info)
-    {
+    static void warninfo(String info) {
         System.out.println("\033[0;33m" + "+WARNING+ - " + info + "." + "\033[0m");
         return;
     }
 
-    public static void newline() 
+// - - - - - - - - - - - - - - - - - - - N E S T E D   C L A S S - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - N E S T E D   C L A S S - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - N E S T E D   C L A S S - - - - - - - - - - - - - - - - - -
+
+    /* Some of the picture processing methods are listed here. But main procedure was 
+    stored in main method in nominated main class. */
+
+    static class Snapshotpy implements Runnable 
     {
-        System.out.print("\n");
-        return;
-    }
-}
+        BufferedImage bufferedImg;
 
-
-/* Some of the picture processing methods are listed here. But main procedure was 
-stored in main method in nominated main class. */
-
-class Snapshotpy implements Runnable 
-{
-    public static BufferedImage bufferedImg;
-
-    // To receive content that will be outputted
-    public static String str = "";
-    public static int imgWidth, imgHeight, imgResolution;
-    public static double x = 0;
-    public static String imgPath = CharGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
-    public static File imgfile = new File(imgPath);
-    
-    public void run()
-    {
-        // If python script task is alive, then continue to output. 
-        while(!CharGrapher.pyhasdestroid)
+        // To receive content that will be outputted
+        String str = "";
+        int imgWidth, imgHeight, imgResolution;
+        double x = 0;
+        String imgPath = CharGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
+        File imgfile = new File(imgPath);
+        
+        public void run()
         {
-            try{
-                /* Thread.leep(MS) 100ms = .1s This means the delay in which the
-                software read image from the disk. If the value is lower, it may
-                result in exceeding disk consumption. Vice versa. */
-                Thread.sleep(5);
-                picproc();
-            }catch(Exception e){}
+            // If python script task is alive, then continue to output. 
+            while(!CharGrapher.pyhasdestroid)
+            {
+                try{
+                    /* Thread.leep(MS) 100ms = .1s This means the delay in which the
+                    software read image from the disk. If the value is lower, it may
+                    result in exceeding disk consumption. Vice versa. */
+                    Thread.sleep(1);
+                    picproc();
+                }catch(Exception e){}
+            }
+            return;
         }
-        return;
+
+        void picproc() {
+            CGImage pic = new CGImage(imgfile);
+            if(pic.resolution > CharGrapher.maxResolution)
+            {
+                // Get the ratio to compress
+                x = CharGrapher.maxResolution / pic.resolution;
+                x = Math.sqrt(x);
+                // The 0.8 and 1.1 is ratio that adjust the output to suit the font.
+                pic.compress((int) (pic.height * x * 0.8), (int) (pic.width * x * 1.1));
+            }
+            // Output the image. 
+            CharGrapher.output(pic.img, pic.height, pic.width, false);
+        }
     }
 
-    public void picproc() throws IOException
-    {
-        bufferedImg = ImageIO.read(imgfile);
-        imgHeight = bufferedImg.getHeight();
-        imgWidth = bufferedImg.getWidth();
-        imgResolution = bufferedImg.getWidth() * bufferedImg.getHeight();
-        if(imgResolution > CharGrapher.maxResolution)
-        {
-            // Get the ratio to compress
-            x = CharGrapher.maxResolution / imgResolution;
-            x = Math.sqrt(x);
-            // The 0.8 and 1.1 is ratio that adjust the output to suit the font.
-            imgHeight = (int) (imgHeight * x * 0.8);
-            imgWidth = (int) (imgWidth * x * 1.1);
-            bufferedImg = imgCompress(imgHeight, imgWidth);
-            imgResolution = imgWidth * imgHeight;
+    static class CGImage {
+        int width,height,resolution;
+        BufferedImage img;
+        
+        public CGImage(File path) {
+            // Since the path here is from the trusted source(after processed and checked), exception is no need to be handled.
+            try {
+                img = ImageIO.read(path);
+            } catch(Exception e) {}
+            width = img.getWidth();
+            height = img.getHeight();
+            resolution = width * height;
         }
-        // Output the image. 
-        CharGrapher.output(bufferedImg, imgHeight, imgWidth, false);
-    }
 
-    public static BufferedImage imgCompress(int height, int width) throws IOException
-    {
-        // Get the trimmed image
-        Image trimSize = bufferedImg.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        // Create a blank board
-        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        // Create g2d object using the blank board
-        Graphics2D g2d = resized.createGraphics();
-        // Put trimmed image in the board
-        g2d.drawImage(trimSize, 0, 0, null);
-        g2d.dispose();
-        return resized;
+        public CGImage(BufferedImage img) {
+            this.img = img;
+            width = img.getWidth();
+            height = img.getHeight();
+            resolution = width * height;
+        }
+
+        BufferedImage getImage() {
+            return img;
+        }
+
+        void compress(int height, int width) {
+            try {
+                Image trimSize = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+                Graphics2D g2d = resized.createGraphics();
+                g2d.drawImage(trimSize, 0, 0, Color.WHITE, null);
+                g2d.dispose();
+                img = resized;
+            } catch(Exception e) {
+                errinfo("Sorry: " + e + " was raised. Image was unable to be proceeded");
+                e.printStackTrace();
+            }
+            this.height = height;
+            this.width = width;
+        }
     }
 }
