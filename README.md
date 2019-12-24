@@ -27,6 +27,13 @@ Zhongxuan(Daniel) Wang (cndanielwang@gmail.com)
 ***********
 **Update:**
 ***********
+- 1.3.0 Test
+- - *NEW* CharGraph --> Photo mode! Convert Chargraphs into normal photo! (reverse the Photo-->CharGraph process) The result will be black and white
+- - Fix Bug: That will result in a excessive energy consumation
+- - Improve: Put img compressing into CGImage class.
+- - Improve: Codes from constructor.
+- - Improve: Somewhere redundant.
+
 - 1.2.0 Formal
 - - *NEW*: Photo --> Hexadecimal mode! Convert photo (in black and white) into Hexadecimal matrics. It's useful in debuging using Neural Network that uses those image data.
 - - Fix Bug: Resolution Bug, on Camera Mode that would result in a much smaller image.
