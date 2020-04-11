@@ -40,7 +40,7 @@ public class CGImage {
             g2d.dispose();
             img = resized;
         } catch(Exception e) {
-            CharGrapher.errinfo("Sorry: " + e + " was raised. Image was unable to be proceeded");
+            Display.errinfo("Sorry: " + e + " was raised. Image was unable to be proceeded");
             e.printStackTrace();
         }
         this.height = height;
