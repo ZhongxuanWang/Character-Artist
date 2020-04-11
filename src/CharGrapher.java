@@ -2,27 +2,20 @@
 import java.io.*;
 import java.awt.*;
 import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 // For photo process
-import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.*;
 import java.awt.image.BufferedImage;
-import java.awt.color.ColorSpace;
 
 // For the Window and the elements
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
-import java.awt.font.*;
 
 class CharGrapher extends JFrame implements ActionListener
 {
-    static final long serialVersionUID = 0021L;
+    static final long serialVersionUID = 17L;
     static final String ver = "1.2.0 Formal";
     // Initialize some objects that are related to the functions.
     static JPanel pnlObj = new JPanel();
@@ -527,7 +520,7 @@ class CharGrapher extends JFrame implements ActionListener
             return;
         }
         // Check elligibility
-        if (!checkIfPic(file)) return;
+        if (checkIfPic(file)) return;
 
         // Treat it as image file and give image data to bufferedimage type img.
         CGImage cgimage = new CGImage(file);
@@ -617,7 +610,7 @@ class CharGrapher extends JFrame implements ActionListener
             errinfo("Sorry, file you inputted does not exist");
             return;
         }
-        if (!checkIfPic(file)) return;
+        if (checkIfPic(file)) return;
         CGImage cgimage = new CGImage(file);
         if (cgimage.resolution > resolutionSlider.getValue())
         {
@@ -674,10 +667,10 @@ class CharGrapher extends JFrame implements ActionListener
         try {
             if (ImageIO.read(file) == null)
                 throw new Exception("No data!");
-            return true;
+            return false;
         } catch(Exception e) {
             errinfo("Sorry, the file you inputted is not supported");
-            return false;
+            return true;
         }
     }
 
@@ -819,7 +812,7 @@ class CharGrapher extends JFrame implements ActionListener
     static boolean pyLaunch()
     {
         try {
-            pylaunch = Runtime.getRuntime().exec("python3 " + ssgWS + "SSshoter.py");
+            pylaunch = Runtime.getRuntime().exec("python3.7 " + ssgWS + "SSshoter.py");
         }
         catch (Exception e) {
             errinfo("Sorry, unable to Launch python3. Please install the environment or check" +
