@@ -16,6 +16,10 @@ import java.awt.event.*;
 
 class CharGrapher extends JFrame implements ActionListener
 {
+
+    // TODO Make this project more object oriented !!!
+
+
     static final long serialVersionUID = 17L;
     static final String ver = "1.2.0 Formal";
     // Initialize some objects that are related to the functions.
@@ -228,7 +232,7 @@ class CharGrapher extends JFrame implements ActionListener
         reverseBtn.addActionListener(new ActionListener() {
             public void actionPerformed (ActionEvent e) {
                 // Set the text of Button and change
-                if(reverseBtn.getText() == btns[5]) {
+                if(reverseBtn.getText().equals(btns[5])) {
                     reverseBtn.setText(btns[6]);
                 } else {
                     reverseBtn.setText(btns[5]);
@@ -351,7 +355,7 @@ class CharGrapher extends JFrame implements ActionListener
                         startBtn.setText(btns[3]);
 
                         txtOutput.setFont(txtOutputFont);
-                        // Lauch the multithread.
+                        // Multithreading.
                         if(!buildPy())
                         {
                             Display.errinfo("Sorry, python script building failed."+
@@ -403,12 +407,8 @@ class CharGrapher extends JFrame implements ActionListener
                 pydestroy();
                 // Delete the photo created from camera
                 try{
-                    if (
-                            !new File(ssgWS + "SSGSHOTS_IMG.jpg").delete() ||
-                            !new File(ssgWS + "SSGSHOTS_IMG.py").delete()
-                        ) {
-                        throw new Exception();
-                    }
+                    new File(ssgWS + "SSGSHOTS_IMG.jpg").delete();
+                    new File(ssgWS + "SSGSHOTS_IMG.py").delete();
                 }catch(Exception er){
                     Display.errinfo("Unable to remove caches, but the software will still quit. " + er);
                 }
@@ -485,7 +485,7 @@ class CharGrapher extends JFrame implements ActionListener
     public static void main (String[] args) throws IOException
     {
         if (args.length != 0) {
-            ;
+            Display.info("Console mode is not enabled");
         }
 
         // Create work space if needed
@@ -538,18 +538,17 @@ class CharGrapher extends JFrame implements ActionListener
             cgimage.compress( (int)(cgimage.height * x * 0.8), (int)(cgimage.width * x) );
         }
 
-        /* This is a logarithm that output the specific charactor(char) from the scale. The 
+        /* This is a logarithm that output the specific character(char) from the scale. The
         position of char is determined from the complexity slider or internally built variable. 
         Meanwhile, here implements a log that remove extra whitespace from the output.   */
 
         // Initialize some variables will be used in later
         boolean spaceTest = true;
         String speChar = "";
-        // Read each pixel and get each RGB value, proceed each one seperately.
+        // Read each pixel and get each RGB value, proceed each one separately.
         for (int i = 0; i < cgimage.height; i++) {
             // Ignore the rule if cutup is turned down
-            if(!isCutUpSpacePart) output("");
-            if(!spaceTest) output("");
+            if(!isCutUpSpacePart || !spaceTest) output("");
 
             for (int j = 0; j < cgimage.width; j++) {
                 int rgb = cgimage.img.getRGB(j, i);
@@ -576,7 +575,7 @@ class CharGrapher extends JFrame implements ActionListener
     {
         // Separate each line by \n and proceed them individually.
         if (charInputField.getText().length() == 0) {
-            Display.errinfo("The Word Field cound't be empty");
+            Display.errinfo("The Word Field couldn't be empty");
             return;
         }
         for (int i = 0; i < charInputField.getText().split("]").length; i++) {
@@ -727,7 +726,8 @@ class CharGrapher extends JFrame implements ActionListener
         txtOutput.append(str);
     }
 
-    static String getCusScale() {
+    static String getCusScale()
+    {
         try {
             return scales[wordComplexitySlider.getValue() - 1];
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -823,10 +823,4 @@ class CharGrapher extends JFrame implements ActionListener
         pyhasdestroid = false;
         return true;
     }
-
-
-// - - - - - - - - - - - - - - - - - - - - F O R   D I S P L A Y - - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - - F O R   D I S P L A Y - - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - - F O R   D I S P L A Y - - - - - - - - - - - - - - - - - -
-
 }
