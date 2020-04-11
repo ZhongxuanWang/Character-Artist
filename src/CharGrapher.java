@@ -701,19 +701,19 @@ class CharGrapher extends JFrame implements ActionListener
         )
     {
         // Get customized scale (from slider)
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for (int i = 0; i < imgHeight; i++) {
-            str += "\n";
+            str.append("\n");
             for (int j = 0; j < imgWidth; j++) {
                 int scalePlace = CharGrapher.getScaleChar(CharGrapher.getGrayValue(Integer.toHexString(bufferedImg.getRGB(j, i))));
-                str += (CharGrapher.cuScaleChar.substring(scalePlace,scalePlace+1));                    
+                str.append(CharGrapher.cuScaleChar.substring(scalePlace, scalePlace + 1));
             }
         }
         // If its words -> chargraph mode
         if (modeBox.getSelectedIndex() == 1) {
-            txtOutput.append(str);
+            txtOutput.append(str.toString());
         } else {
-            txtOutput.setText(str);
+            txtOutput.setText(str.toString());
         }
         if (isOutputToConsole) System.out.print(str);
     }
@@ -730,15 +730,12 @@ class CharGrapher extends JFrame implements ActionListener
         }
         System.out.print(str);
         txtOutput.append(str);
-        return;
     }
 
-    static String getCusScale()
-    {
-        try{
-            return scales[wordComplexitySlider.getValue()-1];
-        } catch(ArrayIndexOutOfBoundsException e)
-        {
+    static String getCusScale() {
+        try {
+            return scales[wordComplexitySlider.getValue() - 1];
+        } catch (ArrayIndexOutOfBoundsException e) {
             // If there's an error in getting the value, then use 0 position in array to replace
             return scales[0];
         }
@@ -840,108 +837,14 @@ class CharGrapher extends JFrame implements ActionListener
 
     static void info(String info) {
         System.out.println("\033[0;32m" + "+INFO+ - " + info + "." + "\033[0m");
-        return;
     }
 
     static void errinfo(String info) {
         System.out.println("\033[0;31m" + "+ERROR+ - " + info + "." + "\033[0m");
         JOptionPane.showMessageDialog(null, info + ".", "An Error Occurs", JOptionPane.ERROR_MESSAGE);
-        return;
     }
 
     static void warninfo(String info) {
         System.out.println("\033[0;33m" + "+WARNING+ - " + info + "." + "\033[0m");
-        return;
-    }
-
-// - - - - - - - - - - - - - - - - - - - N E S T E D   C L A S S - - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - N E S T E D   C L A S S - - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - N E S T E D   C L A S S - - - - - - - - - - - - - - - - - -
-
-    /* Some of the picture processing methods are listed here. But main procedure was 
-    stored in main method in nominated main class. */
-
-    static class Snapshotpy implements Runnable 
-    {
-        BufferedImage bufferedImg;
-
-        // To receive content that will be outputted
-        String str = "";
-        int imgWidth, imgHeight, imgResolution;
-        double x = 0;
-        String imgPath = CharGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
-        File imgfile = new File(imgPath);
-        
-        public void run()
-        {
-            // If python script task is alive, then continue to output. 
-            while(!CharGrapher.pyhasdestroid)
-            {
-                try{
-                    /* Thread.leep(MS) 100ms = .1s This means the delay in which the
-                    software read image from the disk. If the value is lower, it may
-                    result in exceeding disk consumption. Vice versa. */
-                    Thread.sleep(1);
-                    picproc();
-                }catch(Exception e){}
-            }
-            return;
-        }
-
-        void picproc() {
-            CGImage pic = new CGImage(imgfile);
-            if(pic.resolution > CharGrapher.maxResolution)
-            {
-                // Get the ratio to compress
-                x = CharGrapher.maxResolution / pic.resolution;
-                x = Math.sqrt(x);
-                // The 0.8 and 1.1 is ratio that adjust the output to suit the font.
-                pic.compress((int) (pic.height * x * 0.8), (int) (pic.width * x * 1.1));
-            }
-            // Output the image. 
-            CharGrapher.output(pic.img, pic.height, pic.width, false);
-        }
-    }
-
-    static class CGImage {
-        int width,height,resolution;
-        BufferedImage img;
-        
-        public CGImage(File path) {
-            // Since the path here is from the trusted source(after processed and checked), exception is no need to be handled.
-            try {
-                img = ImageIO.read(path);
-            } catch(Exception e) {}
-            width = img.getWidth();
-            height = img.getHeight();
-            resolution = width * height;
-        }
-
-        public CGImage(BufferedImage img) {
-            this.img = img;
-            width = img.getWidth();
-            height = img.getHeight();
-            resolution = width * height;
-        }
-
-        BufferedImage getImage() {
-            return img;
-        }
-
-        void compress(int height, int width) {
-            try {
-                Image trimSize = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-                BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-                Graphics2D g2d = resized.createGraphics();
-                g2d.drawImage(trimSize, 0, 0, Color.WHITE, null);
-                g2d.dispose();
-                img = resized;
-            } catch(Exception e) {
-                errinfo("Sorry: " + e + " was raised. Image was unable to be proceeded");
-                e.printStackTrace();
-            }
-            this.height = height;
-            this.width = width;
-        }
     }
 }
