@@ -32,6 +32,7 @@ public class Snapshotpy implements Runnable
             pic.compress((int) (pic.height * x * 0.8), (int) (pic.width * x * 1.1));
         }
         // Output the image.
-        CharGrapher.output(pic.img, pic.height, pic.width, false);
+        // FIXME
+        pic.output(pic.img, pic.height, pic.width, false);
     }
 }

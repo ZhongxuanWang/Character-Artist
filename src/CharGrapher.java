@@ -545,7 +545,7 @@ class CharGrapher extends JFrame implements ActionListener
         // Read each pixel and get each RGB value, proceed each one separately.
         for (int i = 0; i < cgimage.height; i++) {
             // Ignore the rule if cutup is turned down
-            if(!isCutUpSpacePart || !spaceTest) output("");
+            if(!isCutUpSpacePart || !spaceTest) Display.output("");
 
             for (int j = 0; j < cgimage.width; j++) {
                 int rgb = cgimage.img.getRGB(j, i);
@@ -558,9 +558,9 @@ class CharGrapher extends JFrame implements ActionListener
                     spaceTest = false;
                     txtOutput.setText("");
                     // Align the text
-                    output(" ".repeat(j+1));
+                    Display.output(" ".repeat(j+1));
                 }
-                output(speChar);
+                Display.output(speChar);
             }
         }
         // Resume for the next time
@@ -580,7 +580,12 @@ class CharGrapher extends JFrame implements ActionListener
             Graphics2D graphics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).createGraphics();
 
             // Get the size of the font, help to create a new String
-            charFont = new Font(fontBox.getSelectedItem().toString(), Font.PLAIN, resolutionSlider.getValue());
+            try {
+                charFont = new Font(fontBox.getSelectedItem().toString(), Font.PLAIN, resolutionSlider.getValue());
+            } catch (NullPointerException e) {
+                Display.errinfo("Font is not selected since it's not in the system anymore.");
+                return;
+            }
             FontMetrics metrics = graphics.getFontMetrics(charFont);
             int hgt = metrics.getHeight();
             int adv = metrics.stringWidth(charInputField.getText().split("]")[i]);
@@ -598,7 +603,7 @@ class CharGrapher extends JFrame implements ActionListener
             graphics.drawString(charInputField.getText().split("]")[i], 0, hgt-5); // Draw String on canvas
 
             // Get basic information of the BufferedImage
-            output(canvas.img, canvas.height, canvas.width, true);
+            canvas.output(true);
         }
     }
 
@@ -676,60 +681,13 @@ class CharGrapher extends JFrame implements ActionListener
 // - - - - - - - - - - - - - - - - - - - - - O T H E R - - - - - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - - O T H E R - - - - - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - - O T H E R - - - - - - - - - - - - - - - - - - - - - -
-
-    /**
-     * Output the content to GUI or Console.
-     * @param bufferedImg the image to output
-     * @param imgHeight the height of the image
-     * @param imgWidth the width of the image
-     * @param isOutputToConsole whether to input to console
-     */
-    static void output (
-        BufferedImage bufferedImg, 
-        int imgHeight, 
-        int imgWidth, 
-        boolean isOutputToConsole
-        )
-    {
-        // Get customized scale (from slider)
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < imgHeight; i++) {
-            str.append("\n");
-            for (int j = 0; j < imgWidth; j++) {
-                int scalePlace = CharGrapher.getScaleChar(CharGrapher.getGrayValue(Integer.toHexString(bufferedImg.getRGB(j, i))));
-                str.append(CharGrapher.cuScaleChar.substring(scalePlace, scalePlace + 1));
-            }
-        }
-        // If its words -> CharGraph mode
-        if (modeBox.getSelectedIndex() == 1) {
-            txtOutput.append(str.toString());
-        } else {
-            txtOutput.setText(str.toString());
-        }
-        if (isOutputToConsole) System.out.print(str);
-    }
-
-    static void output(String str)
-    {
-        if(str.length() == 0)
-        {
-            // Console Output - Uncontrollable
-            System.out.println();
-            // GUI output - Controllable (set it in the field part)
-            txtOutput.append("\n");
-            return;
-        }
-        System.out.print(str);
-        txtOutput.append(str);
-    }
-
     static String getCusScale()
     {
         try {
             return scales[wordComplexitySlider.getValue() - 1];
         } catch (ArrayIndexOutOfBoundsException e) {
-            // If there's an error in getting the value, then use 0 position in array to replace
-            return scales[0];
+            // If there's an error in getting the value, then use last position in array to replace
+            return scales[scales.length-1];
         }
     }
 
