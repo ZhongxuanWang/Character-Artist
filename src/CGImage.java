@@ -14,7 +14,11 @@ public class CGImage extends Display{
         }
         try {
             img = ImageIO.read(file);
-        } catch (Exception ignored) {}
+            assert img != null;
+        } catch (Exception ignored) {
+            errinfo("Unable to read the image");
+            return;
+        }
         width = img.getWidth();
         height = img.getHeight();
         resolution = width * height;
@@ -51,9 +55,7 @@ public class CGImage extends Display{
      * Output the content to GUI or Console.
      * @param isOutputToConsole whether to input to console
      */
-    protected void output (
-            boolean isOutputToConsole
-    )
+    protected void output (boolean isOutputToConsole)
     {
         // Get customized scale (from slider)
         StringBuilder str = new StringBuilder();
@@ -61,7 +63,7 @@ public class CGImage extends Display{
             str.append("\n");
             for (int j = 0; j < width; j++) {
                 int scalePlace = CharGrapher.getScaleChar(getGrayValue(Integer.toHexString(img.getRGB(j, i))));
-                str.append(CharGrapher.cuScaleChar.substring(scalePlace, scalePlace + 1));
+                str.append(CharGrapher.cuScaleChar, scalePlace, scalePlace + 1);
             }
         }
         // If its words -> CharGraph mode
