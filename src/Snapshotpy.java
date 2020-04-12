@@ -33,6 +33,6 @@ public class Snapshotpy implements Runnable
         }
         // Output the image.
         // FIXME
-        pic.output(pic.img, pic.height, pic.width, false);
+        pic.output(false);
     }
 }
