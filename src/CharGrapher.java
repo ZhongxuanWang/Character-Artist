@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 
 // For the Window and the elements
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
 import java.awt.event.*;
 
 class CharGrapher extends JFrame implements ActionListener
@@ -18,15 +17,14 @@ class CharGrapher extends JFrame implements ActionListener
     // TODO Make this project more object oriented !!!
 
 
-    static final long serialVersionUID = 17L;
-    static final String ver = "1.2.0 Formal";
+    static final String ver = "1.3.0 Formal";
     // Initialize some objects that are related to the functions.
-    static JPanel pnlObj = new JPanel();
-    static Process pylaunch;
+    static final JPanel pnlObj = new JPanel();
+    static Process pyLaunch;
 
     static String cuScaleChar;
-    static String ssgWS = new File(".").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
-    static String[] helpTips = {
+    static final String ssgWS = new File("").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
+    static final String[] helpTips = {
         "Start the process by clicking here.",                                                          // 0
         "It's where the output will be. It's editable",                                                 // 1
         "Input your file path here. <required>",                                                        // 2
@@ -42,13 +40,13 @@ class CharGrapher extends JFrame implements ActionListener
         "Input your characters here. NOTE:']' represents output in a separate line. "+
         "Maximum is 10 characters at once. The exceeding parts will be ignored. <required>"             // 9
     };
-    static String[] modes = {
+    static final String[] modes = {
         "Photo --> CharGraph",       // 0
         "Words --> CharGraph",       // 1
         "Camera --> CharGraph",      // 2
         "Photo --> Hexadecimal"      // 3
     };
-    static String[] labels = {
+    static final String[] labels = {
         "Photo Path:",      // 0
         "Complexity:",      // 1
         "Characters:",      // 2
@@ -56,7 +54,7 @@ class CharGrapher extends JFrame implements ActionListener
         "Font Size:",       // 4
         "Characters Font:"  // 5
     };
-    static String[] btns = {
+    static final String[] btns = {
         "Start",              // 0
         "Reset Field",        // 1
         "Output To Txt",      // 2
@@ -65,7 +63,7 @@ class CharGrapher extends JFrame implements ActionListener
         "Color Reverse",      // 5
         "Reverse Back"        // 6
     };
-    static String[] scales = {
+    static final String[] scales = {
         "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$                                         ",     // 0
         "WWWWWWWWWWWWWWWCCCCCCCCCCCCCCCrrrrrrrrrr{{{{{{{{{{>>>>>>>>>>``````````            ",     // 1
         "&&&&&WWWWWdddddpppppCCCCCJJJJJxxxxxrrrrr11111{{{{{<<<<<>>>>>^^^^^`````            ",     // 2  
@@ -82,41 +80,43 @@ class CharGrapher extends JFrame implements ActionListener
     better. But if resolution from photos that later inputted is larger than this, it will be compressed
     to this. 
     NOTICE : This must set to be a decimal, which is expected to adhere a .0 at last, but not required.*/
-    static double maxResolution, sliderRes = 20000.0;
+    static double maxResolution;
+    static final double sliderRes = 20000.0;
 
     /* This is the switch to open the function that cut up the space parts in the front part of the output.
     Even though this is recommended to trun on every time and very useful, for some very very special 
     circumstances, the improvement doesn't work and would probably distort the original photo, or, user 
     doesn't want to use this function. You can change it to false if you want.    
     NOTICE : This function is only applicable in Photo --> CharGraph mode.                               */
-    static boolean isCutUpSpacePart = true;
+    static final boolean isCutUpSpacePart = true;
 
     // Elements in the window
-    static JButton startBtn = new JButton(btns[0]);
-    static JButton resetBtn = new JButton(btns[1]);
-    static JButton optxtBtn = new JButton(btns[2]);
-    static JButton reverseBtn = new JButton(btns[5]);
+    static final JButton startBtn = new JButton(btns[0]);
+    static final JButton resetBtn = new JButton(btns[1]);
+    static final JButton optxtBtn = new JButton(btns[2]);
+    static final JButton reverseBtn = new JButton(btns[5]);
 
-    static JTextField stringInputField = new JTextField(20); // For file path
-    static JTextField charInputField = new JTextField(10); // For characters
-    static JTextArea txtOutput = new JTextArea(120, 100);
+    static final JTextField stringInputField = new JTextField(20); // For file path
+    static final JTextField charInputField = new JTextField(10); // For characters
+    static final JTextArea txtOutput = new JTextArea(120, 100);
 
-    static JLabel inputLable = new JLabel(labels[0]);
-    static JLabel sliderLable = new JLabel(labels[1]);
-    static JLabel sliderLable2 = new JLabel(labels[3]);
-    static JLabel fontLable = new JLabel(labels[5]);
+    static final JLabel inputLable = new JLabel(labels[0]);
+    static final JLabel sliderLable = new JLabel(labels[1]);
+    static final JLabel sliderLable2 = new JLabel(labels[3]);
+    static final JLabel fontLable = new JLabel(labels[5]);
 
-    static Font txtOutputFont = new Font("Courier New", Font.PLAIN, 5), charFont;
+    static final Font txtOutputFont = new Font("Courier New", Font.PLAIN, 5);
+    static Font charFont;
 
-    static JComboBox<String> modeBox = new JComboBox<>(modes);
-    static JComboBox<String> fontBox = new JComboBox<>
+    static final JComboBox<String> modeBox = new JComboBox<>(modes);
+    static final JComboBox<String> fontBox = new JComboBox<>
     (GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
 
-    static JSlider wordComplexitySlider = new JSlider(JSlider.HORIZONTAL, 0, 6, 6);
-    static JSlider resolutionSlider = new JSlider(JSlider.HORIZONTAL, 2,
+    static final JSlider wordComplexitySlider = new JSlider(JSlider.HORIZONTAL, 0, 6, 6);
+    static final JSlider resolutionSlider = new JSlider(JSlider.HORIZONTAL, 2,
      (int) sliderRes, (int) sliderRes);
 
-    static JScrollPane areaScrollPane = new JScrollPane(txtOutput);
+    static final JScrollPane areaScrollPane = new JScrollPane(txtOutput);
 
 
     // Constructor for the Window
@@ -193,7 +193,7 @@ class CharGrapher extends JFrame implements ActionListener
             resolutionSlider.setValue(resolutionSlider.getMaximum());
         });
 
-        resolutionSlider.addChangeListener((ChangeListener) e -> {
+        resolutionSlider.addChangeListener(e -> {
             // If it's Characters --> CharGraph mode, exit the method
             if(modeBox.getSelectedItem().toString().equals(modes[1])) return;
             // Set max resolution
@@ -365,6 +365,7 @@ class CharGrapher extends JFrame implements ActionListener
                 pydestroy();
                 // Delete the photo created from camera
                 try {
+                    // Don't care about it. it has cases when those files were not generated but expected to remove them.
                     new File(ssgWS + "SSGSHOTS_IMG.jpg").delete();
                     new File(ssgWS + "SSGSHOTS_IMG.py").delete();
                 } catch(Exception er) {
@@ -402,7 +403,7 @@ class CharGrapher extends JFrame implements ActionListener
         fontBox.setVisible(false);
         // Set effect of sliders: having tick and space & size
         wordComplexitySlider.setMajorTickSpacing(1);
-        wordComplexitySlider.setSnapToTicks(true);;
+        wordComplexitySlider.setSnapToTicks(true);
         wordComplexitySlider.setPaintTicks(true);
         wordComplexitySlider.setPreferredSize(new Dimension(130,30));
         resolutionSlider.setPreferredSize(new Dimension(130,30));
@@ -448,8 +449,9 @@ class CharGrapher extends JFrame implements ActionListener
 
         // Create work space if needed
         File ssgWSObj = new File(ssgWS);
-        if(!ssgWSObj.exists())
-            ssgWSObj.mkdir();
+        if(!ssgWSObj.exists() && !ssgWSObj.mkdir()) {
+            Display.errinfo("Error while trying to create a folder!");
+        }
 
         // Show UI
         Display.info("Welcome to CharGrapher "+ ver +
@@ -507,7 +509,7 @@ class CharGrapher extends JFrame implements ActionListener
             if(!isCutUpSpacePart || !spaceTest) Display.output("");
 
             for (int j = 0; j < cgimage.width; j++) {
-                int rgb = cgimage.img.getRGB(j, i);
+                int rgb = cgimage.getImage().getRGB(j, i);
                 System.out.println(rgb);
                 // Convert each pixel into average gray value
                 int scalePlace = getScaleChar(CGImage.getGrayValue(Integer.toHexString(rgb)));
@@ -550,7 +552,7 @@ class CharGrapher extends JFrame implements ActionListener
 
             // Create the canves with expected dimension
             CGImage canvas = new CGImage(new BufferedImage(adv+4, hgt, BufferedImage.TYPE_INT_RGB)); 
-            graphics = canvas.img.createGraphics();
+            graphics = canvas.getImage().createGraphics();
 
             // Fill with all white
             graphics.fillRect(0, 0, adv+4, hgt);
@@ -582,7 +584,7 @@ class CharGrapher extends JFrame implements ActionListener
         
         for (int i = 0; i < cgimage.width; i++) {
             for (int j = 0; j < cgimage.height; j++) {
-                String grid = Integer.toHexString(CGImage.getGrayValue(Integer.toHexString(cgimage.img.getRGB(i, j))));
+                String grid = Integer.toHexString(CGImage.getGrayValue(Integer.toHexString(cgimage.getImage().getRGB(i, j))));
                 if (grid.length() == 1) grid = "0" + grid;
                 txtOutput.append(grid + " ");
             }
@@ -656,7 +658,7 @@ class CharGrapher extends JFrame implements ActionListener
         if (pyhasdestroid) return;
         pyhasdestroid = true;
         try{
-            pylaunch.destroyForcibly();
+            pyLaunch.destroyForcibly();
         }catch(Exception e){
             pyhasdestroid = false;
         }
@@ -691,7 +693,7 @@ class CharGrapher extends JFrame implements ActionListener
     static boolean pyLaunch()
     {
         try {
-            pylaunch = Runtime.getRuntime().exec("python3.7 " + ssgWS + "SSshoter.py");
+            pyLaunch = Runtime.getRuntime().exec("python3.7 " + ssgWS + "SSshoter.py");
         }
         catch (Exception e) {
             Display.errinfo("Sorry, unable to Launch python3. Please install the environment or check" +

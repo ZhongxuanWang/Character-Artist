@@ -2,17 +2,19 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 public class CGImage extends Display{
-    int width,height,resolution;
-    BufferedImage img;
+    public int width,height,resolution;
+    private BufferedImage img;
 
     public CGImage(File file) {
-        if (!checkIfNotPic(file)) {
+        if (checkIfNotPic(file)) {
             errinfo("Unable to access the image");
             return;
         }
+        try {
+            img = ImageIO.read(file);
+        } catch (Exception ignored) {}
         width = img.getWidth();
         height = img.getHeight();
         resolution = width * height;
