@@ -163,8 +163,8 @@ class CharGrapher extends JFrame implements ActionListener
                 if(startBtn.getText().equals(btns[3])) {
                     pydestroy();
                     startBtn.setText(btns[4]);
-                } else { // If the status is 'running'
-                    // Kill the previous-launcged Thread
+                } else { // If the status is 'running
+                    // Kill the previous-launched Thread
                     pydestroy();
                     // If the button printed "continue"
                     startBtn.setText(btns[3]);
