@@ -670,14 +670,14 @@ class CharGrapher extends JFrame implements ActionListener
                is obnormally low, you could adjust this value higher but you will experience 
                long delays.
                It means the delay in which python takes photo. */
-            "    time.sleep("+ 0.3 +")\n"+ 
+            "    time.sleep("+ 0.1 +")\n"+
             "    cam = VideoCapture(0)\n"+
             "    rep, img = cam.read()\n"+
             "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
             out.write(prg);
             out.close();
         } catch (Exception e) {
-            Display.errinfo("Sorry, unable to output file. " + e.toString());
+            Display.errinfo("Sorry, unable to output python file. " + e.toString());
             return false;
         }
         return true;
@@ -689,7 +689,7 @@ class CharGrapher extends JFrame implements ActionListener
             pyLaunch = Runtime.getRuntime().exec("python3.7 " + ssgWS + "SSshoter.py");
         }
         catch (Exception e) {
-            Display.errinfo("Sorry, unable to Launch python3. Please install the environment or check" +
+            Display.errinfo("Sorry, unable to Launch python3.7 . Please install the environment or check" +
             "if the python script is exist." + e.toString());
             return false;
         }

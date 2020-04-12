@@ -16,8 +16,10 @@ public class CGImage extends Display{
             img = ImageIO.read(file);
             assert img != null;
         } catch (Exception ignored) {
-            errinfo("Unable to read the image");
-            return;
+            if (CharGrapher.pyhasdestroid) {
+                errinfo("Unable to read the image");
+                return;
+            }
         }
         width = img.getWidth();
         height = img.getHeight();
@@ -107,7 +109,8 @@ public class CGImage extends Display{
                 throw new Exception("No data!");
             return false;
         } catch(Exception e) {
-            Display.errinfo("Sorry, the file you inputted is not supported");
+            if (!CharGrapher.pyhasdestroid) return false;
+            Display.errinfo("Sorry, the file you inputted is not supported " + e.toString());
             return true;
         }
     }
