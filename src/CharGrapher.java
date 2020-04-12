@@ -23,10 +23,9 @@ class CharGrapher extends JFrame implements ActionListener
     static final String ver = "1.2.0 Formal";
     // Initialize some objects that are related to the functions.
     static JPanel pnlObj = new JPanel();
-    static BufferedWriter bw;
     static Process pylaunch;
 
-    static String input, fileName, cuScaleChar;
+    static String cuScaleChar;
     static String ssgWS = new File(".").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
     static String[] helpTips = {
         "Start the process by clicking here.",                                                          // 0
@@ -78,9 +77,6 @@ class CharGrapher extends JFrame implements ActionListener
     };
 
     static boolean pyhasdestroid = false;
-
-    static Scanner scr = new Scanner(System.in);
-
 
     /* This is maximum Resolution in which you want the output to hold. You can adjust but it's hoped not 
     to be too large otherwise the text will be overflowed in the output area. Of course, the bigger the
@@ -481,7 +477,10 @@ class CharGrapher extends JFrame implements ActionListener
         System.out.println();
 
         new CharGrapher();
+
         // Receive input from console
+        String input = "";
+        Scanner scr = new Scanner(System.in);
         do {
             // Print interface
             Display.info("Please input image path below");
@@ -648,13 +647,11 @@ class CharGrapher extends JFrame implements ActionListener
                         "the output field is blank or the it doesn't have right to write");
             }
         }
-
-        String opFileName = fileName + "_PLAIN_STRING_CONTENT_FROM_SSG"
-        + (int) (Math.random() * 2000000 + 1000000) + ".txt";
+        String opFileName = "PLAIN_STRING_CONTENT_FROM_SSG" + (int) (Math.random() * 2000000 + 1000000) + ".txt";
         // Directly call the method to output.
         try {
             var file = new File(ssgWS + opFileName);
-            bw = new BufferedWriter(new FileWriter(ssgWS + opFileName));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(ssgWS + opFileName));
             bw.write(str);
             bw.close();
             Desktop.getDesktop().open(file);
