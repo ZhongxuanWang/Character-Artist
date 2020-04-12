@@ -487,13 +487,8 @@ class CharGrapher extends JFrame implements ActionListener
         // Treat it as image file and give image data to BufferedImage type img.
         CGImage cgimage = new CGImage(file);
 
-        // Check if resolution oversized. If it's oversized, compress before continue.
         if (cgimage.resolution > resolutionSlider.getValue()) {
-            /* Calculate the percentile in which is hoped to compress before letting imgCompress
-            method to do the work. It's a algorithm. */
-            double x = (double) resolutionSlider.getValue() / cgimage.resolution;
-            x = Math.sqrt(x);
-            cgimage.compress( (int)(cgimage.height * x * 0.8), (int)(cgimage.width * x) );
+            cgimage.compress();
         }
 
         /* This is a algorithm that output the specific character(char) from the scale. The
@@ -575,11 +570,9 @@ class CharGrapher extends JFrame implements ActionListener
         }
         if (CGImage.checkIfNotPic(file)) return;
         CGImage cgimage = new CGImage(file);
-        if (cgimage.resolution > resolutionSlider.getValue())
-        {
-            double x = (double) resolutionSlider.getValue() / cgimage.resolution;
-            x = Math.sqrt(x);
-            cgimage.compress( (int)(cgimage.height * x * 0.8), (int)(cgimage.width * x) );
+
+        if (cgimage.resolution > resolutionSlider.getValue()) {
+            cgimage.compress();
         }
         
         for (int i = 0; i < cgimage.width; i++) {

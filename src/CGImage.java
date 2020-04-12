@@ -35,7 +35,11 @@ public class CGImage extends Display{
         return img;
     }
 
-    protected void compress(int height, int width) {
+    protected void compress() {
+        double resBarValandResSqrt = Math.sqrt((double) CharGrapher.resolutionSlider.getValue() / resolution);
+        int width = (int) (this.width * 1.1 * resBarValandResSqrt);
+        int height = (int) (this.height * 0.8 * resBarValandResSqrt);
+
         try {
             Image trimSize = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
