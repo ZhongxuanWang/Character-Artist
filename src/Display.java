@@ -1,5 +1,6 @@
 import javax.swing.*;
-class Display {
+
+public class Display {
     protected static void info(String info) {
         System.out.println("\033[0;32m" + "+INFO+ - " + info + "." + "\033[0m");
     }

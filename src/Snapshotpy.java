@@ -3,9 +3,6 @@ import java.io.File;
 
 public class Snapshotpy implements Runnable
 {
-    private String imgPath = CharGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
-    private File imgfile = new File(imgPath);
-
     public void run()
     {
         // If python script task is alive, then continue to output.
@@ -22,7 +19,11 @@ public class Snapshotpy implements Runnable
     }
 
     void picproc() {
-        CGImage pic = new CGImage(imgfile);
+        System.out.println(CharGrapher.ssgWS);
+        String imgPath = CharGrapher.ssgWS + "SSGSHOTS_IMG.jpg";
+        File imgFile = new File(imgPath);
+
+        CGImage pic = new CGImage(imgFile);
         if(pic.resolution > CharGrapher.maxResolution)
         {
             // Get the ratio to compress
@@ -32,7 +33,6 @@ public class Snapshotpy implements Runnable
             pic.compress((int) (pic.height * x * 0.8), (int) (pic.width * x * 1.1));
         }
         // Output the image.
-        // FIXME
         pic.output(false);
     }
 }

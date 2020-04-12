@@ -2,19 +2,17 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
-public class CGImage {
+public class CGImage extends Display{
     int width,height,resolution;
     BufferedImage img;
 
-    public CGImage(File path) {
-        // Since the path here is from the trusted source(after processed and checked), exception is no need to be handled.
-        try {
-            img = ImageIO.read(path);
-            if (img == null) {
-                throw new Exception();
-            }
-        } catch(Exception ignored) {}
+    public CGImage(File file) {
+        if (!checkIfNotPic(file)) {
+            errinfo("Unable to access the image");
+            return;
+        }
         width = img.getWidth();
         height = img.getHeight();
         resolution = width * height;
@@ -60,7 +58,7 @@ public class CGImage {
         for (int i = 0; i < height; i++) {
             str.append("\n");
             for (int j = 0; j < width; j++) {
-                int scalePlace = CharGrapher.getScaleChar(CharGrapher.getGrayValue(Integer.toHexString(img.getRGB(j, i))));
+                int scalePlace = CharGrapher.getScaleChar(getGrayValue(Integer.toHexString(img.getRGB(j, i))));
                 str.append(CharGrapher.cuScaleChar.substring(scalePlace, scalePlace + 1));
             }
         }
@@ -71,5 +69,38 @@ public class CGImage {
             CharGrapher.txtOutput.setText(str.toString());
         }
         if (isOutputToConsole) System.out.print(str);
+    }
+
+    /**
+     * Calculate and return the most accurate grayscale (by pixel).
+     * @param argb argb
+     * @return Integer
+     */
+    protected static int getGrayValue(String argb) {
+        // Convert from hexadecimal to decimal and get RGB from the String.
+        int r = Integer.parseInt(argb.substring(2,4), 16);
+        int g = Integer.parseInt(argb.substring(4,6), 16);
+        int b = Integer.parseInt(argb.substring(6,8), 16);
+        // EVEN
+        String average = Integer.toHexString((r + g + b) / 3);
+        if (average.length() == 1) average = "0" + average; //format to 2 units.
+        // Calculate average value for ARGB
+        return Integer.parseInt(average, 16);
+    }
+
+    /**
+     * Check if the type of image (file) is accepted.
+     * @param file the picture file
+     * @return boolean
+     */
+    protected static boolean checkIfNotPic(File file) {
+        try {
+            if (ImageIO.read(file) == null)
+                throw new Exception("No data!");
+            return false;
+        } catch(Exception e) {
+            Display.errinfo("Sorry, the file you inputted is not supported");
+            return true;
+        }
     }
 }

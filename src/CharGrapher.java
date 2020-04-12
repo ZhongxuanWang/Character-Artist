@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.Scanner;
 
 // For photo process
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 // For the Window and the elements
@@ -25,11 +24,10 @@ class CharGrapher extends JFrame implements ActionListener
     // Initialize some objects that are related to the functions.
     static JPanel pnlObj = new JPanel();
     static BufferedWriter bw;
-    static FileReader fr;
     static Process pylaunch;
 
     static String input, fileName, cuScaleChar;
-    static String ssgWS = new File("").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
+    static String ssgWS = new File(".").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
     static String[] helpTips = {
         "Start the process by clicking here.",                                                          // 0
         "It's where the output will be. It's editable",                                                 // 1
@@ -50,7 +48,7 @@ class CharGrapher extends JFrame implements ActionListener
         "Photo --> CharGraph",       // 0
         "Words --> CharGraph",       // 1
         "Camera --> CharGraph",      // 2
-        "Photo --> Hexadecimal"      // 3 *NEW*
+        "Photo --> Hexadecimal"      // 3
     };
     static String[] labels = {
         "Photo Path:",      // 0
@@ -138,8 +136,7 @@ class CharGrapher extends JFrame implements ActionListener
             public void keyReleased (KeyEvent ev)
             {
                 // 10 represents Enter. Thus, if user hits enter, then process began
-                if(ev.getKeyCode() == 10)
-                {
+                if(ev.getKeyCode() == 10) {
                     try {
                         Display.warninfo(stringInputField.getText());
                         photoToGraph(stringInputField.getText());
@@ -161,19 +158,16 @@ class CharGrapher extends JFrame implements ActionListener
                 }
 
                 // If it's Characters --> CharGraph mode
-                if(modeBox.getSelectedItem().toString().equals(modes[1]))
-                {
+                if(modeBox.getSelectedItem().toString().equals(modes[1])) {
                     // Direct to Character --> CharGraph method.
                     charToGraph();
                     return;
                 }
 
                 // If it's Camera --> CharGraph mode
-                if(modeBox.getSelectedItem().toString().equals(modes[2]))
-                {
+                if(modeBox.getSelectedItem().toString().equals(modes[2])) {
                     // If the status is 'paused'
-                    if(startBtn.getText().equals(btns[3]))
-                    {
+                    if(startBtn.getText().equals(btns[3])) {
                         pydestroy();
                         startBtn.setText(btns[4]);
                     } else { // If the status is 'running'
@@ -187,8 +181,7 @@ class CharGrapher extends JFrame implements ActionListener
                 }
                 
                 // If it's Photo --> CharGraph mode
-                if(modeBox.getSelectedItem().toString().equals(modes[3]))
-                {
+                if(modeBox.getSelectedItem().toString().equals(modes[3])) {
                     photoToHex(stringInputField.getText().trim());
                 }
             }
@@ -252,10 +245,8 @@ class CharGrapher extends JFrame implements ActionListener
 
         optxtBtn.addActionListener(new ActionListener(){
             public void actionPerformed (ActionEvent e)
-            {
-                if(!outputToTxt())
-                    Display.errinfo("Software is unable to output to txt file. Either because" +
-                    "the output field is blank or the it doesn't have right to write");
+                {
+                outputToTxt();
             }
         });
 
@@ -264,11 +255,9 @@ class CharGrapher extends JFrame implements ActionListener
             public void itemStateChanged(ItemEvent e)
             {
                 // If change is detected
-                if(e.getStateChange() == ItemEvent.SELECTED)
-                {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
                     // Photo --> CharGraph mode
-                    if(modeBox.getSelectedItem().toString().equals(modes[0]))
-                    {
+                    if(modeBox.getSelectedItem().toString().equals(modes[0])) {
                         // Remove previously written data
                         txtOutput.setText("");
                         // Destroy previous launched python script.
@@ -296,8 +285,7 @@ class CharGrapher extends JFrame implements ActionListener
                     }
                     
                     // Char --> CharGraph mode
-                    if(modeBox.getSelectedItem().toString().equals(modes[1]))
-                    {
+                    if(modeBox.getSelectedItem().toString().equals(modes[1])) {
                         // Remove previously written data
                         txtOutput.setText("");
                         // Destroy previous launched python script.
@@ -326,8 +314,7 @@ class CharGrapher extends JFrame implements ActionListener
                     }
                     
                     // Cam --> CharGraph mode
-                    if(modeBox.getSelectedItem().toString().equals(modes[2]))
-                    {   
+                    if(modeBox.getSelectedItem().toString().equals(modes[2])) {
                         // Remove previously written data
                         txtOutput.setText("");
                         // Destroy previous launched python script.
@@ -353,8 +340,7 @@ class CharGrapher extends JFrame implements ActionListener
 
                         txtOutput.setFont(txtOutputFont);
                         // Multithreading.
-                        if(!buildPy())
-                        {
+                        if(!buildPy()) {
                             Display.errinfo("Sorry, python script building failed."+
                             "Please see 'readme.md' for further instruction");
                             return; // If building failed, stop building.
@@ -362,8 +348,7 @@ class CharGrapher extends JFrame implements ActionListener
                         camModeProcess();
                     }
 
-                    if(modeBox.getSelectedItem().toString().equals(modes[3]))
-                    {
+                    if(modeBox.getSelectedItem().toString().equals(modes[3])) {
                         // Remove previously written data
                         txtOutput.setText("");
                         // Destroy previous launched python script.
@@ -403,10 +388,10 @@ class CharGrapher extends JFrame implements ActionListener
                 // Destroy the py thread before closing the window
                 pydestroy();
                 // Delete the photo created from camera
-                try{
+                try {
                     new File(ssgWS + "SSGSHOTS_IMG.jpg").delete();
                     new File(ssgWS + "SSGSHOTS_IMG.py").delete();
-                }catch(Exception er){
+                } catch(Exception er) {
                     Display.errinfo("Unable to remove caches, but the software will still quit. " + er);
                 }
                 System.exit(0);
@@ -512,22 +497,17 @@ class CharGrapher extends JFrame implements ActionListener
     }
 
 
-    static void photoToGraph(String input) throws IOException
+    private static void photoToGraph(String input) throws IOException
     {
         File file = new File(input);
-        if(!file.exists()) {
-            Display.errinfo("Sorry, file you inputted does not exist");
-            return;
-        }
         // Check eligibility
-        if (checkIfPic(file)) return;
+        if (CGImage.checkIfNotPic(file)) return;
 
         // Treat it as image file and give image data to BufferedImage type img.
         CGImage cgimage = new CGImage(file);
 
         // Check if resolution oversized. If it's oversized, compress before continue.
-        if (cgimage.resolution > resolutionSlider.getValue())
-        {
+        if (cgimage.resolution > resolutionSlider.getValue()) {
             /* Calculate the percentile in which is hoped to compress before letting imgCompress
             method to do the work. It's a algorithm. */
             double x = (double) resolutionSlider.getValue() / cgimage.resolution;
@@ -535,7 +515,7 @@ class CharGrapher extends JFrame implements ActionListener
             cgimage.compress( (int)(cgimage.height * x * 0.8), (int)(cgimage.width * x) );
         }
 
-        /* This is a logarithm that output the specific character(char) from the scale. The
+        /* This is a algorithm that output the specific character(char) from the scale. The
         position of char is determined from the complexity slider or internally built variable. 
         Meanwhile, here implements a log that remove extra whitespace from the output.   */
 
@@ -544,14 +524,14 @@ class CharGrapher extends JFrame implements ActionListener
         String speChar = "";
         // Read each pixel and get each RGB value, proceed each one separately.
         for (int i = 0; i < cgimage.height; i++) {
-            // Ignore the rule if cutup is turned down
+            // output a new line
             if(!isCutUpSpacePart || !spaceTest) Display.output("");
 
             for (int j = 0; j < cgimage.width; j++) {
                 int rgb = cgimage.img.getRGB(j, i);
                 System.out.println(rgb);
                 // Convert each pixel into average gray value
-                int scalePlace = getScaleChar(getGrayValue(Integer.toHexString(rgb)));
+                int scalePlace = getScaleChar(CGImage.getGrayValue(Integer.toHexString(rgb)));
                 speChar = cuScaleChar.split("")[scalePlace];
                 // If it's not a space, then stop not inputting
                 if (isCutUpSpacePart && spaceTest && !(speChar.equals(" "))) {
@@ -564,11 +544,10 @@ class CharGrapher extends JFrame implements ActionListener
             }
         }
         // Resume for the next time
-
         System.out.println();
     }
 
-    static void charToGraph() 
+    private static void charToGraph()
     {
         // Separate each line by \n and proceed them individually.
         if (charInputField.getText().length() == 0) {
@@ -607,13 +586,13 @@ class CharGrapher extends JFrame implements ActionListener
         }
     }
 
-    static void photoToHex(String path) {
+    private static void photoToHex(String path) {
         File file = new File(path);
         if(!file.exists()) {
             Display.errinfo("Sorry, file you inputted does not exist");
             return;
         }
-        if (checkIfPic(file)) return;
+        if (CGImage.checkIfNotPic(file)) return;
         CGImage cgimage = new CGImage(file);
         if (cgimage.resolution > resolutionSlider.getValue())
         {
@@ -624,7 +603,7 @@ class CharGrapher extends JFrame implements ActionListener
         
         for (int i = 0; i < cgimage.width; i++) {
             for (int j = 0; j < cgimage.height; j++) {
-                String grid = Integer.toHexString(getGrayValue(Integer.toHexString(cgimage.img.getRGB(i, j))));
+                String grid = Integer.toHexString(CGImage.getGrayValue(Integer.toHexString(cgimage.img.getRGB(i, j))));
                 if (grid.length() == 1) grid = "0" + grid;
                 txtOutput.append(grid + " ");
             }
@@ -632,56 +611,18 @@ class CharGrapher extends JFrame implements ActionListener
         
     }
 
-// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
-// - - - - - - - - - - - - - - - - - - - - I M G   P R O C E S S - - - - - - - - - - - - - - - - -
-
-    /**
-     * Calculate and return the most accurate grayscale (by pixel).
-     * @param argb argb
-     * @return Integer
-     */
-    static int getGrayValue(String argb) {
-        // Convert from hexadecimal to decimal and get RGB from the String.
-        int r = Integer.parseInt(argb.substring(2,4), 16);
-        int g = Integer.parseInt(argb.substring(4,6), 16);
-        int b = Integer.parseInt(argb.substring(6,8), 16);
-        // EVEN
-        String average = Integer.toHexString((r + g + b) / 3);
-        if (average.length() == 1) average = "0" + average; //format to 2 units.
-        // Calculate average value for ARGB
-        return Integer.parseInt(average, 16);
-    }
-
     /**
      * Method will return the position+1 of array in integer 
      */
-    static int getScaleChar(int grayValue) {
+    protected static int getScaleChar(int grayValue) {
         // grayValue will vary from 0 to 255, which is from pure black to pure white.
         return Math.round((float)(grayValue / 3.24686));
     }
 
-    /**
-     * Check if the type of image (file) is accepted.
-     * @param file the picture file
-     * @return boolean
-     */
-    static boolean checkIfPic(File file) {
-        try {
-            if (ImageIO.read(file) == null)
-                throw new Exception("No data!");
-            return false;
-        } catch(Exception e) {
-            Display.errinfo("Sorry, the file you inputted is not supported");
-            return true;
-        }
-    }
-
-
 // - - - - - - - - - - - - - - - - - - - - - O T H E R - - - - - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - - O T H E R - - - - - - - - - - - - - - - - - - - - - -
 // - - - - - - - - - - - - - - - - - - - - - O T H E R - - - - - - - - - - - - - - - - - - - - - -
-    static String getCusScale()
+    private static String getCusScale()
     {
         try {
             return scales[wordComplexitySlider.getValue() - 1];
@@ -691,7 +632,7 @@ class CharGrapher extends JFrame implements ActionListener
         }
     }
 
-    static boolean outputToTxt()
+    private static void outputToTxt()
     {
         String str = txtOutput.getText();
         // If it's camera mode and if it's not pausing
@@ -703,7 +644,8 @@ class CharGrapher extends JFrame implements ActionListener
                 while(str.length()==0)
                     str = txtOutput.getText();
             } else {
-                return false;
+                Display.errinfo("Software is unable to output to txt file. Either because" +
+                        "the output field is blank or the it doesn't have right to write");
             }
         }
 
@@ -713,13 +655,16 @@ class CharGrapher extends JFrame implements ActionListener
         try {
             var file = new File(ssgWS + opFileName);
             bw = new BufferedWriter(new FileWriter(ssgWS + opFileName));
-            /* Avoid when user pressed the "capture", the software was 
-            refreshing its field */
             bw.write(str);
             bw.close();
             Desktop.getDesktop().open(file);
-            return file.exists();
-        } catch (IOException er) {return false;}
+            if (!file.exists()) {
+                throw new IOException();
+            }
+        } catch (IOException er) {
+            Display.errinfo("Software is unable to output to txt file. Either because" +
+                "the output field is blank or the it doesn't have right to write");
+        }
     }
 
     static void camModeProcess()
@@ -731,6 +676,7 @@ class CharGrapher extends JFrame implements ActionListener
 
     static void pydestroy()
     {
+        if (pyhasdestroid) return;
         pyhasdestroid = true;
         try{
             pylaunch.destroyForcibly();
