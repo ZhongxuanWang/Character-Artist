@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 
 // For the Window and the elements
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.*;
 
@@ -109,8 +108,8 @@ class CharGrapher extends JFrame implements ActionListener
 
     static Font txtOutputFont = new Font("Courier New", Font.PLAIN, 5), charFont;
 
-    static JComboBox<String> modeBox = new JComboBox<String>(modes);
-    static JComboBox<String> fontBox = new JComboBox<String>
+    static JComboBox<String> modeBox = new JComboBox<>(modes);
+    static JComboBox<String> fontBox = new JComboBox<>
     (GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
 
     static JSlider wordComplexitySlider = new JSlider(JSlider.HORIZONTAL, 0, 6, 6);
@@ -141,236 +140,217 @@ class CharGrapher extends JFrame implements ActionListener
             }
         });
 
-        startBtn.addActionListener(new ActionListener() {
-            public void actionPerformed (ActionEvent ev) 
-            {
-                txtOutput.setText("");
-                // If it's Photo --> CharGraph mode
-                if (modeBox.getSelectedItem().toString().equals(modes[0])) {
-                    try{
-                        photoToGraph(stringInputField.getText().trim());
-                    } catch(IOException ignored){}
-                    return;
-                }
+        startBtn.addActionListener(ev -> {
+            txtOutput.setText("");
+            // If it's Photo --> CharGraph mode
+            if (modeBox.getSelectedItem().toString().equals(modes[0])) {
+                try{
+                    photoToGraph(stringInputField.getText().trim());
+                } catch(IOException ignored){}
+                return;
+            }
 
-                // If it's Characters --> CharGraph mode
-                if(modeBox.getSelectedItem().toString().equals(modes[1])) {
-                    // Direct to Character --> CharGraph method.
-                    charToGraph();
-                    return;
-                }
+            // If it's Characters --> CharGraph mode
+            if(modeBox.getSelectedItem().toString().equals(modes[1])) {
+                // Direct to Character --> CharGraph method.
+                charToGraph();
+                return;
+            }
 
-                // If it's Camera --> CharGraph mode
-                if(modeBox.getSelectedItem().toString().equals(modes[2])) {
-                    // If the status is 'paused'
-                    if(startBtn.getText().equals(btns[3])) {
-                        pydestroy();
-                        startBtn.setText(btns[4]);
-                    } else { // If the status is 'running'
-                        // Kill the previous-launcged Thread
-                        pydestroy();
-                        // If the button printed "continue"
-                        startBtn.setText(btns[3]);
-                        camModeProcess();
-                    }
-                    return;
+            // If it's Camera --> CharGraph mode
+            if(modeBox.getSelectedItem().toString().equals(modes[2])) {
+                // If the status is 'paused'
+                if(startBtn.getText().equals(btns[3])) {
+                    pydestroy();
+                    startBtn.setText(btns[4]);
+                } else { // If the status is 'running'
+                    // Kill the previous-launcged Thread
+                    pydestroy();
+                    // If the button printed "continue"
+                    startBtn.setText(btns[3]);
+                    camModeProcess();
                 }
-                
-                // If it's Photo --> CharGraph mode
-                if(modeBox.getSelectedItem().toString().equals(modes[3])) {
-                    photoToHex(stringInputField.getText().trim());
-                }
+                return;
+            }
+
+            // If it's Photo --> CharGraph mode
+            if(modeBox.getSelectedItem().toString().equals(modes[3])) {
+                photoToHex(stringInputField.getText().trim());
             }
         });
 
-        resetBtn.addActionListener(new ActionListener() {
-            public void actionPerformed (ActionEvent e) {
-                // Reset all the fields to their default status
-                charInputField.setText("");
-                stringInputField.setText("");
-                txtOutput.setText("");
-                wordComplexitySlider.setValue(6);
-                resolutionSlider.setValue((int)maxResolution);
-                if (reverseBtn.getText().equals(btns[6])) {
-                    // Simulate a clicking.
-                    reverseBtn.doClick();
-                }
-                resolutionSlider.setValue(resolutionSlider.getMaximum());
+        resetBtn.addActionListener(e -> {
+            // Reset all the fields to their default status
+            charInputField.setText("");
+            stringInputField.setText("");
+            txtOutput.setText("");
+            wordComplexitySlider.setValue(6);
+            resolutionSlider.setValue((int)maxResolution);
+            if (reverseBtn.getText().equals(btns[6])) {
+                // Simulate a clicking.
+                reverseBtn.doClick();
             }
+            resolutionSlider.setValue(resolutionSlider.getMaximum());
         });
 
-        resolutionSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                // If it's Characters --> CharGraph mode, exit the method
-                if(modeBox.getSelectedItem().toString().equals(modes[1])) return;
-                // Set max resolution
-                maxResolution = (double) resolutionSlider.getValue();
-            }
+        resolutionSlider.addChangeListener((ChangeListener) e -> {
+            // If it's Characters --> CharGraph mode, exit the method
+            if(modeBox.getSelectedItem().toString().equals(modes[1])) return;
+            // Set max resolution
+            maxResolution = resolutionSlider.getValue();
         });
 
-        wordComplexitySlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                // Inform the method to change the value
-                cuScaleChar =  CharGrapher.getCusScale();
-            }
+        wordComplexitySlider.addChangeListener(e -> {
+            // Inform the method to change the value
+            cuScaleChar =  CharGrapher.getCusScale();
         });
 
-        reverseBtn.addActionListener(new ActionListener() {
-            public void actionPerformed (ActionEvent e) {
-                // Set the text of Button and change
-                if(reverseBtn.getText().equals(btns[5])) {
-                    reverseBtn.setText(btns[6]);
-                } else {
-                    reverseBtn.setText(btns[5]);
-                }
-                // Read each characters from back and put on the top front.
-                for(int i = 0; i < scales.length; i++) {
-                    StringBuilder scales_temp = new StringBuilder();
-                    for(int j=1; j <= scales[i].length(); j++) {
-                        scales_temp.append(scales[i].substring(scales[i].length() - j, scales[i].length() - j + 1));
-                    }
-                    scales[i] = scales_temp.toString();
-                }
+        reverseBtn.addActionListener(e -> {
+            // Set the text of Button and change
+            if(reverseBtn.getText().equals(btns[5])) {
+                reverseBtn.setText(btns[6]);
+            } else {
+                reverseBtn.setText(btns[5]);
+            }
+            // Read each characters from back and put on the top front.
+            for(int i = 0; i < scales.length; i++) {
                 StringBuilder scales_temp = new StringBuilder();
-                for(int i=1; i <= cuScaleChar.length(); i++) {
-                    scales_temp.append(cuScaleChar.substring(cuScaleChar.length() - i, cuScaleChar.length() - i + 1));
+                for(int j=1; j <= scales[i].length(); j++) {
+                    scales_temp.append(scales[i], scales[i].length() - j, scales[i].length() - j + 1);
                 }
-                cuScaleChar = scales_temp.toString();
+                scales[i] = scales_temp.toString();
             }
+            StringBuilder scales_temp = new StringBuilder();
+            for(int i=1; i <= cuScaleChar.length(); i++) {
+                scales_temp.append(cuScaleChar, cuScaleChar.length() - i, cuScaleChar.length() - i + 1);
+            }
+            cuScaleChar = scales_temp.toString();
         });
 
-        optxtBtn.addActionListener(new ActionListener(){
-            public void actionPerformed (ActionEvent e)
-                {
-                outputToTxt();
-            }
-        });
+        optxtBtn.addActionListener(e -> outputToTxt());
 
         // Select Mode
-        modeBox.addItemListener(new ItemListener(){
-            public void itemStateChanged(ItemEvent e)
-            {
-                // If change is detected
-                if(e.getStateChange() == ItemEvent.SELECTED) {
-                    // Photo --> CharGraph mode
-                    if(modeBox.getSelectedItem().toString().equals(modes[0])) {
-                        // Remove previously written data
-                        txtOutput.setText("");
-                        // Destroy previous launched python script.
-                        pydestroy();
-                        // Reconstructing GUI
-                        inputLable.setVisible(true);
-                        stringInputField.setVisible(true);
-                        charInputField.setVisible(false);
-                        sliderLable.setVisible(true);
-                        wordComplexitySlider.setVisible(true);
-                        reverseBtn.setVisible(true);
-                        fontLable.setVisible(false);
-                        fontBox.setVisible(false);
-                        startBtn.setText(btns[0]);
-                        sliderLable2.setText(labels[3]);
-                        resolutionSlider.setMinimum(0);
-                        resolutionSlider.setMaximum((int) sliderRes);
-                        resolutionSlider.setValue(resolutionSlider.getMaximum());
-                        resolutionSlider.setMajorTickSpacing(1);
-                        resolutionSlider.setSnapToTicks(false);
-                        resolutionSlider.setPaintTicks(false);
+        modeBox.addItemListener(e -> {
+            // If change is detected
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                // Photo --> CharGraph mode
+                if(modeBox.getSelectedItem().toString().equals(modes[0])) {
+                    // Remove previously written data
+                    txtOutput.setText("");
+                    // Destroy previous launched python script.
+                    pydestroy();
+                    // Reconstructing GUI
+                    inputLable.setVisible(true);
+                    stringInputField.setVisible(true);
+                    charInputField.setVisible(false);
+                    sliderLable.setVisible(true);
+                    wordComplexitySlider.setVisible(true);
+                    reverseBtn.setVisible(true);
+                    fontLable.setVisible(false);
+                    fontBox.setVisible(false);
+                    startBtn.setText(btns[0]);
+                    sliderLable2.setText(labels[3]);
+                    resolutionSlider.setMinimum(0);
+                    resolutionSlider.setMaximum((int) sliderRes);
+                    resolutionSlider.setValue(resolutionSlider.getMaximum());
+                    resolutionSlider.setMajorTickSpacing(1);
+                    resolutionSlider.setSnapToTicks(false);
+                    resolutionSlider.setPaintTicks(false);
 
-                        inputLable.setText(labels[0]);
-                        txtOutput.setFont(txtOutputFont);
+                    inputLable.setText(labels[0]);
+                    txtOutput.setFont(txtOutputFont);
+                }
+
+                // Char --> CharGraph mode
+                if(modeBox.getSelectedItem().toString().equals(modes[1])) {
+                    // Remove previously written data
+                    txtOutput.setText("");
+                    // Destroy previous launched python script.
+                    pydestroy();
+                    // Reconstructing GUI
+                    inputLable.setVisible(true);
+                    stringInputField.setVisible(true);
+                    stringInputField.setVisible(false);
+                    charInputField.setVisible(true);
+                    sliderLable.setVisible(false);
+                    wordComplexitySlider.setVisible(false);
+                    reverseBtn.setVisible(true);
+                    fontLable.setVisible(true);
+                    fontBox.setVisible(true);
+                    startBtn.setText(btns[0]);
+                    sliderLable2.setText(labels[4]);
+                    resolutionSlider.setMinimum(5);
+                    resolutionSlider.setMaximum(70);
+                    resolutionSlider.setValue(resolutionSlider.getMaximum());
+                    resolutionSlider.setMajorTickSpacing(4);
+                    resolutionSlider.setSnapToTicks(true);
+                    resolutionSlider.setPaintTicks(true);
+
+                    inputLable.setText(labels[2]);
+                    txtOutput.setFont(txtOutputFont);
+                }
+
+                // Cam --> CharGraph mode
+                if(modeBox.getSelectedItem().toString().equals(modes[2])) {
+                    // Remove previously written data
+                    txtOutput.setText("");
+                    // Destroy previous launched python script.
+                    pydestroy();
+                    // Reconstructing GUI
+                    inputLable.setVisible(false);
+                    stringInputField.setVisible(false);
+                    charInputField.setVisible(false);
+                    sliderLable.setVisible(true);
+                    wordComplexitySlider.setVisible(true);
+                    reverseBtn.setVisible(true);
+                    fontLable.setVisible(false);
+                    fontBox.setVisible(false);
+                    sliderLable2.setText(labels[3]);
+                    resolutionSlider.setMinimum(20);
+                    resolutionSlider.setMaximum((int)sliderRes);
+                    resolutionSlider.setValue(resolutionSlider.getMaximum());
+                    resolutionSlider.setMajorTickSpacing(1);
+                    resolutionSlider.setSnapToTicks(false);
+                    resolutionSlider.setPaintTicks(false);
+
+                    startBtn.setText(btns[3]);
+
+                    txtOutput.setFont(txtOutputFont);
+                    // Multithreading.
+                    if(!buildPy()) {
+                        Display.errinfo("Sorry, python script building failed."+
+                        "Please see 'readme.md' for further instruction");
+                        return; // If building failed, stop building.
                     }
-                    
-                    // Char --> CharGraph mode
-                    if(modeBox.getSelectedItem().toString().equals(modes[1])) {
-                        // Remove previously written data
-                        txtOutput.setText("");
-                        // Destroy previous launched python script.
-                        pydestroy();
-                        // Reconstructing GUI
-                        inputLable.setVisible(true);
-                        stringInputField.setVisible(true);
-                        stringInputField.setVisible(false);
-                        charInputField.setVisible(true);
-                        sliderLable.setVisible(false);
-                        wordComplexitySlider.setVisible(false);
-                        reverseBtn.setVisible(true);
-                        fontLable.setVisible(true);
-                        fontBox.setVisible(true);
-                        startBtn.setText(btns[0]);
-                        sliderLable2.setText(labels[4]);
-                        resolutionSlider.setMinimum(5);
-                        resolutionSlider.setMaximum(70);
-                        resolutionSlider.setValue(resolutionSlider.getMaximum());
-                        resolutionSlider.setMajorTickSpacing(4);
-                        resolutionSlider.setSnapToTicks(true);
-                        resolutionSlider.setPaintTicks(true);
+                    camModeProcess();
+                }
 
-                        inputLable.setText(labels[2]);
-                        txtOutput.setFont(txtOutputFont);
-                    }
-                    
-                    // Cam --> CharGraph mode
-                    if(modeBox.getSelectedItem().toString().equals(modes[2])) {
-                        // Remove previously written data
-                        txtOutput.setText("");
-                        // Destroy previous launched python script.
-                        pydestroy();
-                        // Reconstructing GUI
-                        inputLable.setVisible(false);
-                        stringInputField.setVisible(false);
-                        charInputField.setVisible(false);
-                        sliderLable.setVisible(true);
-                        wordComplexitySlider.setVisible(true);
-                        reverseBtn.setVisible(true);
-                        fontLable.setVisible(false);
-                        fontBox.setVisible(false);
-                        sliderLable2.setText(labels[3]);
-                        resolutionSlider.setMinimum(20);
-                        resolutionSlider.setMaximum((int)sliderRes);
-                        resolutionSlider.setValue(resolutionSlider.getMaximum());
-                        resolutionSlider.setMajorTickSpacing(1);
-                        resolutionSlider.setSnapToTicks(false);
-                        resolutionSlider.setPaintTicks(false);
+                if(modeBox.getSelectedItem().toString().equals(modes[3])) {
+                    // Remove previously written data
+                    txtOutput.setText("");
+                    // Destroy previous launched python script.
+                    pydestroy();
+                    // Reconstructing GUI
+                    inputLable.setVisible(true);
+                    stringInputField.setVisible(true);
+                    charInputField.setVisible(false);
+                    sliderLable.setVisible(false);
+                    wordComplexitySlider.setVisible(false);
+                    reverseBtn.setVisible(false);
+                    fontLable.setVisible(false);
+                    fontBox.setVisible(false);
+                    sliderLable2.setText(labels[3]);
 
-                        startBtn.setText(btns[3]);
+                    resolutionSlider.setMinimum(0);
+                    resolutionSlider.setMaximum((int)sliderRes);
+                    resolutionSlider.setValue(resolutionSlider.getMaximum());
+                    resolutionSlider.setMajorTickSpacing(1);
+                    resolutionSlider.setSnapToTicks(false);
+                    resolutionSlider.setPaintTicks(false);
 
-                        txtOutput.setFont(txtOutputFont);
-                        // Multithreading.
-                        if(!buildPy()) {
-                            Display.errinfo("Sorry, python script building failed."+
-                            "Please see 'readme.md' for further instruction");
-                            return; // If building failed, stop building.
-                        }
-                        camModeProcess();
-                    }
+                    startBtn.setText(btns[0]);
 
-                    if(modeBox.getSelectedItem().toString().equals(modes[3])) {
-                        // Remove previously written data
-                        txtOutput.setText("");
-                        // Destroy previous launched python script.
-                        pydestroy();
-                        // Reconstructing GUI
-                        inputLable.setVisible(true);
-                        stringInputField.setVisible(true);
-                        charInputField.setVisible(false);
-                        sliderLable.setVisible(false);
-                        wordComplexitySlider.setVisible(false);
-                        reverseBtn.setVisible(false);
-                        fontLable.setVisible(false);
-                        fontBox.setVisible(false);
-                        sliderLable2.setText(labels[3]);
-
-                        resolutionSlider.setMinimum(0);
-                        resolutionSlider.setMaximum((int)sliderRes);
-                        resolutionSlider.setValue(resolutionSlider.getMaximum());
-                        resolutionSlider.setMajorTickSpacing(1);
-                        resolutionSlider.setSnapToTicks(false);
-                        resolutionSlider.setPaintTicks(false);
-
-                        startBtn.setText(btns[0]);
-
-                        txtOutput.setFont(new Font("Courier New",Font.BOLD,12));
-                    }
+                    txtOutput.setFont(new Font("Courier New",Font.BOLD,12));
                 }
             }
         });
@@ -479,7 +459,7 @@ class CharGrapher extends JFrame implements ActionListener
         new CharGrapher();
 
         // Receive input from console
-        String input = "";
+        String input; // The variable may not have been initialized popped up when you initialize only in if statement without else.
         Scanner scr = new Scanner(System.in);
         do {
             // Print interface
@@ -520,7 +500,7 @@ class CharGrapher extends JFrame implements ActionListener
 
         // Initialize some variables will be used in later
         boolean spaceTest = true;
-        String speChar = "";
+        String speChar;
         // Read each pixel and get each RGB value, proceed each one separately.
         for (int i = 0; i < cgimage.height; i++) {
             // output a new line
