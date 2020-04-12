@@ -28,8 +28,7 @@ class CharGrapher extends JFrame implements ActionListener
     static FileReader fr;
     static Process pylaunch;
 
-    public static BufferedImage img, resizedImg, jpgImg;
-    static String input, fileExtension, fileName, cuScaleChar, str, opFileName1 = "";
+    static String input, fileName, cuScaleChar;
     static String ssgWS = new File("").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
     static String[] helpTips = {
         "Start the process by clicking here.",                                                          // 0
@@ -80,10 +79,8 @@ class CharGrapher extends JFrame implements ActionListener
         "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'..            ",   // 6
     };
 
-    static int imgWidth, imgHeight, imgResolution;
     static boolean pyhasdestroid = false;
 
-    static boolean ifJpg = false;
     static Scanner scr = new Scanner(System.in);
 
 
