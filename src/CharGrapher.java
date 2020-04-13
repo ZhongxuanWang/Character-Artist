@@ -659,8 +659,7 @@ class CharGrapher extends JFrame implements ActionListener
 
     static boolean buildPy()
     {
-        try
-        {
+        try {
             var out = new BufferedWriter(new FileWriter(new File(ssgWS + "SSshoter.py")));
             String prg = "from cv2 import *\n" +
             "import time\n"+
