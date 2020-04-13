@@ -1,5 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
 CharGrapher-java.iml
-out/
 CharGrapherWorkSpace/
+out/
+chargrapher-java.properties
+chargrapher-java.xml
+module_chargrapher-java.xml
