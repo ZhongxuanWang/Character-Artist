@@ -14,6 +14,7 @@ import java.awt.event.*;
 class CharGrapher extends JFrame implements ActionListener
 {
     static final String ver = "1.4.0 PyCam version";
+
     // Initialize some objects that are related to the functions.
     static final JPanel pnlObj = new JPanel();
     static Process pyLaunch;
