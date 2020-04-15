@@ -158,11 +158,11 @@ class CharGrapher extends JFrame implements ActionListener
             if(modeBox.getSelectedItem().toString().equals(modes[2])) {
                 // If the status is 'paused'
                 if(startBtn.getText().equals(btns[3])) {
-                    pydestroy();
+                    camModDestroy();
                     startBtn.setText(btns[4]);
                 } else { // If the status is 'running
                     // Kill the previous-launched Thread
-                    pydestroy();
+                    camModDestroy();
                     // If the button printed "continue"
                     startBtn.setText(btns[3]);
                     camModeProcess();
@@ -235,7 +235,7 @@ class CharGrapher extends JFrame implements ActionListener
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
-                    pydestroy();
+                    camModDestroy();
                     // Reconstructing GUI
                     inputLable.setVisible(true);
                     stringInputField.setVisible(true);
@@ -263,7 +263,7 @@ class CharGrapher extends JFrame implements ActionListener
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
-                    pydestroy();
+                    camModDestroy();
                     // Reconstructing GUI
                     inputLable.setVisible(true);
                     stringInputField.setVisible(true);
@@ -292,7 +292,7 @@ class CharGrapher extends JFrame implements ActionListener
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
-                    pydestroy();
+                    camModDestroy();
                     // Reconstructing GUI
                     inputLable.setVisible(false);
                     stringInputField.setVisible(false);
@@ -314,11 +314,6 @@ class CharGrapher extends JFrame implements ActionListener
 
                     txtOutput.setFont(txtOutputFont);
                     // Multithreading.
-                    if(!buildPy()) {
-                        Display.errinfo("Sorry, python script building failed."+
-                        "Please see 'readme.md' for further instruction");
-                        return; // If building failed, stop building.
-                    }
                     camModeProcess();
                 }
 
@@ -326,7 +321,7 @@ class CharGrapher extends JFrame implements ActionListener
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
-                    pydestroy();
+                    camModDestroy();
                     // Reconstructing GUI
                     inputLable.setVisible(true);
                     stringInputField.setVisible(true);
@@ -359,7 +354,7 @@ class CharGrapher extends JFrame implements ActionListener
             public void windowClosing(WindowEvent e)
             {
                 // Destroy the py thread before closing the window
-                pydestroy();
+                camModDestroy();
                 // Delete the photo created from camera
                 try {
                     // Don't care about it. it has cases when those files were not generated but expected to remove them.
@@ -636,60 +631,12 @@ class CharGrapher extends JFrame implements ActionListener
         }
     }
 
+    private static void camModDestroy()
+    {
+
+    }
+
     static void camModeProcess()
     {                        
-        if(!pyLaunch()) return;
-        Thread snapshotpy = new Thread(new Snapshotpy());
-        snapshotpy.start();
-    }
-
-    static void pydestroy()
-    {
-        if (pyhasdestroid) return;
-        pyhasdestroid = true;
-        try{
-            pyLaunch.destroyForcibly();
-        }catch(Exception e){
-            pyhasdestroid = false;
-        }
-    }
-
-    static boolean buildPy()
-    {
-        try {
-            var out = new BufferedWriter(new FileWriter(new File(ssgWS + "SSshoter.py")));
-            String prg = "from cv2 import *\n" +
-            "import time\n"+
-            "os.chdir(\"" + ssgWS + "\")\n"+
-            "while True:\n"+
-            /* Sleep(seconds) 0.1 is recommended. If the speed of read and write of your disk
-               is obnormally low, you could adjust this value higher but you will experience 
-               long delays.
-               It means the delay in which python takes photo. */
-            "    time.sleep("+ 0.1 +")\n"+
-            "    cam = VideoCapture(0)\n"+
-            "    rep, img = cam.read()\n"+
-            "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
-            out.write(prg);
-            out.close();
-        } catch (Exception e) {
-            Display.errinfo("Sorry, unable to output python file. " + e.toString());
-            return false;
-        }
-        return true;
-    }
-
-    static boolean pyLaunch()
-    {
-        try {
-            pyLaunch = Runtime.getRuntime().exec("python3.7 " + ssgWS + "SSshoter.py");
-        }
-        catch (Exception e) {
-            Display.errinfo("Sorry, unable to Launch python3.7 . Please install the environment or check" +
-            "if the python script is exist." + e.toString());
-            return false;
-        }
-        pyhasdestroid = false;
-        return true;
     }
 }
