@@ -13,11 +13,7 @@ import java.awt.event.*;
 
 class CharGrapher extends JFrame implements ActionListener
 {
-
-    // TODO Make this project more object oriented !!!
-
-
-    static final String ver = "1.3.0 Formal";
+    static final String ver = "1.4.0 PyCam version";
     // Initialize some objects that are related to the functions.
     static final JPanel pnlObj = new JPanel();
     static Process pyLaunch;
@@ -545,7 +541,7 @@ class CharGrapher extends JFrame implements ActionListener
             int hgt = metrics.getHeight();
             int adv = metrics.stringWidth(charInputField.getText().split("]")[i]);
 
-            // Create the canves with expected dimension
+            // Create the canvas with expected dimension
             CGImage canvas = new CGImage(new BufferedImage(adv+4, hgt, BufferedImage.TYPE_INT_RGB)); 
             graphics = canvas.getImage().createGraphics();
 
