@@ -1,18 +1,19 @@
 import java.io.File;
 
-public class Snapshotpy implements Runnable {
+public class Snapshotpy implements Runnable
+{
 
-    public void run() {
+    public void run()
+    {
         // If python script task is alive, then continue to output.
-        while (!CharGrapher.pyhasdestroid) {
-            try {
+        while(!CharGrapher.pyhasdestroid) {
+            try{
                 /* Thread.leep(MS) 100ms = .1s This means the delay in which the
                     software read image from the disk. If the value is lower, it may
                     result in exceeding disk consumption. Vice versa. */
                 Thread.sleep(100);
                 picproc();
-            } catch (Exception ignored) {
-            }
+            }catch(Exception ignored){}
         }
     }
 

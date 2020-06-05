@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 // For the Window and the elements
 import javax.swing.*;
 import java.awt.event.*;
-import com.github.sarxos.webcam.Webcam;
 
 class CharGrapher extends JFrame implements ActionListener
 {
@@ -301,7 +300,7 @@ class CharGrapher extends JFrame implements ActionListener
                     fontBox.setVisible(false);
                     sliderLable2.setText(labels[3]);
                     resolutionSlider.setMinimum(20);
-                    resolutionSlider.setMaximum((int) sliderRes);
+                    resolutionSlider.setMaximum((int)sliderRes);
                     resolutionSlider.setValue(resolutionSlider.getMaximum());
                     resolutionSlider.setMajorTickSpacing(1);
                     resolutionSlider.setSnapToTicks(false);
@@ -311,9 +310,9 @@ class CharGrapher extends JFrame implements ActionListener
 
                     txtOutput.setFont(txtOutputFont);
                     // Multithreading.
-                    if (!buildPy()) {
-                        Display.errinfo("Sorry, python script building failed." +
-                                "Please see 'readme.md' for further instruction");
+                    if(!buildPy()) {
+                        Display.errinfo("Sorry, python script building failed."+
+                        "Please see 'readme.md' for further instruction");
                         return; // If building failed, stop building.
                     }
                     camModeProcess();
@@ -634,41 +633,44 @@ class CharGrapher extends JFrame implements ActionListener
             }
         } catch (IOException er) {
             Display.errinfo("Software is unable to output to txt file. Either because" +
-                    "the output field is blank or the it doesn't have right to write");
+                "the output field is blank or the it doesn't have right to write");
         }
     }
 
-    static void camModeProcess() {
-        if (!pyLaunch()) return;
+    static void camModeProcess()
+    {                        
+        if(!pyLaunch()) return;
         Thread snapshotpy = new Thread(new Snapshotpy());
         snapshotpy.start();
     }
 
-    static void pydestroy() {
+    static void pydestroy()
+    {
         if (pyhasdestroid) return;
         pyhasdestroid = true;
-        try {
+        try{
             pyLaunch.destroyForcibly();
-        } catch (Exception e) {
+        }catch(Exception e){
             pyhasdestroid = false;
         }
     }
 
-    static boolean buildPy() {
+    static boolean buildPy()
+    {
         try {
             var out = new BufferedWriter(new FileWriter(new File(ssgWS + "SSshoter.py")));
             String prg = "from cv2 import *\n" +
-                    "import time\n" +
-                    "os.chdir(\"" + ssgWS + "\")\n" +
-                    "while True:\n" +
+            "import time\n"+
+            "os.chdir(\"" + ssgWS + "\")\n"+
+            "while True:\n"+
             /* Sleep(seconds) 0.1 is recommended. If the speed of read and write of your disk
                is obnormally low, you could adjust this value higher but you will experience 
                long delays.
                It means the delay in which python takes photo. */
-                    "    time.sleep(" + 0.1 + ")\n" +
-                    "    cam = VideoCapture(0)\n" +
-                    "    rep, img = cam.read()\n" +
-                    "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
+            "    time.sleep("+ 0.1 +")\n"+
+            "    cam = VideoCapture(0)\n"+
+            "    rep, img = cam.read()\n"+
+            "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
             out.write(prg);
             out.close();
         } catch (Exception e) {
@@ -678,12 +680,14 @@ class CharGrapher extends JFrame implements ActionListener
         return true;
     }
 
-    static boolean pyLaunch() {
+    static boolean pyLaunch()
+    {
         try {
             pyLaunch = Runtime.getRuntime().exec("python3.7 " + ssgWS + "SSshoter.py");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Display.errinfo("Sorry, unable to Launch python3.7 . Please install the environment or check" +
-                    "if the python script is exist." + e.toString());
+            "if the python script is exist." + e.toString());
             return false;
         }
         pyhasdestroid = false;
