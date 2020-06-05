@@ -19,7 +19,6 @@ public class Snapshotpy implements Runnable
 
     void picproc() {
 
-        // FIXME everytime enters here, an exception is casted while instantiating.
         File imgFile = new File(CharGrapher.ssgWS + "SSGSHOTS_IMG.jpg");
 
         CGImage pic = new CGImage(imgFile);
