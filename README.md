@@ -6,11 +6,12 @@
 2> After doing so, install 'opencv-python' by typing '<code>pip3 install opencv-python</code>' in Terminal.<br>
 3> Have the latest Java. (JDK8+ Required) (<a href="https://www.java.com/en/download/mac_download.jsp">download latest Java for MacOS</a>).<br>
 
+
 **********************
 **Special Notice**
 **********************
 
-**Use the camera mode in a brighter environment is recommended** since it will be easier to distinguish your face or certain objects from the background<br>
+**Use the camera mode in a brighter environment is recommended** since it will be easier to distinguish your face from objects in the background<br>
 
 <br>
 
@@ -32,17 +33,7 @@ Zhongxuan(Daniel) Wang (cndanielwang@gmail.com)
 ***********
 **Update:**
 ***********
-- 1.3.0 Test
+- 1.4.0 Pycam Build (only tested for MacOS)
 - - *NEW* CharGraph --> Photo mode! Convert Chargraphs into normal photo! (reverse the Photo-->CharGraph process) The result will be black and white
-- - Fix Bug: That will result in a excessive energy consumation
-- - Improve: Put img compressing into CGImage class.
-- - Improve: Codes from constructor.
-- - Improve: Somewhere redundant.
-
-- 1.2.0 Formal
-- - *NEW*: Photo --> Hexadecimal mode! Convert photo (in black and white) into Hexadecimal matrics. It's useful in debuging using Neural Network that uses those image data.
-- - Fix Bug: Resolution Bug, on Camera Mode that would result in a much smaller image.
-- - Fix Bug: ResetBtn Bug, that doesn't clear all the fields.
-- - Improve: Accessibility and compile with only one file needed.
-- - Improve: Some Btns and JText Fields. Less verbose and more clear.
-- - Improve: Overall codes and program performance.
+- - Fix Bug: A bug that would result in a excessive energy consumation
+- - Improve: General Improvement.
