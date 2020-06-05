@@ -2,6 +2,7 @@ import java.io.File;
 
 public class Snapshotpy implements Runnable
 {
+
     public void run()
     {
         // If python script task is alive, then continue to output.
