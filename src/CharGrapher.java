@@ -129,10 +129,8 @@ class CharGrapher extends JFrame implements ActionListener
             {
                 // 10 represents Enter. Thus, if user hits enter, then process began
                 if(ev.getKeyCode() == 10) {
-                    try {
-                        Display.warninfo(stringInputField.getText());
-                        photoToGraph(stringInputField.getText());
-                    } catch (IOException ignored) {}
+                    Display.warninfo(stringInputField.getText());
+                    photoToGraph(stringInputField.getText());
                 }
             }
         });
@@ -140,15 +138,13 @@ class CharGrapher extends JFrame implements ActionListener
         startBtn.addActionListener(ev -> {
             txtOutput.setText("");
             // If it's Photo --> CharGraph mode
-            if (modeBox.getSelectedItem().toString().equals(modes[0])) {
-                try{
-                    photoToGraph(stringInputField.getText().trim());
-                } catch(IOException ignored){}
+            if (Objects.requireNonNull(modeBox.getSelectedItem()).toString().equals(modes[0])) {
+                photoToGraph(stringInputField.getText().trim());
                 return;
             }
 
             // If it's Characters --> CharGraph mode
-            if(modeBox.getSelectedItem().toString().equals(modes[1])) {
+            if (modeBox.getSelectedItem().toString().equals(modes[1])) {
                 // Direct to Character --> CharGraph method.
                 charToGraph();
                 return;
@@ -192,7 +188,7 @@ class CharGrapher extends JFrame implements ActionListener
 
         resolutionSlider.addChangeListener(e -> {
             // If it's Characters --> CharGraph mode, exit the method
-            if(modeBox.getSelectedItem().toString().equals(modes[1])) return;
+            if (Objects.requireNonNull(modeBox.getSelectedItem()).toString().equals(modes[1])) return;
             // Set max resolution
             maxResolution = resolutionSlider.getValue();
         });
@@ -231,7 +227,7 @@ class CharGrapher extends JFrame implements ActionListener
             // If change is detected
             if(e.getStateChange() == ItemEvent.SELECTED) {
                 // Photo --> CharGraph mode
-                if(modeBox.getSelectedItem().toString().equals(modes[0])) {
+                if (Objects.requireNonNull(modeBox.getSelectedItem()).toString().equals(modes[0])) {
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
@@ -432,28 +428,31 @@ class CharGrapher extends JFrame implements ActionListener
         setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e){}
-    public static void main (String[] args) throws IOException
-    {
+    public void actionPerformed(ActionEvent e) {
+    }
+
+    public static void main(String[] args) {
         if (args.length != 0) {
             Display.info("Console mode is not enabled");
         }
 
         // Create work space if needed
         File ssgWSObj = new File(ssgWS);
-        if(!ssgWSObj.exists() && !ssgWSObj.mkdir()) {
+        if (!ssgWSObj.exists() && !ssgWSObj.mkdir()) {
             Display.errinfo("Error while trying to create a folder!");
         }
 
         // Show UI
-        Display.info("Welcome to CharGrapher "+ ver +
+        Display.info("Welcome to CharGrapher " + ver +
                 "\nConsole will also get updates and warnings");
         System.out.println();
 
         new CharGrapher();
 
         // Receive input from console
-        String input; // The variable may not have been initialized popped up when you initialize only in if statement without else.
+        String input;
+        // The variable may not have been initialized popped up when you initialize only in if statement without else.
+
         Scanner scr = new Scanner(System.in);
         do {
             // Print interface
@@ -461,8 +460,8 @@ class CharGrapher extends JFrame implements ActionListener
             input = scr.nextLine();
         } while (
             // This expression means if not exist, redo.
-            !(new File(input).exists())
-            );
+                !(new File(input).exists())
+        );
         // Close buffer
         scr.close();
 
@@ -470,8 +469,7 @@ class CharGrapher extends JFrame implements ActionListener
     }
 
 
-    private static void photoToGraph(String input) throws IOException
-    {
+    private static void photoToGraph(String input) {
         File file = new File(input);
         // Check eligibility
         if (CGImage.checkIfNotPic(file)) return;
@@ -528,7 +526,8 @@ class CharGrapher extends JFrame implements ActionListener
 
             // Get the size of the font, help to create a new String
             try {
-                charFont = new Font(fontBox.getSelectedItem().toString(), Font.PLAIN, resolutionSlider.getValue());
+                charFont = new Font(Objects.requireNonNull(fontBox.getSelectedItem()).toString(), Font.PLAIN,
+                        resolutionSlider.getValue());
             } catch (NullPointerException e) {
                 Display.errinfo("Font is not selected since it's not in the system anymore.");
                 return;
@@ -569,7 +568,9 @@ class CharGrapher extends JFrame implements ActionListener
         
         for (int i = 0; i < cgimage.width; i++) {
             for (int j = 0; j < cgimage.height; j++) {
-                String grid = Integer.toHexString(CGImage.getGrayValue(Integer.toHexString(cgimage.getImage().getRGB(i, j))));
+                String grid = Integer.toHexString(CGImage.getGrayValue(Integer.toHexString(
+                        cgimage.getImage().getRGB(i, j)
+                )));
                 if (grid.length() == 1) grid = "0" + grid;
                 txtOutput.append(grid + " ");
             }
