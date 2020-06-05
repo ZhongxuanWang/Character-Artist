@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_chargrapher-java" default="compile.module.chargrapher-java">
+  <dirname property="module.chargrapher-java.basedir" file="${ant.file.module_chargrapher-java}"/>
+  
+  <property name="module.jdk.home.chargrapher-java" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.chargrapher-java" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.chargrapher-java" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.chargrapher-java" value="-encoding UTF-8 -source 11 -target 11 ${compiler.args}"/>
+  
+  <property name="chargrapher-java.output.dir" value="${module.chargrapher-java.basedir}/out/production/CharGrapher-java"/>
+  <property name="chargrapher-java.testoutput.dir" value="${module.chargrapher-java.basedir}/out/test/CharGrapher-java"/>
+  
+  <path id="chargrapher-java.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="chargrapher-java.module.production.classpath">
+    <path refid="${module.jdk.classpath.chargrapher-java}"/>
+  </path>
+  
+  <path id="chargrapher-java.runtime.production.module.classpath">
+    <pathelement location="${chargrapher-java.output.dir}"/>
+  </path>
+  
+  <path id="chargrapher-java.module.classpath">
+    <path refid="${module.jdk.classpath.chargrapher-java}"/>
+    <pathelement location="${chargrapher-java.output.dir}"/>
+  </path>
+  
+  <path id="chargrapher-java.runtime.module.classpath">
+    <pathelement location="${chargrapher-java.testoutput.dir}"/>
+    <pathelement location="${chargrapher-java.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.chargrapher-java">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.chargrapher-java">
+    <patternset refid="excluded.from.module.chargrapher-java"/>
+  </patternset>
+  
+  <path id="chargrapher-java.module.sourcepath">
+    <dirset dir="${module.chargrapher-java.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.chargrapher-java" depends="compile.module.chargrapher-java.production,compile.module.chargrapher-java.tests" description="Compile module CharGrapher-java"/>
+  
+  <target name="compile.module.chargrapher-java.production" depends="register.custom.compilers" description="Compile module CharGrapher-java; production classes">
+    <mkdir dir="${chargrapher-java.output.dir}"/>
+    <javac2 destdir="${chargrapher-java.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.chargrapher-java}/javac">
+      <compilerarg line="${compiler.args.chargrapher-java}"/>
+      <bootclasspath refid="chargrapher-java.module.bootclasspath"/>
+      <classpath refid="chargrapher-java.module.production.classpath"/>
+      <src refid="chargrapher-java.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.chargrapher-java"/>
+    </javac2>
+    
+    <copy todir="${chargrapher-java.output.dir}">
+      <fileset dir="${module.chargrapher-java.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.chargrapher-java.tests" depends="register.custom.compilers,compile.module.chargrapher-java.production" description="compile module CharGrapher-java; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.chargrapher-java" description="cleanup module">
+    <delete dir="${chargrapher-java.output.dir}"/>
+    <delete dir="${chargrapher-java.testoutput.dir}"/>
+  </target>
+</project>

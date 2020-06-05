@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CharGrapher-java:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CharGrapher_java_jar</output-path>
+    <root id="archive" name="CharGrapher-java.jar">
+      <element id="module-output" name="CharGrapher-java" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/bridj-0.7.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/slf4j-simple-1.6.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/webcam-capture-0.3.12.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/slf4j-api-1.7.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

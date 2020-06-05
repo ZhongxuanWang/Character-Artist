@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 // For the Window and the elements
 import javax.swing.*;
 import java.awt.event.*;
+import com.github.sarxos.webcam.Webcam;
 
 class CharGrapher extends JFrame implements ActionListener
 {
