@@ -130,10 +130,8 @@ class CharGrapher extends JFrame implements ActionListener
             {
                 // 10 represents Enter. Thus, if user hits enter, then process began
                 if(ev.getKeyCode() == 10) {
-                    try {
-                        Display.warninfo(stringInputField.getText());
-                        photoToGraph(stringInputField.getText());
-                    } catch (IOException ignored) {}
+                    Display.warninfo(stringInputField.getText());
+                    photoToGraph(stringInputField.getText());
                 }
             }
         });
@@ -141,15 +139,13 @@ class CharGrapher extends JFrame implements ActionListener
         startBtn.addActionListener(ev -> {
             txtOutput.setText("");
             // If it's Photo --> CharGraph mode
-            if (modeBox.getSelectedItem().toString().equals(modes[0])) {
-                try{
-                    photoToGraph(stringInputField.getText().trim());
-                } catch(IOException ignored){}
+            if (Objects.requireNonNull(modeBox.getSelectedItem()).toString().equals(modes[0])) {
+                photoToGraph(stringInputField.getText().trim());
                 return;
             }
 
             // If it's Characters --> CharGraph mode
-            if(modeBox.getSelectedItem().toString().equals(modes[1])) {
+            if (modeBox.getSelectedItem().toString().equals(modes[1])) {
                 // Direct to Character --> CharGraph method.
                 charToGraph();
                 return;
@@ -159,11 +155,11 @@ class CharGrapher extends JFrame implements ActionListener
             if(modeBox.getSelectedItem().toString().equals(modes[2])) {
                 // If the status is 'paused'
                 if(startBtn.getText().equals(btns[3])) {
-                    camModDestroy();
+                    pydestroy();
                     startBtn.setText(btns[4]);
                 } else { // If the status is 'running
                     // Kill the previous-launched Thread
-                    camModDestroy();
+                    pydestroy();
                     // If the button printed "continue"
                     startBtn.setText(btns[3]);
                     camModeProcess();
@@ -193,7 +189,7 @@ class CharGrapher extends JFrame implements ActionListener
 
         resolutionSlider.addChangeListener(e -> {
             // If it's Characters --> CharGraph mode, exit the method
-            if(modeBox.getSelectedItem().toString().equals(modes[1])) return;
+            if (Objects.requireNonNull(modeBox.getSelectedItem()).toString().equals(modes[1])) return;
             // Set max resolution
             maxResolution = resolutionSlider.getValue();
         });
@@ -232,11 +228,11 @@ class CharGrapher extends JFrame implements ActionListener
             // If change is detected
             if(e.getStateChange() == ItemEvent.SELECTED) {
                 // Photo --> CharGraph mode
-                if(modeBox.getSelectedItem().toString().equals(modes[0])) {
+                if (Objects.requireNonNull(modeBox.getSelectedItem()).toString().equals(modes[0])) {
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
-                    camModDestroy();
+                    pydestroy();
                     // Reconstructing GUI
                     inputLable.setVisible(true);
                     stringInputField.setVisible(true);
@@ -264,7 +260,7 @@ class CharGrapher extends JFrame implements ActionListener
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
-                    camModDestroy();
+                    pydestroy();
                     // Reconstructing GUI
                     inputLable.setVisible(true);
                     stringInputField.setVisible(true);
@@ -293,7 +289,7 @@ class CharGrapher extends JFrame implements ActionListener
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
-                    camModDestroy();
+                    pydestroy();
                     // Reconstructing GUI
                     inputLable.setVisible(false);
                     stringInputField.setVisible(false);
@@ -305,7 +301,7 @@ class CharGrapher extends JFrame implements ActionListener
                     fontBox.setVisible(false);
                     sliderLable2.setText(labels[3]);
                     resolutionSlider.setMinimum(20);
-                    resolutionSlider.setMaximum((int)sliderRes);
+                    resolutionSlider.setMaximum((int) sliderRes);
                     resolutionSlider.setValue(resolutionSlider.getMaximum());
                     resolutionSlider.setMajorTickSpacing(1);
                     resolutionSlider.setSnapToTicks(false);
@@ -315,6 +311,11 @@ class CharGrapher extends JFrame implements ActionListener
 
                     txtOutput.setFont(txtOutputFont);
                     // Multithreading.
+                    if (!buildPy()) {
+                        Display.errinfo("Sorry, python script building failed." +
+                                "Please see 'readme.md' for further instruction");
+                        return; // If building failed, stop building.
+                    }
                     camModeProcess();
                 }
 
@@ -322,7 +323,7 @@ class CharGrapher extends JFrame implements ActionListener
                     // Remove previously written data
                     txtOutput.setText("");
                     // Destroy previous launched python script.
-                    camModDestroy();
+                    pydestroy();
                     // Reconstructing GUI
                     inputLable.setVisible(true);
                     stringInputField.setVisible(true);
@@ -355,7 +356,7 @@ class CharGrapher extends JFrame implements ActionListener
             public void windowClosing(WindowEvent e)
             {
                 // Destroy the py thread before closing the window
-                camModDestroy();
+                pydestroy();
                 // Delete the photo created from camera
                 try {
                     // Don't care about it. it has cases when those files were not generated but expected to remove them.
@@ -433,28 +434,31 @@ class CharGrapher extends JFrame implements ActionListener
         setVisible(true);
     }
 
-    public void actionPerformed(ActionEvent e){}
-    public static void main (String[] args) throws IOException
-    {
+    public void actionPerformed(ActionEvent e) {
+    }
+
+    public static void main(String[] args) {
         if (args.length != 0) {
             Display.info("Console mode is not enabled");
         }
 
         // Create work space if needed
         File ssgWSObj = new File(ssgWS);
-        if(!ssgWSObj.exists() && !ssgWSObj.mkdir()) {
+        if (!ssgWSObj.exists() && !ssgWSObj.mkdir()) {
             Display.errinfo("Error while trying to create a folder!");
         }
 
         // Show UI
-        Display.info("Welcome to CharGrapher "+ ver +
+        Display.info("Welcome to CharGrapher " + ver +
                 "\nConsole will also get updates and warnings");
         System.out.println();
 
         new CharGrapher();
 
         // Receive input from console
-        String input; // The variable may not have been initialized popped up when you initialize only in if statement without else.
+        String input;
+        // The variable may not have been initialized popped up when you initialize only in if statement without else.
+
         Scanner scr = new Scanner(System.in);
         do {
             // Print interface
@@ -462,8 +466,8 @@ class CharGrapher extends JFrame implements ActionListener
             input = scr.nextLine();
         } while (
             // This expression means if not exist, redo.
-            !(new File(input).exists())
-            );
+                !(new File(input).exists())
+        );
         // Close buffer
         scr.close();
 
@@ -471,8 +475,7 @@ class CharGrapher extends JFrame implements ActionListener
     }
 
 
-    private static void photoToGraph(String input) throws IOException
-    {
+    private static void photoToGraph(String input) {
         File file = new File(input);
         // Check eligibility
         if (CGImage.checkIfNotPic(file)) return;
@@ -529,7 +532,8 @@ class CharGrapher extends JFrame implements ActionListener
 
             // Get the size of the font, help to create a new String
             try {
-                charFont = new Font(fontBox.getSelectedItem().toString(), Font.PLAIN, resolutionSlider.getValue());
+                charFont = new Font(Objects.requireNonNull(fontBox.getSelectedItem()).toString(), Font.PLAIN,
+                        resolutionSlider.getValue());
             } catch (NullPointerException e) {
                 Display.errinfo("Font is not selected since it's not in the system anymore.");
                 return;
@@ -570,7 +574,9 @@ class CharGrapher extends JFrame implements ActionListener
         
         for (int i = 0; i < cgimage.width; i++) {
             for (int j = 0; j < cgimage.height; j++) {
-                String grid = Integer.toHexString(CGImage.getGrayValue(Integer.toHexString(cgimage.getImage().getRGB(i, j))));
+                String grid = Integer.toHexString(CGImage.getGrayValue(Integer.toHexString(
+                        cgimage.getImage().getRGB(i, j)
+                )));
                 if (grid.length() == 1) grid = "0" + grid;
                 txtOutput.append(grid + " ");
             }
@@ -628,16 +634,59 @@ class CharGrapher extends JFrame implements ActionListener
             }
         } catch (IOException er) {
             Display.errinfo("Software is unable to output to txt file. Either because" +
-                "the output field is blank or the it doesn't have right to write");
+                    "the output field is blank or the it doesn't have right to write");
         }
     }
 
-    private static void camModDestroy()
-    {
-
+    static void camModeProcess() {
+        if (!pyLaunch()) return;
+        Thread snapshotpy = new Thread(new Snapshotpy());
+        snapshotpy.start();
     }
 
-    static void camModeProcess()
-    {                        
+    static void pydestroy() {
+        if (pyhasdestroid) return;
+        pyhasdestroid = true;
+        try {
+            pyLaunch.destroyForcibly();
+        } catch (Exception e) {
+            pyhasdestroid = false;
+        }
+    }
+
+    static boolean buildPy() {
+        try {
+            var out = new BufferedWriter(new FileWriter(new File(ssgWS + "SSshoter.py")));
+            String prg = "from cv2 import *\n" +
+                    "import time\n" +
+                    "os.chdir(\"" + ssgWS + "\")\n" +
+                    "while True:\n" +
+            /* Sleep(seconds) 0.1 is recommended. If the speed of read and write of your disk
+               is obnormally low, you could adjust this value higher but you will experience 
+               long delays.
+               It means the delay in which python takes photo. */
+                    "    time.sleep(" + 0.1 + ")\n" +
+                    "    cam = VideoCapture(0)\n" +
+                    "    rep, img = cam.read()\n" +
+                    "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
+            out.write(prg);
+            out.close();
+        } catch (Exception e) {
+            Display.errinfo("Sorry, unable to output python file. " + e.toString());
+            return false;
+        }
+        return true;
+    }
+
+    static boolean pyLaunch() {
+        try {
+            pyLaunch = Runtime.getRuntime().exec("python3.7 " + ssgWS + "SSshoter.py");
+        } catch (Exception e) {
+            Display.errinfo("Sorry, unable to Launch python3.7 . Please install the environment or check" +
+                    "if the python script is exist." + e.toString());
+            return false;
+        }
+        pyhasdestroid = false;
+        return true;
     }
 }
