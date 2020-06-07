@@ -13,7 +13,7 @@ import java.awt.event.*;
 
 class CharGrapher extends JFrame implements ActionListener
 {
-    static final String ver = "1.4.0 PyCam version";
+    static final String ver = "1.4.0 PyCam version Build 202007071400";
 
     // Initialize some objects that are related to the functions.
     static final JPanel pnlObj = new JPanel();
@@ -359,8 +359,10 @@ class CharGrapher extends JFrame implements ActionListener
                 // Delete the photo created from camera
                 try {
                     // Don't care about it. it has cases when those files were not generated but expected to remove them.
-                    new File(ssgWS + "SSGSHOTS_IMG.jpg").delete();
-                    new File(ssgWS + "SSGSHOTS_IMG.py").delete();
+                    if (new File(ssgWS + "SSGSHOTS_IMG.jpg").delete()||
+                    new File(ssgWS + "SSGSHOTS_IMG.py").delete()) {
+                        Display.info("Some files are unable to delete.");
+                    }
                 } catch(Exception er) {
                     Display.errinfo("Unable to remove caches, but the software will still quit. " + er);
                 }
