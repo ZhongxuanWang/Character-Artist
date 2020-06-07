@@ -685,10 +685,10 @@ class CharGrapher extends JFrame implements ActionListener
     static boolean pyLaunch()
     {
         try {
-            pyLaunch = Runtime.getRuntime().exec("python3.7 " + ssgWS + "SSshoter.py");
+            pyLaunch = Runtime.getRuntime().exec("python3 " + ssgWS + "SSshoter.py");
         }
         catch (Exception e) {
-            Display.errinfo("Sorry, unable to Launch python3.7 . Please install the environment or check" +
+            Display.errinfo("Sorry, unable to Launch python3 . Please install the environment or check" +
             "if the python script is exist." + e.toString());
             return false;
         }
