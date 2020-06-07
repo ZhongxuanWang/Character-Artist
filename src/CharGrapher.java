@@ -97,10 +97,10 @@ class CharGrapher extends JFrame implements ActionListener
     static final JTextField charInputField = new JTextField(10); // For characters
     static final JTextArea txtOutput = new JTextArea(120, 100);
 
-    static final JLabel inputLable = new JLabel(labels[0]);
-    static final JLabel sliderLable = new JLabel(labels[1]);
-    static final JLabel sliderLable2 = new JLabel(labels[3]);
-    static final JLabel fontLable = new JLabel(labels[5]);
+    static final JLabel inputLabel = new JLabel(labels[0]);
+    static final JLabel sliderLabel = new JLabel(labels[1]);
+    static final JLabel sliderLabel2 = new JLabel(labels[3]);
+    static final JLabel fontLabel = new JLabel(labels[5]);
 
     static final Font txtOutputFont = new Font("Courier New", Font.PLAIN, 5);
     static Font charFont;
@@ -233,16 +233,16 @@ class CharGrapher extends JFrame implements ActionListener
                     // Destroy previous launched python script.
                     pydestroy();
                     // Reconstructing GUI
-                    inputLable.setVisible(true);
+                    inputLabel.setVisible(true);
                     stringInputField.setVisible(true);
                     charInputField.setVisible(false);
-                    sliderLable.setVisible(true);
+                    sliderLabel.setVisible(true);
                     wordComplexitySlider.setVisible(true);
                     reverseBtn.setVisible(true);
-                    fontLable.setVisible(false);
+                    fontLabel.setVisible(false);
                     fontBox.setVisible(false);
                     startBtn.setText(btns[0]);
-                    sliderLable2.setText(labels[3]);
+                    sliderLabel2.setText(labels[3]);
                     resolutionSlider.setMinimum(0);
                     resolutionSlider.setMaximum((int) sliderRes);
                     resolutionSlider.setValue(resolutionSlider.getMaximum());
@@ -250,7 +250,7 @@ class CharGrapher extends JFrame implements ActionListener
                     resolutionSlider.setSnapToTicks(false);
                     resolutionSlider.setPaintTicks(false);
 
-                    inputLable.setText(labels[0]);
+                    inputLabel.setText(labels[0]);
                     txtOutput.setFont(txtOutputFont);
                 }
 
@@ -261,17 +261,17 @@ class CharGrapher extends JFrame implements ActionListener
                     // Destroy previous launched python script.
                     pydestroy();
                     // Reconstructing GUI
-                    inputLable.setVisible(true);
+                    inputLabel.setVisible(true);
                     stringInputField.setVisible(true);
                     stringInputField.setVisible(false);
                     charInputField.setVisible(true);
-                    sliderLable.setVisible(false);
+                    sliderLabel.setVisible(false);
                     wordComplexitySlider.setVisible(false);
                     reverseBtn.setVisible(true);
-                    fontLable.setVisible(true);
+                    fontLabel.setVisible(true);
                     fontBox.setVisible(true);
                     startBtn.setText(btns[0]);
-                    sliderLable2.setText(labels[4]);
+                    sliderLabel2.setText(labels[4]);
                     resolutionSlider.setMinimum(5);
                     resolutionSlider.setMaximum(70);
                     resolutionSlider.setValue(resolutionSlider.getMaximum());
@@ -279,7 +279,7 @@ class CharGrapher extends JFrame implements ActionListener
                     resolutionSlider.setSnapToTicks(true);
                     resolutionSlider.setPaintTicks(true);
 
-                    inputLable.setText(labels[2]);
+                    inputLabel.setText(labels[2]);
                     txtOutput.setFont(txtOutputFont);
                 }
 
@@ -290,15 +290,15 @@ class CharGrapher extends JFrame implements ActionListener
                     // Destroy previous launched python script.
                     pydestroy();
                     // Reconstructing GUI
-                    inputLable.setVisible(false);
+                    inputLabel.setVisible(false);
                     stringInputField.setVisible(false);
                     charInputField.setVisible(false);
-                    sliderLable.setVisible(true);
+                    sliderLabel.setVisible(true);
                     wordComplexitySlider.setVisible(true);
                     reverseBtn.setVisible(true);
-                    fontLable.setVisible(false);
+                    fontLabel.setVisible(false);
                     fontBox.setVisible(false);
-                    sliderLable2.setText(labels[3]);
+                    sliderLabel2.setText(labels[3]);
                     resolutionSlider.setMinimum(20);
                     resolutionSlider.setMaximum((int)sliderRes);
                     resolutionSlider.setValue(resolutionSlider.getMaximum());
@@ -324,15 +324,15 @@ class CharGrapher extends JFrame implements ActionListener
                     // Destroy previous launched python script.
                     pydestroy();
                     // Reconstructing GUI
-                    inputLable.setVisible(true);
+                    inputLabel.setVisible(true);
                     stringInputField.setVisible(true);
                     charInputField.setVisible(false);
-                    sliderLable.setVisible(false);
+                    sliderLabel.setVisible(false);
                     wordComplexitySlider.setVisible(false);
                     reverseBtn.setVisible(false);
-                    fontLable.setVisible(false);
+                    fontLabel.setVisible(false);
                     fontBox.setVisible(false);
-                    sliderLable2.setText(labels[3]);
+                    sliderLabel2.setText(labels[3]);
 
                     resolutionSlider.setMinimum(0);
                     resolutionSlider.setMaximum((int)sliderRes);
@@ -376,9 +376,9 @@ class CharGrapher extends JFrame implements ActionListener
         modeBox.setToolTipText(helpTips[4]);
         resetBtn.setToolTipText(helpTips[5]);
         wordComplexitySlider.setToolTipText(helpTips[6]);
-        sliderLable.setToolTipText(helpTips[6]);
+        sliderLabel.setToolTipText(helpTips[6]);
         resolutionSlider.setToolTipText(helpTips[8]);
-        sliderLable2.setToolTipText(helpTips[8]);
+        sliderLabel2.setToolTipText(helpTips[8]);
         fontBox.setToolTipText(helpTips[7]);
         charInputField.setToolTipText(helpTips[9]);
 
@@ -391,7 +391,7 @@ class CharGrapher extends JFrame implements ActionListener
         txtOutput.setWrapStyleWord(true);
         // Set btn and char input not visible but in the content.
         charInputField.setVisible(false);
-        fontLable.setVisible(false);
+        fontLabel.setVisible(false);
         
         fontBox.setVisible(false);
         // Set effect of sliders: having tick and space & size
@@ -407,17 +407,17 @@ class CharGrapher extends JFrame implements ActionListener
         cuScaleChar = getCusScale();
 
         // ADD COMPONENTS - - - - - - - - - - - - - - - - - - - -
-        pnlObj.add(inputLable);
+        pnlObj.add(inputLabel);
         pnlObj.add(stringInputField);
         pnlObj.add(charInputField);
-        pnlObj.add(fontLable);
+        pnlObj.add(fontLabel);
         pnlObj.add(fontBox);
         pnlObj.add(startBtn);
         pnlObj.add(resetBtn);
 
-        pnlObj.add(sliderLable2);
+        pnlObj.add(sliderLabel2);
         pnlObj.add(resolutionSlider);
-        pnlObj.add(sliderLable);
+        pnlObj.add(sliderLabel);
         pnlObj.add(wordComplexitySlider);
         pnlObj.add(reverseBtn);
         pnlObj.add(optxtBtn);
