@@ -1,20 +1,27 @@
 import javax.swing.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Display {
-    protected static void info(String info) {
-        System.out.println("\033[0;32m" + "+INFO+ - " + info + "." + "\033[0m");
+    public static Logger logger = Logger.getLogger(Display.class.getName());
+    static void info(String info) {
+        // System.out.println("\033[0;32m" + "+INFO+ - " + info + "." + "\033[0m");
+        logger.log(Level.INFO, info);
     }
-
-    protected static void errinfo(String info) {
-        System.out.println("\033[0;31m" + "+ERROR+ - " + info + "." + "\033[0m");
-        JOptionPane.showMessageDialog(null, info + ".", "An Error Occurs", JOptionPane.ERROR_MESSAGE);
-    }
-
-    protected static void warninfo(String info) {
+    
+    static void warninfo(String info) {
         System.out.println("\033[0;33m" + "+WARNING+ - " + info + "." + "\033[0m");
+        logger.log(Level.WARNING, info);
     }
 
-    protected static void output(String str)
+    static void errinfo(String info) {
+        // System.out.println("\033[0;31m" + "+ERROR+ - " + info + "." + "\033[0m");
+        JOptionPane.showMessageDialog(null, info + ".", "An Error Occurs", JOptionPane.ERROR_MESSAGE);
+        logger.log(Level.SEVERE, info);
+    }
+
+
+    static void output(String str)
     {
         if(str.length() == 0)
         {

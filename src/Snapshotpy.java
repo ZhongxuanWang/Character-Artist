@@ -22,7 +22,7 @@ public class Snapshotpy implements Runnable
         // FIXME everytime enters here, an exception is casted while instantiating.
         File imgFile = new File(CharGrapher.ssgWS + "SSGSHOTS_IMG.jpg");
 
-        CGImage pic = new CGImage(imgFile);
+        CGImage pic = new CGImage(imgFile.toPath());
         if (pic.resolution > CharGrapher.maxResolution) {
             pic.compress();
         }

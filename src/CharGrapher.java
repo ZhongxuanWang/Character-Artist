@@ -1,6 +1,14 @@
+/*
+ * Honestly,
+ *
+ * Looking back at it, and I nearly vomitted.
+ */
+
+
 // For basic needs
 import java.io.*;
 import java.awt.*;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -13,13 +21,14 @@ import java.awt.event.*;
 
 class CharGrapher extends JFrame implements ActionListener
 {
-    static final String ver = "1.4.0 PyCam version Build 202007071400";
+    static final String ver = "1.5.0 PyCam version Build 20210322239";
 
     // Initialize some objects that are related to the functions.
     static final JPanel pnlObj = new JPanel();
     static Process pyLaunch;
 
     static String cuScaleChar;
+    // TODO Use temp folder provided by the system
     static final String ssgWS = new File("").getAbsoluteFile().toString() + "/CharGrapherWorkSpace/";
     static final String[] helpTips = {
         "Start the process by clicking here.",                                                          // 0
@@ -477,12 +486,11 @@ class CharGrapher extends JFrame implements ActionListener
 
 
     private static void photoToGraph(String input) {
-        File file = new File(input);
         // Check eligibility
-        if (CGImage.checkIfNotPic(file)) return;
+        if (CGImage.ifNoPic(Path.of(input))) return;
 
         // Treat it as image file and give image data to BufferedImage type img.
-        CGImage cgimage = new CGImage(file);
+        CGImage cgimage = new CGImage(Path.of(input));
 
         if (cgimage.resolution > resolutionSlider.getValue()) {
             cgimage.compress();
@@ -566,8 +574,8 @@ class CharGrapher extends JFrame implements ActionListener
             Display.errinfo("Sorry, file you inputted does not exist");
             return;
         }
-        if (CGImage.checkIfNotPic(file)) return;
-        CGImage cgimage = new CGImage(file);
+        if (CGImage.ifNoPic(Path.of(path))) return;
+        CGImage cgimage = new CGImage(Path.of(path));
 
         if (cgimage.resolution > resolutionSlider.getValue()) {
             cgimage.compress();
@@ -675,7 +683,7 @@ class CharGrapher extends JFrame implements ActionListener
             "    imwrite(\"SSGSHOTS_IMG.jpg\",img)\n";
             out.write(prg);
             out.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             Display.errinfo("Sorry, unable to output python file. " + e.toString());
             return false;
         }
